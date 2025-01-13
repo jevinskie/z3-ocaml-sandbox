@@ -1,1 +1,1 @@
-val hello : unit -> unit
+val hello : unit -> string

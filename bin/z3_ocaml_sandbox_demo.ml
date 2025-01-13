@@ -1,3 +1,1 @@
-(* open Z3_ocaml_sandbox *)
-
-let () = Z3_ocaml_sandbox.hello
+let () = print_endline (Z3_ocaml_sandbox.hello ())
