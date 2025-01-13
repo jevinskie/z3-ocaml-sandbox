@@ -1,0 +1,4 @@
+(library
+ (public_name z3_ocaml_sandbox)
+ (name z3_ocaml_sandbox)
+ (libraries z3))
