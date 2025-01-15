@@ -37,6 +37,7 @@ static void my_parser_example(char const *const fileName, char const *const file
     // Z3_solver_inc_ref(ctx, solver);
     // printf("solver init: %s\n", Z3_solver_to_string(ctx, solver));
 
+    // Z3_solver_push(ctx, solver);
     // printf("f1:\n%s\n", Z3_eval_smtlib2_string(ctx, f1));
     // Z3_solver_eval_smtlib2_string
     Z3_solver_from_string(ctx, solver, f1);
@@ -44,6 +45,8 @@ static void my_parser_example(char const *const fileName, char const *const file
     printf("f1 Z3_solver_check: %d\n", Z3_solver_check(ctx, solver));
     printf("f1 solver post-check: %s\n", Z3_solver_to_string(ctx, solver));
 
+    // Z3_solver_pop(ctx, solver, 1);
+    // Z3_solver_push(ctx, solver);
     Z3_solver_reset(ctx, solver);
     // printf("solver post-reset: %s\n", Z3_solver_to_string(ctx, solver));
     // Z3_solver_dec_ref(ctx, solver);
@@ -56,6 +59,7 @@ static void my_parser_example(char const *const fileName, char const *const file
     printf("f2 solver pre-check: %s\n", Z3_solver_to_string(ctx, solver));
     printf("f2 Z3_solver_check: %d\n", Z3_solver_check(ctx, solver));
     printf("f2 solver post-check: %s\n", Z3_solver_to_string(ctx, solver));
+    // Z3_solver_pop(ctx, solver, 1);
 
     Z3_del_context(ctx);
     // Z3_close_log();
