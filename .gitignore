@@ -1,3 +1,6 @@
+/bindings
+/bindings-oneshot
+
 *.annot
 *.cmo
 *.cma
@@ -7,6 +10,12 @@
 *.cmx
 *.cmxs
 *.cmxa
+
+# Apple DWARF
+**/*.dSYM/
+
+# build artifacts
+*.o
 
 # ocamlbuild working directory
 _build/
