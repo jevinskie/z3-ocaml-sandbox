@@ -17,9 +17,11 @@ static void my_parser_example(char const *const fileName) {
     char *buffer = NULL;
     size_t len;
     getdelim(&buffer, &len, '\0', file);
+    fclose(file);
 
     printf("%s", Z3_eval_smtlib2_string(ctx, buffer));
-    fclose(file);
+    free(buffer);
+    Z3_del_context(ctx);
 }
 
 int main(int argc, char *argv[]) {
