@@ -40,21 +40,21 @@ static void my_parser_example(char const *const fileName, char const *const file
     // printf("f1:\n%s\n", Z3_eval_smtlib2_string(ctx, f1));
     // Z3_solver_eval_smtlib2_string
     Z3_solver_from_string(ctx, solver, f1);
-    // printf("f1 solver pre-check: %s\n", Z3_solver_to_string(ctx, solver));
+    printf("f1 solver pre-check: %s\n", Z3_solver_to_string(ctx, solver));
     printf("f1 Z3_solver_check: %d\n", Z3_solver_check(ctx, solver));
-    // printf("f1 solver post-check: %s\n", Z3_solver_to_string(ctx, solver));
+    printf("f1 solver post-check: %s\n", Z3_solver_to_string(ctx, solver));
 
-    Z3_solver_reset(ctx, solver);
+    // Z3_solver_reset(ctx, solver);
     // printf("solver post-reset: %s\n", Z3_solver_to_string(ctx, solver));
     // Z3_solver_dec_ref(ctx, solver);
-    Z3_solver solver2 = solver;
+    // Z3_solver solver2 = solver;
     // Z3_solver solver2 = Z3_mk_solver(ctx);
     // printf("solver init2: %s\n", Z3_solver_to_string(ctx, solver2));
 
     // printf("f2:\n%s\n", Z3_eval_smtlib2_string(ctx, f2));
     // Z3_solver_from_string(ctx, solver2, f2);
     // printf("f2 solver pre-check: %s\n", Z3_solver_to_string(ctx, solver2));
-    printf("f2 Z3_solver_check: %d\n", Z3_solver_check(ctx, solver2));
+    // printf("f2 Z3_solver_check: %d\n", Z3_solver_check(ctx, solver2));
     // printf("f2 solver post-check: %s\n", Z3_solver_to_string(ctx, solver2));
 
     Z3_del_context(ctx);
