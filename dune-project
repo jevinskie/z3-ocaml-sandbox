@@ -19,8 +19,4 @@
  (name z3_ocaml_sandbox)
  (synopsis "Z3 OCaml sandbox")
  (description "Z3 OCaml sandbox")
- (depends
-  ocaml
-  dune
-  (z3
-   (>= "4.13.1"))))
+ (depends ocaml dune ctypes))

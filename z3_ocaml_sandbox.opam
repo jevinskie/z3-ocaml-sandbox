@@ -11,7 +11,7 @@ bug-reports: "https://github.com/jevinskie/z3_ocaml_sandbox/issues"
 depends: [
   "ocaml"
   "dune" {>= "3.17"}
-  "z3" {>= "4.13.1"}
+  "ctypes"
   "odoc" {with-doc}
 ]
 build: [
