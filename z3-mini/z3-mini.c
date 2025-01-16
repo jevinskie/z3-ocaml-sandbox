@@ -39,6 +39,19 @@ z3_mini_ctx Z3_mini_mk_context(void) {
     return res;
 }
 
-void Z3_mini_del_context(z3_mini_ctx ctx) {}
+void Z3_mini_del_context(z3_mini_ctx ctx) {
+    if (!ctx) {
+        abort();
+    }
+    Z3_del_context(ctx->ctx);
+    free(ctx);
+}
 
-int Z3_mini_check_sat(z3_mini_ctx ctx, const char *smt2) {}
+int Z3_mini_check_sat(z3_mini_ctx ctx, const char *smt2) {
+    if (!ctx || !smt2) {
+        abort();
+    }
+    Z3_solver_reset(ctx->ctx, ctx->solver);
+    Z3_solver_from_string(ctx->ctx, ctx->solver, smt2);
+    return Z3_solver_check(ctx->ctx, ctx->solver);
+}
