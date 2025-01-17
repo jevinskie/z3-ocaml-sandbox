@@ -74,6 +74,9 @@ let () =
   let results = parallel_count_newlines file_map chunk_size num_domains in
 
   (* Step 3: Print results *)
-  List.iter
+  (* List.iter
     (fun (path, count) -> Printf.printf "File: %s, Newlines: %d\n" path count)
-    results
+    results *)
+  let _, counts = List.split results in
+  let sum = List.fold_left ( + ) 0 counts in
+  Printf.printf "Newlines: %d\n" sum
