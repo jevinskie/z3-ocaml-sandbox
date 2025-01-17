@@ -12,7 +12,8 @@
 (library
  (name z3_mini_generated)
  (modules z3_mini_generated)
- (c_library_flags -I/opt/homebrew/include -L/opt/homebrew/lib -lz3_mini -lz3)
+ (extra_objects ../z3_mini)
+ (c_library_flags -I/opt/homebrew/include -L/opt/homebrew/lib -lz3)
  (foreign_stubs
   (language c)
   (names z3_mini_stubs)

@@ -3,8 +3,27 @@
  (name z3_mini)
  (libraries z3_mini_bindings))
 
+; (rule
+;  (targets z3_mini.o)
+;  (deps z3_mini.c)
+;  (action
+;   (run ocamlopt -ccopt "-isystem /opt/homebrew/include -v" %{deps})))
+
+; (rule
+;  (target foo.exe)
+;  (deps   foo.c)
+;  (action (run %{cc} -o %{target} %{deps} -lfoolib)))
+
 (rule
- (targets z3_mini.o)
+ (target z3_mini.o)
  (deps z3_mini.c z3_mini.h hedley.h)
  (action
-  (run ocamlopt %{deps})))
+  (run %{cc} -c -o %{target} z3_mini.c -I/opt/homebrew/include)))
+
+; (foreign_library
+;  (archive_name arch1)
+;  (language c)
+;  (enabled_if true)
+;  (names z3_mini_ffi)
+;  (include_dirs ".")
+;  (flags "-I" ".."))
