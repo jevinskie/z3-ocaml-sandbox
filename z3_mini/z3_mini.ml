@@ -9,9 +9,9 @@ let _z3_mini_mk_context =
 end *)
 open Ctypes
 
-module CGContext = struct
+module Z3_mini_ctx = struct
   type t
 
-  let t : t structure typ = structure "CGContextRef"
+  let t : t structure typ = structure "z3_mini_ctx"
   let () = seal t
 end

@@ -32,7 +32,7 @@ z3_mini_ctx Z3_mini_init_context(z3_mini_ctx ctx) {
 }
 
 z3_mini_ctx Z3_mini_mk_context(void) {
-    z3_mini_ctx res = calloc(1, sizeof(*res));
+    z3_mini_ctx res = malloc(sizeof(*res));
     if (!res) {
         return NULL;
     }

@@ -1,5 +1,5 @@
 (executable
  (public_name z3_ocaml_sandbox_demo)
  (name z3_ocaml_sandbox_demo)
- (libraries z3_ocaml_sandbox)
+ (libraries z3_mini)
  (package z3_ocaml_sandbox))

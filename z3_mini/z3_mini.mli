@@ -1,7 +1,6 @@
-(* open Ctypes *)
+open Ctypes
 
-(* type z3_mini_ctx_cty = unit ptr
-type z3_mini_ctx_valty = z3_mini_ctx_cty
+type z3_mini_ctx = unit ptr
 
-val z3_mini_ctx_valty : z3_mini_ctx_valty typ
-val z3_mini_mk_context : unit -> z3_mini_ctx_valty *)
+val z3_mini_ctx : z3_mini_ctx typ
+val z3_mini_mk_context : unit -> z3_mini_ctx
