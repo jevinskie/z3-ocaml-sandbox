@@ -40,28 +40,26 @@ let parallel_count_newlines file_map chunk_size num_domains =
   let files = Array.of_list (StringMap.bindings file_map) in
 
   (* Use parallel_for_reduce to process files in parallel *)
+  let results =
+    Domainslib.Task.run pool (fun () ->
+        (* Domainslib.Task.parallel_for_reduce ~chunk_size ~start:0
+          ~finish:(total_files - 1) ~pool
+          ~body:(fun _i -> 1) (* Return a single tuple *)
+          ~reduce:( + ) (* Prepend to the list *)
+          ~init:0) *)
+        Domainslib.Task.parallel_for_reduce pool ( + ) 0 ~chunk_size ~start:0
+          ~finish:(total_files - 1) ~body:(fun _i -> 1))
+    (* Start with an empty list *)
+  in
   (* let results =
-    Domainslib.Task.parallel_for_reduce ~chunk_size ~start:0
-      ~finish:(total_files - 1) ~pool:pool
-      ~body:(fun i ->
-        (* Access the ith element from the array *)
-        let key, content = files.(i) in
-        count_newlines content) (* Return a single tuple *)
-      ~reduce:(+) (* Prepend to the list *)
-      ~init:0 (* Start with an empty list *)
-  in *)
-  let sum =
-    Domainslib.Task.run pool (fun _ ->
+    Domainslib.Task.run pool (fun () ->
         Domainslib.Task.parallel_for_reduce pool ( + ) 0
           ~chunk_size:(total_files / (4 * num_domains))
           ~start:0 ~finish:(total_files - 1)
           ~body:(fun _i -> 1))
-  in
-
+  in *)
   Domainslib.Task.teardown_pool pool;
-
-  (* Reverse the results to restore the original order *)
-  [ ("dummy", sum) ]
+  [ ("dummy", results) ]
 
 (* Main program *)
 let () =
