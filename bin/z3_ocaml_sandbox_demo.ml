@@ -47,8 +47,10 @@ let parallel_count_newlines file_map chunk_size num_domains =
           ~body:(fun _i -> 1) (* Return a single tuple *)
           ~reduce:( + ) (* Prepend to the list *)
           ~init:0) *)
-        Domainslib.Task.parallel_for_reduce pool ( + ) 0 ~chunk_size ~start:0
-          ~finish:(total_files - 1) ~body:(fun _i -> 1))
+        Domainslib.Task.parallel_for_reduce pool ( @ ) [] ~chunk_size ~start:0
+          ~finish:(total_files - 1) ~body:(fun i ->
+            let key, content = List.nth (StringMap.bindings file_map) i in
+            [ (key, count_newlines content) ]))
     (* Start with an empty list *)
   in
   (* let results =
@@ -59,7 +61,8 @@ let parallel_count_newlines file_map chunk_size num_domains =
           ~body:(fun _i -> 1))
   in *)
   Domainslib.Task.teardown_pool pool;
-  [ ("dummy", results) ]
+  (* [ ("dummy", results) ] *)
+  results
 
 (* Main program *)
 let () =
