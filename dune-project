@@ -19,4 +19,10 @@
  (name z3_ocaml_sandbox)
  (synopsis "Z3 OCaml sandbox")
  (description "Z3 OCaml sandbox")
+ (depends ocaml dune))
+
+(package
+ (name z3_mini)
+ (synopsis "Z3 Mini FFI")
+ (description "Z3 Mini FFI")
  (depends ocaml dune ctypes))
