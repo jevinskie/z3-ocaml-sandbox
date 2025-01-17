@@ -1,4 +1,4 @@
-let c_headers = "#include <z3_mini.h>"
+let c_headers = "#include \"z3_mini.h\""
 
 let main () =
   let ml_out = open_out "z3_mini_generated.ml" in

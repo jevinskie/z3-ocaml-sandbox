@@ -2,3 +2,9 @@
  (public_name z3_mini)
  (name z3_mini)
  (libraries z3_mini_bindings))
+
+(rule
+ (targets z3_mini.o)
+ (deps z3_mini.c z3_mini.h hedley.h)
+ (action
+  (run ocamlopt %{deps})))

@@ -16,5 +16,5 @@
  (foreign_stubs
   (language c)
   (names z3_mini_stubs)
-  (flags :standard "-I" ".." "-I" "/opt/homebrew/include"))
+  (flags :standard "-v" "-I" ".." "-I" "/opt/homebrew/include"))
  (libraries ctypes.stubs))
