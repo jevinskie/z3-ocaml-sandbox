@@ -22,7 +22,13 @@
  (depends ocaml dune))
 
 (package
- (name z3_mini)
+ (name z3_mini_bindings)
  (synopsis "Z3 Mini FFI")
  (description "Z3 Mini FFI")
+ (depends ocaml dune ctypes))
+
+(package
+ (name z3_mini)
+ (synopsis "Z3 Mini")
+ (description "Z3 Mini")
  (depends ocaml dune ctypes))

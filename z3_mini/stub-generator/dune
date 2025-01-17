@@ -1,0 +1,20 @@
+(executable
+ (name z3_mini_stub_generator)
+ (modules z3_mini_stub_generator)
+ (libraries z3_mini_bindings ctypes.stubs ctypes))
+
+(rule
+ (targets z3_mini_stubs.c z3_mini_generated.ml)
+ (deps z3_mini_stub_generator.exe)
+ (action
+  (run %{deps})))
+
+(library
+ (name z3_mini_generated)
+ (modules z3_mini_generated)
+ (c_library_flags -I/opt/homebrew/include -L/opt/homebrew/lib -lz3_mini -lz3)
+ (foreign_stubs
+  (language c)
+  (names z3_mini_stubs)
+  (flags :standard "-I" ".." "-I" "/opt/homebrew/include"))
+ (libraries ctypes.stubs))

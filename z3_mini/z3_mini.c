@@ -1,4 +1,4 @@
-#include "z3-mini.h"
+#include "z3_mini.h"
 
 #include <assert.h>
 #include <stdlib.h>

@@ -1,0 +1,4 @@
+(library
+ (public_name z3_mini)
+ (name z3_mini)
+ (libraries z3_mini_bindings))
