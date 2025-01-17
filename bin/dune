@@ -1,5 +1,10 @@
 (executable
  (public_name z3_ocaml_sandbox_demo)
  (name z3_ocaml_sandbox_demo)
- (libraries z3_mini)
+ (libraries domainslib)
  (package z3_ocaml_sandbox))
+
+(env
+ (dev
+  (flags
+   (:standard -w -32..39 -w -26..27))))

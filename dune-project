@@ -19,7 +19,7 @@
  (name z3_ocaml_sandbox)
  (synopsis "Z3 OCaml sandbox")
  (description "Z3 OCaml sandbox")
- (depends ocaml dune))
+ (depends ocaml dune domainslib))
 
 (package
  (name z3_mini_bindings)
