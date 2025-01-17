@@ -31,7 +31,7 @@ NOOPT_FLAGS := -O0
 FAST_FLAGS := -O3 -fvectorize -funroll-loops
 SMOL_FLAGS := -Oz
 NOOUTLINE_FLAGS := -mno-outline
-ASAN_FLAGS := $(NOOPT_FLAGS) $(DBG_FLAGS) -fsanitize=address -fsanitize-address-use-after-return=always -fsanitize-address-use-after-scope -fsanitize=leak
+ASAN_FLAGS := $(NOOPT_FLAGS) $(DBG_FLAGS) -fsanitize=address -fsanitize-address-use-after-return=always -fsanitize-address-use-after-scope -fsanitize=address
 UBSAN_FLAGS := $(NOOPT_FLAGS) $(DBG_FLAGS) -fsanitize-recover=all -fsanitize=undefined -fsanitize=implicit-integer-truncation -fsanitize=implicit-integer-arithmetic-value-change -fsanitize=implicit-conversion -fsanitize=integer -fsanitize=nullability -fsanitize=float-divide-by-zero -fsanitize=local-bounds
 # UBSAN_FLAGS += -fsanitize=implicit-integer-conversion
 ASMFLAGS := -fverbose-asm -fno-exceptions -fno-rtti -fno-unwind-tables -fno-asynchronous-unwind-tables -DSHA1_REDIR_DISABLE

@@ -8,7 +8,9 @@ struct z3_mini_ctx_impl;
 
 typedef struct z3_mini_ctx_impl *z3_mini_ctx;
 
+extern z3_mini_ctx Z3_mini_init_context(z3_mini_ctx ctx);
 extern z3_mini_ctx Z3_mini_mk_context(void);
+extern void Z3_mini_deinit_context(z3_mini_ctx ctx);
 extern void Z3_mini_del_context(z3_mini_ctx ctx);
 extern int Z3_mini_check_sat(z3_mini_ctx ctx, const char *smt2);
 
