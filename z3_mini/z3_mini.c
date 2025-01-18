@@ -58,10 +58,7 @@ int Z3_mini_check_sat(Z3_mini_ctx ctx, const char *smt2) {
 }
 
 char *Z3_mini_check_sat_get_model(Z3_mini_ctx ctx, const char *smt2) {
-    assert(ctx && smt2);
-    Z3_solver_reset(ctx->ctx, ctx->solver);
-    Z3_solver_from_string(ctx->ctx, ctx->solver, smt2);
-    int sat = Z3_solver_check(ctx->ctx, ctx->solver);
+    int sat = Z3_mini_check_sat(ctx, smt2);
     if (sat == 1) {
         Z3_model model = Z3_solver_get_model(ctx->ctx, ctx->solver);
         assert(model);
