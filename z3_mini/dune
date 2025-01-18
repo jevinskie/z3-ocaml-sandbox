@@ -18,11 +18,18 @@
      "-L"
      "./z3_mini"
      "-L"
-     "/opt/homebrew/opt/z3/lib"
+     "/Users/jevin/base/z3-dbg/lib"
+     "-L"
+     "/opt/homebrew/opt/gmp/lib"
      -lz3_mini
-     -lz3)))
+     -lz3
+     -lgmp
+     -lc++abi
+     -lc++
+     -Wl,-rpath,
+     "/Users/jevin/base/z3-dbg/lib")))
   (headers
-   (include "z3_mini.h" "/opt/homebrew/include/z3.h"))
+   (include "z3_mini.h" "/Users/jevin/base/z3-dbg/include/z3.h"))
   (type_description
    (instance Type)
    (functor Type_description))

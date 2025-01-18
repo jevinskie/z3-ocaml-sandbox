@@ -94,6 +94,7 @@ let () =
   let () = Printf.printf "smt2 sat: %d\nsmt2:%s\n" sat smt2_sat in
   let model = Z3_mini_ctx.get_model_new ctx smt2_sat in
   let () = Printf.printf "smt2 model: %s\n" model in
+  let () = Out_channel.flush Out_channel.stdout in
   let smt2_unsat =
     "(declare-const x Int) (assert (<= x 42)) (assert (>= x 243))"
   in
