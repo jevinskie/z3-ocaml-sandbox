@@ -5,7 +5,7 @@
 ;  (libraries z3_mini_bindings))
 
 (foreign_library
- (archive_name z3_mini_=)
+ (archive_name z3_mini)
  (language c)
  ;  (enabled_if true)
  (names z3_mini)
@@ -41,11 +41,14 @@
 (library
  (name z3_mini)
  (libraries ctypes)
+ (package z3_mini)
  (ctypes
   (external_library_name z3_mini_c)
-  (build_flags_resolver vendored)
+  (build_flags_resolver
+   (vendored
+    (c_flags "-isystem" ".")))
   (headers
-   (include "/opt/homebrew/include/z3.h"))
+   (include "z3_mini.h" "/opt/homebrew/include/z3.h"))
   (type_description
    (instance Type)
    (functor Type_description))

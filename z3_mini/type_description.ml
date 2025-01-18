@@ -9,6 +9,6 @@ module Types (F : Ctypes.TYPE) = struct
   end = struct
     type t = unit ptr
 
-    let t : t typ = typedef (ptr void) "z3_mini_ctx"
+    let t : t typ = typedef (ptr void) "Z3_mini_ctx"
   end
 end
