@@ -29,6 +29,7 @@ Z3_mini_ctx Z3_mini_init_context(Z3_mini_ctx ctx, int model) {
         Z3_del_context(ctx->ctx);
         return NULL;
     }
+    Z3_solver_inc_ref(ctx->ctx, ctx->solver);
     return ctx;
 }
 
@@ -42,6 +43,7 @@ Z3_mini_ctx Z3_mini_mk_context(int model) {
 
 void Z3_mini_deinit_context(Z3_mini_ctx ctx) {
     assert(ctx);
+    Z3_solver_dec_ref(ctx->ctx, ctx->solver);
     Z3_del_context(ctx->ctx);
 }
 
@@ -64,13 +66,15 @@ char *Z3_mini_get_model_with_len(Z3_mini_ctx ctx, const char *smt2, size_t *len)
     if (sat == 1) {
         Z3_model model = Z3_solver_get_model(ctx->ctx, ctx->solver);
         assert(model);
+        Z3_model_inc_ref(ctx->ctx, model);
         const char *model_str = Z3_model_to_string(ctx->ctx, model);
         assert(model_str);
         size_t slen = strlen(model_str);
         *len        = slen;
         char *res   = malloc(slen + 1);
-        assert(res); // FIXME: we can assume malloc won't fail... right? we get ZEROPAGE anyways
+        assert(res);
         memcpy(res, model_str, slen + 1);
+        Z3_model_dec_ref(ctx->ctx, model);
         return res;
     }
     return NULL;
