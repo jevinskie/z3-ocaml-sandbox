@@ -1,17 +1,8 @@
-(* open Ctypes *)
+open Ctypes
 
-(* module Bindings (F : Ctypes.FOREIGN) =
-struct
-  open F
-let _z3_mini_mk_context =
-  foreign "z3_mini_mk_context" (void @-> returning z3_mini_ctx_valty)
+module CGContext = struct
+  include C.Type.Z3_mini_ctx
+  include C.Function.Z3_mini_ctx
 
-end *)
-(* open Ctypes
-
-module Z3_mini_ctx = struct
-  type t
-
-  let t : t structure typ = structure "z3_mini_ctx_impl"
-  let () = seal t
-end *)
+  let t_of_raw_address addr = coerce (ptr void) t (ptr_of_raw_address addr)
+end

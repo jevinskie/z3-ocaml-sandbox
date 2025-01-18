@@ -1,5 +1,7 @@
 (lang dune 3.17)
 
+(using ctypes 0.3)
+
 (name z3_ocaml_sandbox)
 
 (generate_opam_files true)
@@ -21,11 +23,17 @@
  (description "Z3 OCaml sandbox")
  (depends ocaml dune domainslib))
 
-(package
- (name z3_mini_bindings)
- (synopsis "Z3 Mini FFI")
- (description "Z3 Mini FFI")
- (depends ocaml dune ctypes))
+; (package
+;  (name z3_mini_bindings)
+;  (synopsis "Z3 Mini FFI")
+;  (description "Z3 Mini FFI")
+;  (depends ocaml dune ctypes))
+
+; (package
+;  (name z3_mini_stub_generator)
+;  (synopsis "Z3 Mini FFI stubs gen")
+;  (description "Z3 Mini FFI stubs gen")
+;  (depends ocaml dune ctypes))
 
 (package
  (name z3_mini)

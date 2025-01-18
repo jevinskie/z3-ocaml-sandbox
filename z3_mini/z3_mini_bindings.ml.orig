@@ -1,0 +1,40 @@
+open Ctypes
+
+(* Define opaque type for Z3_mini_ctx *)
+let z3_mini_ctx = "Z3_mini_ctx"
+
+module Types (F : Ctypes.TYPE) = struct
+	module Z3_mini_ctx : sig
+		type t
+		val t : t typ
+	end = struct
+		type t = unit ptr
+		let t : t typ = typedef (ptr void) "z3_mini_ctx"
+	end
+end
+
+module Bindings (F : Ctypes.FOREIGN) = struct
+  (* Bind functions from the C library *)
+  let z3_mini_init_context =
+    F.foreign "Z3_mini_init_context"
+      (ptr Z3_mini_ctx.typ @-> int @-> returning (ptr Z3_mini_ctx))
+
+  let z3_mini_mk_context =
+    F.foreign "Z3_mini_mk_context" (int @-> returning (ptr z3_mini_ctx))
+
+  let z3_mini_deinit_context =
+    F.foreign "Z3_mini_deinit_context" (ptr z3_mini_ctx @-> returning void)
+
+  let z3_mini_del_context =
+    F.foreign "Z3_mini_del_context" (ptr z3_mini_ctx @-> returning void)
+
+  let z3_mini_check_sat =
+    F.foreign "Z3_mini_check_sat" (ptr z3_mini_ctx @-> string @-> returning int)
+
+  let z3_mini_check_sat_get_model =
+    F.foreign "Z3_mini_check_sat_get_model"
+      (ptr z3_mini_ctx @-> string @-> returning (ptr char))
+
+  let z3_mini_del_string =
+    F.foreign "Z3_mini_del_string" (ptr char @-> returning void)
+end

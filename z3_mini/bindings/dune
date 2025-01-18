@@ -1,4 +1,4 @@
-(library
- (name z3_mini_bindings)
- (public_name z3_mini_bindings)
- (libraries ctypes))
+; (library
+;  (name z3_mini_bindings)
+;  (public_name z3_mini_bindings)
+;  (libraries ctypes))

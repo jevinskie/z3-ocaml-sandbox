@@ -1,7 +1,76 @@
+; (library
+;  (public_name z3_mini)
+;  (name z3_mini)
+;  (modules z3_mini)
+;  (libraries z3_mini_bindings))
+
+(foreign_library
+ (archive_name z3_mini_=)
+ (language c)
+ ;  (enabled_if true)
+ (names z3_mini)
+ (flags :standard "-isystem" "/opt/homebrew/include"))
+
+; (executable
+;  (name z3_mini_stub_generator)
+;  (modules z3_mini_stub_generator)
+;  (libraries z3_mini_bindings ctypes ctypes.stubs))
+
+; (rule
+;  (targets z3_mini_generated.c z3_mini_generated.ml)
+;  (deps z3_mini_stub_generator.exe)
+;  (action
+;   (run %{deps})))
+
+; (library
+;  (name z3_mini_generated)
+;  (modules z3_mini_generated)
+; ;  (c_library_flags -I/opt/homebrew/include -L/opt/homebrew/lib -lz3)
+;  (foreign_stubs
+;   (language c)
+;   (names z3_mini_generated)
+;   (flags :standard "-isystem" "/opt/homebrew/include"))
+;  (libraries ctypes.stubs))
+
+; (library
+;  (name z3_mini_bindings)
+;  (public_name z3_mini_bindings)
+;  (modules z3_mini_bindings)
+;  (libraries ctypes))
+
 (library
- (public_name z3_mini)
  (name z3_mini)
- (libraries z3_mini_bindings))
+ (libraries ctypes)
+ (ctypes
+  (external_library_name z3_mini_c)
+  (build_flags_resolver vendored)
+  (headers
+   (include "/opt/homebrew/include/z3.h"))
+  (type_description
+   (instance Type)
+   (functor Type_description))
+  (function_description
+   (concurrency unlocked)
+   (instance Function)
+   (functor Function_description))
+  (generated_types Types_generated)
+  (generated_entry_point C)))
+
+; (rule
+;  (targets z3_mini_stubs.c z3_mini_stubs.ml)
+;  (deps z3_mini_stubgen.exe)
+;  (action
+;   (run ./z3_mini_stubgen.exe)))
+
+; (library
+;  (name z3_mini_bindings)
+;  (public_name z3_mini_bindings)
+;  (libraries ctypes ctypes.stubs)
+;  (modules z3_mini_bindings z3_mini_stubs)
+;  (foreign_stubs
+;   (language c)
+;   (names z3_mini_stubs)
+;   (flags :standard)))
 
 ; (rule
 ;  (targets z3_mini.o)
@@ -14,11 +83,11 @@
 ;  (deps   foo.c)
 ;  (action (run %{cc} -o %{target} %{deps} -lfoolib)))
 
-(rule
- (target z3_mini.o)
- (deps z3_mini.c z3_mini.h hedley.h)
- (action
-  (run %{cc} -c -o %{target} z3_mini.c -I/opt/homebrew/include)))
+; (rule
+;  (target z3_mini.o)
+;  (deps z3_mini.c z3_mini.h hedley.h)
+;  (action
+;   (run %{cc} -c -o %{target} z3_mini.c -I/opt/homebrew/include)))
 
 ; (foreign_library
 ;  (archive_name arch1)
