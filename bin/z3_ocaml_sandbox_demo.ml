@@ -3,7 +3,15 @@
 let () =
   let _ = z3_mini_ctx in
   print_endline "done" *)
-module StringMap = Map.Make (String)
+module StringMap = Hashtbl.Make (String)
+
+module StringHtbl = Hashtbl.Make (struct
+  type t = string
+
+  let equal = String.equal
+  let hash = String.hash
+end)
+
 open Domainslib
 
 (* Function to read file contents *)
@@ -15,17 +23,14 @@ let read_file path =
   contents
 
 (* Recursively walk through a directory and build a map of file paths to contents *)
-let rec collect_files_as_map dir acc =
-  let entries = Sys.readdir dir in
-  Array.fold_left
-    (fun acc entry ->
-      let path = Filename.concat dir entry in
-      if Sys.is_directory path then collect_files_as_map path acc
-      else if Filename.check_suffix path ".smt2" then
-        let content = read_file path in
-        StringMap.add path content acc
-      else acc)
-    acc entries
+let rec collect_files_as_map dir tbl =
+  Sys.readdir dir |> Array.to_list
+  |> List.iter (fun entry ->
+         let path = Filename.concat dir entry in
+         if Sys.is_directory path then collect_files_as_map path tbl
+         else if Filename.check_suffix path ".smt2" then
+           let content = read_file path in
+           StringHtbl.add tbl path content)
 
 (* Count the number of newlines in a string *)
 let count_newlines content =
@@ -33,18 +38,19 @@ let count_newlines content =
 
 (* Parallel newline counting with configurable chunk size *)
 let parallel_count_newlines file_map chunk_size num_domains =
-  let total_files = StringMap.cardinal file_map in
+  let total_files = StringHtbl.length file_map in
   let pool = Domainslib.Task.setup_pool ~num_domains () in
 
   (* Convert file_map to an array for indexed access *)
-  let files = Array.of_list (StringMap.bindings file_map) in
+  let files = StringHtbl.to_seq_keys file_map |> Array.of_seq in
 
   (* Use parallel_for_reduce to process files in parallel *)
   let results =
     Domainslib.Task.run pool (fun () ->
         Domainslib.Task.parallel_for_reduce pool ( @ ) [] ~chunk_size ~start:0
           ~finish:(total_files - 1) ~body:(fun i ->
-            let key, content = List.nth (StringMap.bindings file_map) i in
+            let key = Array.get files i in
+            let content = StringHtbl.find file_map key in
             [ (key, count_newlines content) ]))
   in
   Domainslib.Task.teardown_pool pool;
@@ -68,7 +74,11 @@ let () =
     exit 1);
 
   (* Step 1: Collect files into a map *)
-  let file_map = collect_files_as_map root_dir StringMap.empty in
+  (* let file_map = collect_files_as_map root_dir StringMap.empty in *)
+  (* StringHtbl *)
+  let htab = StringHtbl.create 246189 in
+  let () = collect_files_as_map root_dir htab in
+  let file_map = htab in
 
   (* Step 2: Parallelize newline counting *)
   let results = parallel_count_newlines file_map chunk_size num_domains in
