@@ -46,7 +46,7 @@
   (external_library_name z3_mini_c)
   (build_flags_resolver
    (vendored
-    (c_flags "-isystem" ".")))
+    (c_flags "-I" ".")))
   (headers
    (include "z3_mini.h" "/opt/homebrew/include/z3.h"))
   (type_description
