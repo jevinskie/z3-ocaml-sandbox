@@ -23,18 +23,6 @@
  (description "Z3 OCaml sandbox")
  (depends ocaml dune domainslib))
 
-; (package
-;  (name z3_mini_bindings)
-;  (synopsis "Z3 Mini FFI")
-;  (description "Z3 Mini FFI")
-;  (depends ocaml dune ctypes))
-
-; (package
-;  (name z3_mini_stub_generator)
-;  (synopsis "Z3 Mini FFI stubs gen")
-;  (description "Z3 Mini FFI stubs gen")
-;  (depends ocaml dune ctypes))
-
 (package
  (name z3_mini)
  (synopsis "Z3 Mini")
