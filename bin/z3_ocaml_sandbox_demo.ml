@@ -74,8 +74,6 @@ let () =
     exit 1);
 
   (* Step 1: Collect files into a map *)
-  (* let file_map = collect_files_as_map root_dir StringMap.empty in *)
-  (* StringHtbl *)
   let htab = StringHtbl.create 246189 in
   let () = collect_files_as_map root_dir htab in
   let file_map = htab in
