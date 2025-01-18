@@ -1,6 +1,7 @@
 #include "z3_mini.h"
 
 #include <assert.h>
+#include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -57,16 +58,27 @@ int Z3_mini_check_sat(Z3_mini_ctx ctx, const char *smt2) {
     return Z3_solver_check(ctx->ctx, ctx->solver);
 }
 
-char *Z3_mini_get_model(Z3_mini_ctx ctx, const char *smt2) {
+char *Z3_mini_get_model_with_len(Z3_mini_ctx ctx, const char *smt2, size_t *len) {
+    assert(len);
     int sat = Z3_mini_check_sat(ctx, smt2);
     if (sat == 1) {
         Z3_model model = Z3_solver_get_model(ctx->ctx, ctx->solver);
         assert(model);
         const char *model_str = Z3_model_to_string(ctx->ctx, model);
         assert(model_str);
-        return strdup(model_str);
+        size_t slen = strlen(model_str);
+        *len        = slen;
+        char *res   = malloc(slen + 1);
+        assert(res); // FIXME: we can assume malloc won't fail... right? we get ZEROPAGE anyways
+        memcpy(res, model_str, slen + 1);
+        return res;
     }
     return NULL;
+}
+
+char *Z3_mini_get_model(Z3_mini_ctx ctx, const char *smt2) {
+    size_t len;
+    return Z3_mini_get_model_with_len(ctx, smt2, &len);
 }
 
 void Z3_mini_del_string(char *s) {

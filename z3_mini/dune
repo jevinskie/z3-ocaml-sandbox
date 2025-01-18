@@ -27,7 +27,7 @@
    (instance Type)
    (functor Type_description))
   (function_description
-   (concurrency unlocked)
+   (concurrency sequential)
    (errno_policy ignore_errno)
    (instance Function)
    (functor Function_description))
