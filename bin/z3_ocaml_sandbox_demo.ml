@@ -13,6 +13,7 @@ module StringHtbl = Hashtbl.Make (struct
 end)
 
 open Domainslib
+open Z3_mini
 
 (* Function to read file contents *)
 let read_file path =
@@ -85,3 +86,8 @@ let () =
   let _, counts = List.split results in
   let sum = List.fold_left ( + ) 0 counts in
   Printf.printf "Newlines: %d\n" sum
+
+let () =
+  let ctx = Z3_mini_ctx.mk 0 in
+  Z3_mini_ctx.del ctx;
+  Printf.printf "Newlines: %d\n" 42

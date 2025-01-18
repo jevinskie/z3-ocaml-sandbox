@@ -1,6 +1,6 @@
 open Ctypes
 
-module CGContext = struct
+module Z3_mini_ctx = struct
   include C.Type.Z3_mini_ctx
   include C.Function.Z3_mini_ctx
 

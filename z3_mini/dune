@@ -9,10 +9,18 @@
  (libraries ctypes)
  (package z3_mini)
  (ctypes
-  (external_library_name z3_mini_c)
+  (external_library_name libz3_mini)
   (build_flags_resolver
    (vendored
-    (c_flags "-I" ".")))
+    (c_flags :standard "-I" ".")
+    (c_library_flags
+     :standard
+     "-L"
+     "./z3_mini"
+     "-L"
+     "/opt/homebrew/opt/z3/lib"
+     -lz3_mini
+     -lz3)))
   (headers
    (include "z3_mini.h" "/opt/homebrew/include/z3.h"))
   (type_description
@@ -20,6 +28,7 @@
    (functor Type_description))
   (function_description
    (concurrency unlocked)
+   (errno_policy ignore_errno)
    (instance Function)
    (functor Function_description))
   (generated_types Types_generated)
