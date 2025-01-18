@@ -89,5 +89,12 @@ let () =
 
 let () =
   let ctx = Z3_mini_ctx.mk 0 in
-  Z3_mini_ctx.del ctx;
-  Printf.printf "Newlines: %d\n" 42
+  let smt2_sat = "(declare-const x Int) (assert (= x 42))" in
+  let sat = Z3_mini_ctx.check_sat ctx smt2_sat in
+  Printf.printf "smt2 sat: %d\nsmt2:%s\n" sat smt2_sat;
+  let smt2_unsat =
+    "(declare-const x Int) (assert (<= x 42)) (assert (>= x 243))"
+  in
+  let unsat = Z3_mini_ctx.check_sat ctx smt2_unsat in
+  Printf.printf "smt2 unsat: %d\nsmt2:%s\n" unsat smt2_unsat;
+  Z3_mini_ctx.del ctx
