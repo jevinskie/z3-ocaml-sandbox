@@ -1,7 +1,7 @@
 (executable
  (public_name z3_ocaml_sandbox_demo)
  (name z3_ocaml_sandbox_demo)
- (libraries domainslib z3_mini)
+ (libraries base domainslib sexplib z3_mini)
  (package z3_ocaml_sandbox))
 
 (env

@@ -25,7 +25,7 @@
  (name z3_ocaml_sandbox)
  (synopsis "Z3 OCaml sandbox")
  (description "Z3 OCaml sandbox")
- (depends ocaml dune domainslib))
+ (depends ocaml dune base domainslib sexplib))
 
 (package
  (name z3_mini)
