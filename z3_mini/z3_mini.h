@@ -9,7 +9,8 @@ HEDLEY_BEGIN_C_DECLS
 typedef enum Z3_mini_lbool {
     Z3_MINI_L_FALSE = -1,
     Z3_MINI_L_UNDEF,
-    Z3_MINI_L_TRUE
+    Z3_MINI_L_TRUE,
+    Z3_MINI_L_UNINIT,
 } Z3_mini_lbool;
 
 struct Z3_mini_ctx_impl;

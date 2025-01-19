@@ -18,10 +18,15 @@ module Z3_mini_ctx = struct
     string_from_ptr model_cstr_ptr ~length
 
   let lbool_to_string lb =
-    match lb with False -> "False" | Undef -> "Undef" | True -> "True"
+    match lb with
+    | False -> "False"
+    | Undef -> "Undef"
+    | True -> "True"
+    | Uninit -> "Uninit"
 
   let pp_lbool fmt = function
     | False -> Format.fprintf fmt "False"
     | Undef -> Format.fprintf fmt "Undef"
     | True -> Format.fprintf fmt "True"
+    | Uninit -> Format.fprintf fmt "Uninit"
 end
