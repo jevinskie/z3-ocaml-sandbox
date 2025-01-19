@@ -44,14 +44,20 @@ module FileMap = struct
   let pp ppf values =
     Hashtbl.iteri values ~f:(fun ~key ~data ->
         Format.fprintf ppf "@[<1>%s: %s@]@." key data)
-  (* let pp ppf values =
-          Hashtbl.iteri values ~f:(fun ~key ~data ->
-              Format.fprintf ppf "foo") *)
 end
 
 open Domainslib
 open Z3_mini
 module Z3 = Z3_mini_ctx
+
+let pp_path_content_pair ppf (path, content) =
+  Format.fprintf ppf "@[path: \"%s\" content: \"%s\"@]@." path content
+
+let pp_path_content_list ppf path_content_list =
+  path_content_list
+  |> List.iteri (fun i path_content_pair ->
+         Format.fprintf ppf "@[%d: %a@]@." i pp_path_content_pair
+           path_content_pair)
 
 (* Function to read file contents *)
 let read_file path =
@@ -124,8 +130,12 @@ let do_test ctx =
   Format.printf "smt2 unsat: %a\nsmt2:%s\n" Z3.pp_lbool unsat smt2_unsat
 
 let () = Z3.with_z3_context true do_test
-let parse_test ctx file_map = Format.printf "file_map: %a\n" FileMap.pp file_map
-(* let parse_test ctx file_map = Format.printf "file_map: N/A\n" *)
+
+let parse_test ctx file_map chunk_size num_domains =
+  Format.printf "checking SMT sat with chunk_size: %d and num_domins: %d\n"
+    chunk_size num_domains;
+  Format.printf "file_map: %a\n" FileMap.pp file_map;
+  Format.printf "done\n"
 
 let () =
   if Array.length Sys.argv < 3 then (
@@ -154,8 +164,10 @@ let () =
   (* Step 3: Print results *)
   let _, counts = List.split results in
   let sum = List.fold_left ( + ) 0 counts in
-  Printf.printf "Newlines: %d\n" sum
+  Printf.printf "Newlines: %d\n" sum;
 
-(* Step 4: check SMT *)
-(* let parse_test_with_files ctx = parse_test ctx results in
-  Z3.with_z3_context false parse_test_with_files *)
+  (* Step 4: check SMT *)
+  let parse_test_with_files ctx =
+    parse_test ctx file_map chunk_size num_domains
+  in
+  Z3.with_z3_context false parse_test_with_files
