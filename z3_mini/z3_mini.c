@@ -78,6 +78,7 @@ const char *Z3_mini_get_model_with_len(Z3_mini_ctx ctx, const char *smt2, size_t
     assert(len);
     const char *model_str = Z3_mini_get_model(ctx, smt2);
     if (!model_str) {
+        *len = 0;
         return NULL;
     }
     *len = strlen(model_str);
