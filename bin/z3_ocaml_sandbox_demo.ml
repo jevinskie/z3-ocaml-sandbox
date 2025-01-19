@@ -92,17 +92,27 @@ let () =
   let ctx = Z3.mk true in
   let smt2_sat = "(declare-const x Int) (assert (= x 42))" in
   let sat = Z3.check_sat ctx smt2_sat in
-  let () =
-    Printf.printf "smt2 sat: %s\nsmt2:%s\n" (Z3.lbool_to_string sat) smt2_sat
-  in
+  Printf.printf "smt2 sat: %s\nsmt2:%s\n" (Z3.lbool_to_string sat) smt2_sat;
   let model = Z3.get_model ctx smt2_sat in
-  let () = Printf.printf "smt2 model: %s\n%!" model in
+  Printf.printf "smt2 model: %s\n%!" model;
   let smt2_unsat =
     "(declare-const x Int) (assert (<= x 42)) (assert (>= x 243))"
   in
   let unsat = Z3.check_sat ctx smt2_unsat in
-  let () =
-    Printf.printf "smt2 unsat: %s\nsmt2:%s\n" (Z3.lbool_to_string unsat)
-      smt2_unsat
-  in
+  Printf.printf "smt2 unsat: %s\nsmt2:%s\n" (Z3.lbool_to_string unsat)
+    smt2_unsat;
   Z3.del ctx
+
+let do_test ctx =
+  let smt2_sat = "(declare-const x Int) (assert (= x 42))" in
+  let sat = Z3.check_sat ctx smt2_sat in
+  Format.printf "smt2 sat: %a\nsmt2:%s\n" Z3.pp_lbool sat smt2_sat;
+  let model = Z3.get_model ctx smt2_sat in
+  Format.printf "smt2 model: %s\n%!" model;
+  let smt2_unsat =
+    "(declare-const x Int) (assert (<= x 42)) (assert (>= x 243))"
+  in
+  let unsat = Z3.check_sat ctx smt2_unsat in
+  Format.printf "smt2 unsat: %a\nsmt2:%s\n" Z3.pp_lbool unsat smt2_unsat
+
+let () = Z3.with_z3_context true do_test
