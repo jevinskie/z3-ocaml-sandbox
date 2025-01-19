@@ -1,16 +1,10 @@
+open Domainslib
+open Z3_mini
+module Z3 = Z3_mini_ctx
+
 module Hashtbl = struct
   include Base.Hashtbl
 end
-
-(* module Hashtbl = struct
-  include Base.Hashtbl
-
-  let pp pp_key pp_value ppf  values =
-    Base.Hashtbl.iteri values ~f:(fun ~key ~data ->
-      Format.fprintf ppf "@[<1>%a: %a@]@." pp_key key pp_value data)
-end *)
-
-type sexp_elem = Atom | List
 
 module Sexp = Sexplib.Sexp
 
@@ -46,9 +40,13 @@ module FileMap = struct
         Format.fprintf ppf "@[<1>%s: %s@]@." key data)
 end
 
-open Domainslib
-open Z3_mini
-module Z3 = Z3_mini_ctx
+module FileSmtMap = struct
+  type t = (FileMappingPath.t, Z3_mini_ctx.lbool) Hashtbl.t
+
+  let pp ppf values =
+    Hashtbl.iteri values ~f:(fun ~key ~data ->
+        Format.fprintf ppf "@[<1>%s: %a@]@." key Z3.pp_lbool data)
+end
 
 let pp_path_content_pair ppf (path, content) =
   Format.fprintf ppf "@[path: \"%s\" content: \"%s\"@]@." path content
@@ -135,6 +133,26 @@ let parse_test ctx file_map chunk_size num_domains =
   Format.printf "checking SMT sat with chunk_size: %d and num_domins: %d\n"
     chunk_size num_domains;
   Format.printf "file_map: %a\n" FileMap.pp file_map;
+  let total_files = Hashtbl.length file_map in
+  let pool = Domainslib.Task.setup_pool ~num_domains () in
+
+  (* Convert file_map to an array for indexed access *)
+  let files_list = Hashtbl.keys file_map in
+  let files = files_list |> Array.of_list in
+  let res = Hashtbl.create (module FileMappingPath) in
+  files_list |> List.iter (fun key -> Hashtbl.set res ~key ~data:Z3.Uninit);
+
+  (* Use parallel_for_reduce to process files in parallel *)
+  let results =
+    Domainslib.Task.run pool (fun () ->
+        Domainslib.Task.parallel_for_reduce pool ( @ ) [] ~chunk_size ~start:0
+          ~finish:(total_files - 1) ~body:(fun i ->
+            let key = Array.get files i in
+            let content = Hashtbl.find_exn file_map key in
+            [ (key, count_newlines content) ]))
+  in
+  Domainslib.Task.teardown_pool pool;
+  Format.printf "@[res: %a@]@.\n" FileSmtMap.pp res;
   Format.printf "done\n"
 
 let () =
