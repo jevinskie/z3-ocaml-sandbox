@@ -6,6 +6,10 @@
 
 (generate_opam_files true)
 
+(implicit_transitive_deps false)
+
+(map_workspace_root false)
+
 (source
  (github jevinskie/z3_ocaml_sandbox))
 
@@ -27,4 +31,4 @@
  (name z3_mini)
  (synopsis "Z3 Mini")
  (description "Z3 Mini")
- (depends ocaml dune ctypes))
+ (depends ocaml dune ctypes integers))
