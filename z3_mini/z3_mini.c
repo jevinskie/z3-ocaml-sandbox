@@ -57,7 +57,7 @@ Z3_mini_lbool Z3_mini_check_sat(Z3_mini_ctx ctx, const char *smt2) {
     assert(ctx && smt2);
     Z3_solver_reset(ctx->ctx, ctx->solver);
     Z3_solver_from_string(ctx->ctx, ctx->solver, smt2);
-    return Z3_solver_check(ctx->ctx, ctx->solver);
+    return (Z3_mini_lbool)Z3_solver_check(ctx->ctx, ctx->solver);
 }
 
 const char *Z3_mini_get_model(Z3_mini_ctx ctx, const char *smt2) {
