@@ -22,7 +22,7 @@ module Functions (F : Ctypes.FOREIGN) = struct
       foreign "Z3_mini_get_model_with_len"
         (t @-> string @-> ptr size_t @-> returning (ptr (const char)))
 
-    let get_model =
+    let get_model_raw =
       foreign "Z3_mini_get_model" (t @-> string @-> returning string)
   end
 end
