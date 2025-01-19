@@ -62,16 +62,16 @@ Z3_mini_lbool Z3_mini_check_sat(Z3_mini_ctx ctx, const char *smt2) {
 
 const char *Z3_mini_get_model(Z3_mini_ctx ctx, const char *smt2) {
     Z3_mini_lbool sat = Z3_mini_check_sat(ctx, smt2);
-    if (sat == Z3_MINI_L_TRUE) {
-        Z3_model model = Z3_solver_get_model(ctx->ctx, ctx->solver);
-        assert(model);
-        Z3_model_inc_ref(ctx->ctx, model);
-        const char *model_str = Z3_model_to_string(ctx->ctx, model);
-        assert(model_str);
-        Z3_model_dec_ref(ctx->ctx, model);
-        return model_str;
+    if (sat != Z3_MINI_L_TRUE) {
+        return NULL;
     }
-    return NULL;
+    Z3_model model = Z3_solver_get_model(ctx->ctx, ctx->solver);
+    assert(model);
+    Z3_model_inc_ref(ctx->ctx, model);
+    const char *model_str = Z3_model_to_string(ctx->ctx, model);
+    assert(model_str);
+    Z3_model_dec_ref(ctx->ctx, model);
+    return model_str;
 }
 
 const char *Z3_mini_get_model_with_len(Z3_mini_ctx ctx, const char *smt2, size_t *len) {
