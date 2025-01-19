@@ -14,6 +14,7 @@ end)
 
 open Domainslib
 open Z3_mini
+module Z3 = Z3_mini_ctx
 
 (* Function to read file contents *)
 let read_file path =
@@ -88,16 +89,20 @@ let () =
   Printf.printf "Newlines: %d\n" sum
 
 let () =
-  let ctx = Z3_mini_ctx.mk 1 in
+  let ctx = Z3.mk true in
   let smt2_sat = "(declare-const x Int) (assert (= x 42))" in
-  (* let sat = Z3_mini_ctx.check_sat ctx smt2_sat in
-  let () = Printf.printf "smt2 sat: %d\nsmt2:%s\n" sat smt2_sat in *)
-  let model = Z3_mini_ctx.get_model_new ctx smt2_sat in
-  let () = Printf.printf "smt2 model: %s\n" model in
-  let () = Out_channel.flush Out_channel.stdout in
-  (* let smt2_unsat =
+  let sat = Z3.check_sat ctx smt2_sat in
+  let () =
+    Printf.printf "smt2 sat: %s\nsmt2:%s\n" (Z3.lbool_to_string sat) smt2_sat
+  in
+  let model = Z3.get_model ctx smt2_sat in
+  let () = Printf.printf "smt2 model: %s\n%!" model in
+  let smt2_unsat =
     "(declare-const x Int) (assert (<= x 42)) (assert (>= x 243))"
   in
-  let unsat = Z3_mini_ctx.check_sat ctx smt2_unsat in
-  let () = Printf.printf "smt2 unsat: %d\nsmt2:%s\n" unsat smt2_unsat in *)
-  Z3_mini_ctx.del ctx
+  let unsat = Z3.check_sat ctx smt2_unsat in
+  let () =
+    Printf.printf "smt2 unsat: %s\nsmt2:%s\n" (Z3.lbool_to_string unsat)
+      smt2_unsat
+  in
+  Z3.del ctx

@@ -12,17 +12,17 @@ module Functions (F : Ctypes.FOREIGN) = struct
   module Z3_mini_ctx = struct
     include Z3_mini_ctx (* from Types *)
 
-    let mk = foreign "Z3_mini_mk_context" (int @-> returning t)
+    let mk = foreign "Z3_mini_mk_context" (bool @-> returning t)
     let del = foreign "Z3_mini_del_context" (t @-> returning void)
-    let check_sat = foreign "Z3_mini_check_sat" (t @-> string @-> returning int)
+
+    let check_sat =
+      foreign "Z3_mini_check_sat" (t @-> string @-> returning lbool)
 
     let get_model_with_len =
       foreign "Z3_mini_get_model_with_len"
-        (t @-> string @-> ptr size_t @-> returning (ptr char))
+        (t @-> string @-> ptr size_t @-> returning (ptr (const char)))
 
     let get_model =
       foreign "Z3_mini_get_model" (t @-> string @-> returning string)
-
-    let del_string = foreign "Z3_mini_del_string" (ptr char @-> returning void)
   end
 end

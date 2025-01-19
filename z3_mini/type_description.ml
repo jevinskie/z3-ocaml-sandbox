@@ -1,5 +1,6 @@
+open Ctypes
+
 module Types (F : Ctypes.TYPE) = struct
-  open Ctypes
   open F
 
   module Z3_mini_ctx : sig
@@ -11,4 +12,14 @@ module Types (F : Ctypes.TYPE) = struct
 
     let t : t typ = typedef (ptr void) "Z3_mini_ctx"
   end
+
+  let lbool_false = constant "Z3_MINI_L_FALSE" int64_t
+  let lbool_undef = constant "Z3_MINI_L_UNDEF" int64_t
+  let lbool_true = constant "Z3_MINI_L_TRUE" int64_t
+
+  type lbool = False | Undef | True
+
+  let lbool =
+    enum "Z3_mini_lbool"
+      [ (False, lbool_false); (Undef, lbool_undef); (True, lbool_true) ]
 end
