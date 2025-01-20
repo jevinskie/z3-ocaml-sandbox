@@ -16,6 +16,8 @@ typedef enum Z3_mini_lbool {
 struct Z3_mini_ctx_impl;
 typedef struct Z3_mini_ctx_impl *Z3_mini_ctx;
 
+extern HEDLEY_PUBLIC Z3_mini_ctx Z3_mini_ctx_nil;
+
 extern HEDLEY_PUBLIC Z3_mini_ctx Z3_mini_init_context(Z3_mini_ctx ctx, bool model);
 extern HEDLEY_PUBLIC Z3_mini_ctx Z3_mini_mk_context(bool model);
 extern HEDLEY_PUBLIC void Z3_mini_deinit_context(Z3_mini_ctx ctx);

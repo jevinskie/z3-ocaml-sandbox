@@ -57,6 +57,9 @@ let pp_path_content_list ppf path_content_list =
          Format.fprintf ppf "@[%d: %a@]@." i pp_path_content_pair
            path_content_pair)
 
+(* let dls_make_key do_model = Domain.DLS.new_key (fun () -> Z3.mk do_model) *)
+let dls_make_key = Domain.DLS.new_key (fun () -> Z3.mk false)
+
 (* Function to read file contents *)
 let read_file path =
   let ic = open_in path in
@@ -100,7 +103,7 @@ let parallel_count_newlines file_map chunk_size num_domains =
   results
 
 (* Main program *)
-let () =
+let baby_test () =
   let ctx = Z3.mk true in
   let smt2_sat = "(declare-const x Int) (assert (= x 42))" in
   let sat = Z3.check_sat ctx smt2_sat in
@@ -115,6 +118,8 @@ let () =
     smt2_unsat;
   Z3.del ctx
 
+(* let () = baby_test *)
+
 let do_test ctx =
   let smt2_sat = "(declare-const x Int) (assert (= x 42))" in
   let sat = Z3.check_sat ctx smt2_sat in
@@ -127,32 +132,45 @@ let do_test ctx =
   let unsat = Z3.check_sat ctx smt2_unsat in
   Format.printf "smt2 unsat: %a\nsmt2:%s\n" Z3.pp_lbool unsat smt2_unsat
 
-let () = Z3.with_z3_context true do_test
+(* let () = Z3.with_z3_context true do_test *)
 
-let parse_test ctx file_map chunk_size num_domains =
-  Format.printf "checking SMT sat with chunk_size: %d and num_domins: %d\n"
-    chunk_size num_domains;
-  Format.printf "file_map: %a\n" FileMap.pp file_map;
+let parse_test file_map chunk_size num_domains =
+  Format.printf
+    "checking SMT sat for %d programs with chunk_size: %d and num_domins: %d\n"
+    (Hashtbl.length file_map) chunk_size num_domains;
+  (* Format.printf "file_map: %a\n" FileMap.pp file_map; *)
   let total_files = Hashtbl.length file_map in
-  let pool = Domainslib.Task.setup_pool ~num_domains () in
+  let pool = Domainslib.Task.setup_pool ~name:"z3-check-sat" ~num_domains () in
 
   (* Convert file_map to an array for indexed access *)
-  let files_list = Hashtbl.keys file_map in
-  let files = files_list |> Array.of_list in
-  let res = Hashtbl.create (module FileMappingPath) in
-  files_list |> List.iter (fun key -> Hashtbl.set res ~key ~data:Z3.Uninit);
+  (* let files_list = Hashtbl.keys file_map in *)
+  (* let files = files_list |> Array.of_list in *)
+  let blobs_list = Hashtbl.data file_map in
+  let blobs = blobs_list |> Array.of_list in
+  let num_smt2 = Array.length blobs in
+  (* let res = Hashtbl.create (module FileMappingPath) in
+  files_list |> List.iter (fun key -> Hashtbl.set res ~key ~data:Z3.Uninit); *)
+  let res = Array.make num_smt2 Z3.Uninit in
 
   (* Use parallel_for_reduce to process files in parallel *)
-  let results =
-    Domainslib.Task.run pool (fun () ->
-        Domainslib.Task.parallel_for_reduce pool ( @ ) [] ~chunk_size ~start:0
-          ~finish:(total_files - 1) ~body:(fun i ->
-            let key = Array.get files i in
-            let content = Hashtbl.find_exn file_map key in
-            [ (key, count_newlines content) ]))
-  in
+  Domainslib.Task.run pool (fun () ->
+      Domainslib.Task.parallel_for pool ~chunk_size ~start:0
+        ~finish:(total_files - 1) ~body:(fun i ->
+          let ctx = Domain.DLS.get dls_make_key in
+          (* let path = Array.get files i in *)
+          let blob = Array.get blobs i in
+          let sat = Z3.check_sat ctx blob in
+          (* Hashtbl.set res ~key:path ~data:sat; *)
+          res.(i) <- sat));
   Domainslib.Task.teardown_pool pool;
-  Format.printf "@[res: %a@]@.\n" FileSmtMap.pp res;
+  (* Format.printf "@[res: %a@]@.\n" FileSmtMap.pp res; *)
+  Format.printf "num smt2: %d\n" num_smt2;
+  let num_sat =
+    Array.fold_left
+      (fun acc a -> match a with Z3.True -> acc + 1 | _ -> acc)
+      0 res
+  in
+  Format.printf "num  sat: %d\n" num_sat;
   Format.printf "done\n"
 
 let () =
@@ -174,8 +192,10 @@ let () =
   (* Step 1: Collect files into a map *)
   let file_map = Hashtbl.create (module FileMappingPath) in
   collect_files_as_map root_dir file_map;
-  Format.printf "file_map: %a\n" FileMap.pp file_map;
 
+  (* Format.printf "file_map: %a\n" FileMap.pp file_map; *)
+
+  (*
   (* Step 2: Parallelize newline counting *)
   let results = parallel_count_newlines file_map chunk_size num_domains in
 
@@ -183,9 +203,7 @@ let () =
   let _, counts = List.split results in
   let sum = List.fold_left ( + ) 0 counts in
   Printf.printf "Newlines: %d\n" sum;
+  *)
 
   (* Step 4: check SMT *)
-  let parse_test_with_files ctx =
-    parse_test ctx file_map chunk_size num_domains
-  in
-  Z3.with_z3_context false parse_test_with_files
+  parse_test file_map chunk_size num_domains

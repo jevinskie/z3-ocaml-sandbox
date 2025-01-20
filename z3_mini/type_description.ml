@@ -1,4 +1,6 @@
 open Ctypes
+open Ctypes_static
+open Ctypes_ptr
 
 module Types (F : Ctypes.TYPE) = struct
   open F
@@ -13,6 +15,7 @@ module Types (F : Ctypes.TYPE) = struct
     let t : t typ = typedef (ptr void) "Z3_mini_ctx"
   end
 
+  let nil : unit ptr = CPointer (Fat.make ~managed:None ~reftyp:Void Raw.null)
   let lbool_false = constant "Z3_MINI_L_FALSE" int64_t
   let lbool_undef = constant "Z3_MINI_L_UNDEF" int64_t
   let lbool_true = constant "Z3_MINI_L_TRUE" int64_t

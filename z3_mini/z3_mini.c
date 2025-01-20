@@ -12,6 +12,8 @@ struct Z3_mini_ctx_impl {
     Z3_solver solver;
 };
 
+Z3_mini_ctx Z3_mini_ctx_nil = (Z3_mini_ctx)NULL;
+
 Z3_mini_ctx Z3_mini_init_context(Z3_mini_ctx ctx, bool model) {
     assert(ctx);
     Z3_config cfg = Z3_mk_config();
