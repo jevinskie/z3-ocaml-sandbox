@@ -133,36 +133,93 @@ let do_test ctx =
 
 (* let () = Z3.with_z3_context true do_test *)
 
-let parse_test file_map chunk_size num_domains =
+let z3_mini_parse_test file_map chunk_size num_domains =
   Format.printf
-    "checking SMT sat for %d programs with chunk_size: %d and num_domins: %d\n"
+    "Z3_mini checking SMT sat for %d programs with chunk_size: %d and \
+     num_domins: %d\n"
     (Hashtbl.length file_map) chunk_size num_domains;
-  (* Format.printf "file_map: %a\n" FileMap.pp file_map; *)
   let total_files = Hashtbl.length file_map in
   let pool = Domainslib.Task.setup_pool ~name:"z3-check-sat" ~num_domains () in
 
-  (* Convert file_map to an array for indexed access *)
-  (* let files_list = Hashtbl.keys file_map in *)
-  (* let files = files_list |> Array.of_list in *)
+  (* prep inputs *)
   let blobs_list = Hashtbl.data file_map in
   let blobs = blobs_list |> Array.of_list in
   let num_smt2 = Array.length blobs in
-  (* let res = Hashtbl.create (module FileMappingPath) in
-  files_list |> List.iter (fun key -> Hashtbl.set res ~key ~data:Z3.Uninit); *)
   let res = Array.make num_smt2 Z3.Uninit in
 
-  (* Use parallel_for_reduce to process files in parallel *)
+  (* Use parallel_for to process files in parallel *)
   Domainslib.Task.run pool (fun () ->
       Domainslib.Task.parallel_for pool ~chunk_size ~start:0
         ~finish:(total_files - 1) ~body:(fun i ->
           let ctx = Domain.DLS.get dls_make_key in
-          (* let path = Array.get files i in *)
           let blob = Array.get blobs i in
           let sat = Z3.check_sat ctx blob in
-          (* Hashtbl.set res ~key:path ~data:sat; *)
           res.(i) <- sat));
   Domainslib.Task.teardown_pool pool;
-  (* Format.printf "@[res: %a@]@.\n" FileSmtMap.pp res; *)
+  Format.printf "num smt2: %d\n" num_smt2;
+  let num_sat =
+    Array.fold_left
+      (fun acc a -> match a with Z3.True -> acc + 1 | _ -> acc)
+      0 res
+  in
+  Format.printf "num  sat: %d\n" num_sat;
+  Format.printf "done\n"
+
+let z3_subproc_shell_parse_test file_map chunk_size num_domains =
+  Format.printf
+    "Z3 subproc shell checking SMT sat for %d programs with chunk_size: %d and \
+     num_domins: %d\n"
+    (Hashtbl.length file_map) chunk_size num_domains;
+  let total_files = Hashtbl.length file_map in
+  let pool = Domainslib.Task.setup_pool ~name:"z3-check-sat" ~num_domains () in
+
+  (* prep inputs *)
+  let blobs_list = Hashtbl.data file_map in
+  let blobs = blobs_list |> Array.of_list in
+  let num_smt2 = Array.length blobs in
+  let res = Array.make num_smt2 Z3.Uninit in
+
+  (* Use parallel_for to process files in parallel *)
+  Domainslib.Task.run pool (fun () ->
+      Domainslib.Task.parallel_for pool ~chunk_size ~start:0
+        ~finish:(total_files - 1) ~body:(fun i ->
+          let ctx = Domain.DLS.get dls_make_key in
+          let blob = Array.get blobs i in
+          let sat = Z3.check_sat ctx blob in
+          res.(i) <- sat));
+  Domainslib.Task.teardown_pool pool;
+  Format.printf "num smt2: %d\n" num_smt2;
+  let num_sat =
+    Array.fold_left
+      (fun acc a -> match a with Z3.True -> acc + 1 | _ -> acc)
+      0 res
+  in
+  Format.printf "num  sat: %d\n" num_sat;
+  Format.printf "done\n"
+
+let z3_subproc_noshell_parse_test file_map chunk_size num_domains =
+  Format.printf
+    "Z3 subproc noshell checking SMT sat for %d programs with chunk_size: %d \
+     and num_domins: %d\n"
+    (Hashtbl.length file_map) chunk_size num_domains;
+  let total_files = Hashtbl.length file_map in
+  let pool = Domainslib.Task.setup_pool ~name:"z3-check-sat" ~num_domains () in
+
+  (* prep inputs *)
+  let blobs_list = Hashtbl.data file_map in
+  let blobs = blobs_list |> Array.of_list in
+  let num_smt2 = Array.length blobs in
+  let res = Array.make num_smt2 Z3.Uninit in
+
+  (* Use parallel_for to process files in parallel *)
+  Domainslib.Task.run pool (fun () ->
+      Domainslib.Task.parallel_for pool ~chunk_size ~start:0
+        ~finish:(total_files - 1) ~body:(fun i ->
+          let ctx = Domain.DLS.get dls_make_key in
+          let blob = Array.get blobs i in
+          let sat = Z3.check_sat ctx blob in
+          res.(i) <- sat));
+  Domainslib.Task.teardown_pool pool;
   Format.printf "num smt2: %d\n" num_smt2;
   let num_sat =
     Array.fold_left
@@ -182,7 +239,8 @@ let main =
   let root_dir = Sys.argv.(1) in
   let chunk_size = int_of_string Sys.argv.(2) in
   let num_domains =
-    if Array.length Sys.argv > 3 then int_of_string Sys.argv.(3) else 4
+    if Array.length Sys.argv > 3 then int_of_string Sys.argv.(3)
+    else Domain.recommended_domain_count ()
   in
 
   if not (Sys.file_exists root_dir && Sys.is_directory root_dir) then (
@@ -191,7 +249,9 @@ let main =
 
   (* Step 1: Collect files into a map *)
   let file_map = Hashtbl.create (module FileMappingPath) in
+  let t = Profile.start () in
   collect_files_as_map root_dir file_map;
+  Profile.finish "reading input SMT2" t;
 
   (* Format.printf "file_map: %a\n" FileMap.pp file_map; *)
 
@@ -206,6 +266,16 @@ let main =
   *)
 
   (* Step 4: check SMT *)
-  parse_test file_map chunk_size num_domains
+  let t = Profile.start () in
+  z3_mini_parse_test file_map chunk_size num_domains;
+  Profile.finish "Parallel Z3_mini FFI test" t;
+
+  let t = Profile.start () in
+  z3_subproc_shell_parse_test file_map chunk_size num_domains;
+  Profile.finish "Z3 subproc shell test" t;
+
+  let t = Profile.start () in
+  z3_subproc_noshell_parse_test file_map chunk_size num_domains;
+  Profile.finish "Z3 subproc noshell test" t
 
 let () = main
