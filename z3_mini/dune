@@ -19,11 +19,12 @@
      "./z3_mini"
      "-L"
      "/Users/jevin/base/z3-rel/lib"
-     "-L"
-     "/opt/homebrew/opt/gmp/lib"
+     ;   "-L"
+     ;   "/opt/homebrew/opt/gmp/lib"
+     "/opt/homebrew/opt/gmp/lib/libgmp.a"
      -lz3_mini
      -lz3
-     -lgmp
+     ;   -lgmp
      -lc++abi
      -lc++
      -Wl,-rpath,

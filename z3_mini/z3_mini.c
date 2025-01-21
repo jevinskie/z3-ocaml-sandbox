@@ -21,6 +21,7 @@ Z3_mini_ctx Z3_mini_init_context(Z3_mini_ctx ctx, bool model) {
         return NULL;
     }
     Z3_set_param_value(cfg, "model", model ? "true" : "false");
+    Z3_set_param_value(cfg, "timeout", "1000");
     ctx->ctx = Z3_mk_context(cfg);
     Z3_del_config(cfg);
     if (!ctx->ctx) {

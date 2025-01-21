@@ -151,10 +151,12 @@ let z3_mini_parse_test file_map chunk_size num_domains =
   Domainslib.Task.run pool (fun () ->
       Domainslib.Task.parallel_for pool ~chunk_size ~start:0
         ~finish:(total_files - 1) ~body:(fun i ->
+          let t = Profile.start_smt () in
           let ctx = Domain.DLS.get dls_make_key in
           let blob = Array.get blobs i in
           let sat = Z3.check_sat ctx blob in
-          res.(i) <- sat));
+          res.(i) <- sat;
+          Profile.finish_smt t));
   Domainslib.Task.teardown_pool pool;
   Format.printf "num smt2: %d\n" num_smt2;
   let num_sat =
@@ -183,10 +185,12 @@ let z3_subproc_shell_parse_test file_map chunk_size num_domains =
   Domainslib.Task.run pool (fun () ->
       Domainslib.Task.parallel_for pool ~chunk_size ~start:0
         ~finish:(total_files - 1) ~body:(fun i ->
+          let t = Profile.start_smt () in
           let ctx = Domain.DLS.get dls_make_key in
           let blob = Array.get blobs i in
           let sat = Z3.check_sat ctx blob in
-          res.(i) <- sat));
+          res.(i) <- sat;
+          Profile.finish_smt t));
   Domainslib.Task.teardown_pool pool;
   Format.printf "num smt2: %d\n" num_smt2;
   let num_sat =
@@ -215,10 +219,12 @@ let z3_subproc_noshell_parse_test file_map chunk_size num_domains =
   Domainslib.Task.run pool (fun () ->
       Domainslib.Task.parallel_for pool ~chunk_size ~start:0
         ~finish:(total_files - 1) ~body:(fun i ->
+          let t = Profile.start_smt () in
           let ctx = Domain.DLS.get dls_make_key in
           let blob = Array.get blobs i in
           let sat = Z3.check_sat ctx blob in
-          res.(i) <- sat));
+          res.(i) <- sat;
+          Profile.finish_smt t));
   Domainslib.Task.teardown_pool pool;
   Format.printf "num smt2: %d\n" num_smt2;
   let num_sat =
@@ -268,8 +274,9 @@ let main =
   (* Step 4: check SMT *)
   let t = Profile.start () in
   z3_mini_parse_test file_map chunk_size num_domains;
-  Profile.finish "Parallel Z3_mini FFI test" t;
+  Profile.finish "Parallel Z3_mini FFI test" t
 
+(*
   let t = Profile.start () in
   z3_subproc_shell_parse_test file_map chunk_size num_domains;
   Profile.finish "Z3 subproc shell test" t;
@@ -277,5 +284,6 @@ let main =
   let t = Profile.start () in
   z3_subproc_noshell_parse_test file_map chunk_size num_domains;
   Profile.finish "Z3 subproc noshell test" t
+*)
 
 let () = main
