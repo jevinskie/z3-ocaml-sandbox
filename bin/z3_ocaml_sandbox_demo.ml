@@ -102,7 +102,6 @@ let parallel_count_newlines file_map chunk_size num_domains =
   Domainslib.Task.teardown_pool pool;
   results
 
-(* Main program *)
 let baby_test () =
   let ctx = Z3.mk true in
   let smt2_sat = "(declare-const x Int) (assert (= x 42))" in
@@ -173,7 +172,8 @@ let parse_test file_map chunk_size num_domains =
   Format.printf "num  sat: %d\n" num_sat;
   Format.printf "done\n"
 
-let () =
+(* Main program *)
+let main =
   if Array.length Sys.argv < 3 then (
     Printf.printf "Usage: %s <directory> <chunk_size> [num_domains]\n"
       Sys.argv.(0);
@@ -207,3 +207,5 @@ let () =
 
   (* Step 4: check SMT *)
   parse_test file_map chunk_size num_domains
+
+let () = main
