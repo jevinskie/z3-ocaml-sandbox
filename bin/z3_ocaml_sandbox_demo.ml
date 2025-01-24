@@ -59,6 +59,8 @@ let pp_path_content_list ppf path_content_list =
 
 (* let dls_make_key do_model = Domain.DLS.new_key (fun () -> Z3.mk do_model) *)
 let dls_make_key = Domain.DLS.new_key (fun () -> Z3.mk false)
+let z3_exe_check_sat (z3_bin_path : string) (no_tmp : bool) (smt2 : string) =
+  Z3.False
 
 (* Function to read file contents *)
 let read_file path =
@@ -158,100 +160,116 @@ let z3_mini_parse_test file_map chunk_size num_domains =
           res.(i) <- sat;
           Profile.finish_smt t));
   Domainslib.Task.teardown_pool pool;
-  Format.printf "num smt2: %d\n" num_smt2;
   let num_sat =
     Array.fold_left
       (fun acc a -> match a with Z3.True -> acc + 1 | _ -> acc)
       0 res
   in
-  Format.printf "num  sat: %d\n" num_sat;
-  Format.printf "done\n"
-
-let z3_subproc_shell_parse_test file_map chunk_size num_domains =
-  Format.printf
-    "Z3 subproc shell checking SMT sat for %d programs with chunk_size: %d and \
-     num_domins: %d\n"
-    (Hashtbl.length file_map) chunk_size num_domains;
-  let total_files = Hashtbl.length file_map in
-  let pool = Domainslib.Task.setup_pool ~name:"z3-check-sat" ~num_domains () in
-
-  (* prep inputs *)
-  let blobs_list = Hashtbl.data file_map in
-  let blobs = blobs_list |> Array.of_list in
-  let num_smt2 = Array.length blobs in
-  let res = Array.make num_smt2 Z3.Uninit in
-
-  (* Use parallel_for to process files in parallel *)
-  Domainslib.Task.run pool (fun () ->
-      Domainslib.Task.parallel_for pool ~chunk_size ~start:0
-        ~finish:(total_files - 1) ~body:(fun i ->
-          let t = Profile.start_smt () in
-          let ctx = Domain.DLS.get dls_make_key in
-          let blob = Array.get blobs i in
-          let sat = Z3.check_sat ctx blob in
-          res.(i) <- sat;
-          Profile.finish_smt t));
-  Domainslib.Task.teardown_pool pool;
-  Format.printf "num smt2: %d\n" num_smt2;
-  let num_sat =
+  let num_unsat =
     Array.fold_left
-      (fun acc a -> match a with Z3.True -> acc + 1 | _ -> acc)
+      (fun acc a -> match a with Z3.False -> acc + 1 | _ -> acc)
       0 res
   in
-  Format.printf "num  sat: %d\n" num_sat;
-  Format.printf "done\n"
-
-let z3_subproc_noshell_parse_test file_map chunk_size num_domains =
-  Format.printf
-    "Z3 subproc noshell checking SMT sat for %d programs with chunk_size: %d \
-     and num_domins: %d\n"
-    (Hashtbl.length file_map) chunk_size num_domains;
-  let total_files = Hashtbl.length file_map in
-  let pool = Domainslib.Task.setup_pool ~name:"z3-check-sat" ~num_domains () in
-
-  (* prep inputs *)
-  let blobs_list = Hashtbl.data file_map in
-  let blobs = blobs_list |> Array.of_list in
-  let num_smt2 = Array.length blobs in
-  let res = Array.make num_smt2 Z3.Uninit in
-
-  (* Use parallel_for to process files in parallel *)
-  Domainslib.Task.run pool (fun () ->
-      Domainslib.Task.parallel_for pool ~chunk_size ~start:0
-        ~finish:(total_files - 1) ~body:(fun i ->
-          let t = Profile.start_smt () in
-          let ctx = Domain.DLS.get dls_make_key in
-          let blob = Array.get blobs i in
-          let sat = Z3.check_sat ctx blob in
-          res.(i) <- sat;
-          Profile.finish_smt t));
-  Domainslib.Task.teardown_pool pool;
-  Format.printf "num smt2: %d\n" num_smt2;
-  let num_sat =
+  let num_undef =
     Array.fold_left
-      (fun acc a -> match a with Z3.True -> acc + 1 | _ -> acc)
+      (fun acc a -> match a with Z3.Undef -> acc + 1 | _ -> acc)
       0 res
   in
-  Format.printf "num  sat: %d\n" num_sat;
-  Format.printf "done\n"
+  Format.printf "num  sat: %d unsat: %d undef: %d\n" num_sat num_unsat num_undef;
+  ()
+
+let z3_subproc_parse_test file_map chunk_size num_domains no_shell no_tmp =
+    let z3_bin_path =
+      if no_shell then "/opt/homebrew/opt/z3/bin/z3" else "z3"
+    in
+    let shell_str = if no_shell then "noshell" else "shell" in
+    let no_tmp_str =
+      if no_shell then ""
+      else if no_tmp then " without tmp files "
+      else " with tmp files "
+    in
+    Format.printf
+      "Z3 subproc %s %schecking SMT sat for %d programs with chunk_size: %d \
+       and num_domins: %d\n"
+      shell_str no_tmp_str (Hashtbl.length file_map) chunk_size num_domains;
+    let total_files = Hashtbl.length file_map in
+    let pool =
+      Domainslib.Task.setup_pool ~name:"z3-check-sat" ~num_domains ()
+    in
+
+    (* prep inputs *)
+    let blobs_list = Hashtbl.data file_map in
+    let blobs = blobs_list |> Array.of_list in
+    let num_smt2 = Array.length blobs in
+    let res = Array.make num_smt2 Z3.Uninit in
+
+    (* Use parallel_for to process files in parallel *)
+    Domainslib.Task.run pool (fun () ->
+        Domainslib.Task.parallel_for pool ~chunk_size ~start:0
+          ~finish:(total_files - 1) ~body:(fun i ->
+            let t = Profile.start_smt () in
+            let blob = Array.get blobs i in
+            let sat = z3_exe_check_sat z3_bin_path no_tmp blob in
+            res.(i) <- sat;
+            Profile.finish_smt t));
+    Domainslib.Task.teardown_pool pool;
+    Format.printf "num smt2: %d\n" num_smt2;
+    let num_sat =
+      Array.fold_left
+        (fun acc a -> match a with Z3.True -> acc + 1 | _ -> acc)
+        0 res
+    in
+    let num_unsat =
+      Array.fold_left
+        (fun acc a -> match a with Z3.False -> acc + 1 | _ -> acc)
+        0 res
+    in
+    let num_undef =
+      Array.fold_left
+        (fun acc a -> match a with Z3.Undef -> acc + 1 | _ -> acc)
+        0 res
+    in
+    Format.printf "num  sat: %d unsat: %d undef: %d\n" num_sat num_unsat
+      num_undef;
+    Format.printf "done\n";
+  in
+  ()
+
+let z3_subproc_shell_tmp_parse_test file_map chunk_size num_domains =
+  z3_subproc_parse_test file_map chunk_size num_domains false false
+
+let z3_subproc_shell_notmp_parse_test file_map chunk_size num_domains =
+  z3_subproc_parse_test file_map chunk_size num_domains false true
+
+let z3_subproc_noshell_tmp_parse_test file_map chunk_size num_domains =
+  z3_subproc_parse_test file_map chunk_size num_domains true false
+
+let z3_subproc_noshell_notmp_parse_test file_map chunk_size num_domains =
+  z3_subproc_parse_test file_map chunk_size num_domains true true
 
 (* Main program *)
 let main =
-  if Array.length Sys.argv < 3 then (
-    Printf.printf "Usage: %s <directory> <chunk_size> [num_domains]\n"
+  if Array.length Sys.argv < 4 then (
+    Printf.printf
+      "Usage: %s <api smt2 dir> <non-api smt2 dir> <chunk_size> [num_domains]\n"
       Sys.argv.(0);
     exit 1);
 
   let root_dir = Sys.argv.(1) in
-  let chunk_size = int_of_string Sys.argv.(2) in
+  let root_non_api_dir = Sys.argv.(2) in
+  let chunk_size = int_of_string Sys.argv.(3) in
   let num_domains =
-    if Array.length Sys.argv > 3 then int_of_string Sys.argv.(3)
+    if Array.length Sys.argv > 4 then int_of_string Sys.argv.(4)
     else Domain.recommended_domain_count ()
   in
 
-  if not (Sys.file_exists root_dir && Sys.is_directory root_dir) then (
-    Printf.eprintf "Error: '%s' is not a valid directory.\n" root_dir;
-    exit 1);
+  let check_dir dir =
+    if not (Sys.file_exists dir && Sys.is_directory dir) then (
+      Printf.eprintf "Error: '%s' is not a valid directory.\n" dir;
+      exit 1)
+  in
+  check_dir root_dir;
+  check_dir root_non_api_dir;
 
   (* Step 1: Collect files into a map *)
   let file_map = Hashtbl.create (module FileMappingPath) in
@@ -274,16 +292,22 @@ let main =
   (* Step 4: check SMT *)
   let t = Profile.start () in
   z3_mini_parse_test file_map chunk_size num_domains;
-  Profile.finish "Parallel Z3_mini FFI test" t
-
-(*
-  let t = Profile.start () in
-  z3_subproc_shell_parse_test file_map chunk_size num_domains;
-  Profile.finish "Z3 subproc shell test" t;
+  Profile.finish "Z3_mini FFI test" t;
 
   let t = Profile.start () in
-  z3_subproc_noshell_parse_test file_map chunk_size num_domains;
-  Profile.finish "Z3 subproc noshell test" t
-*)
+  z3_subproc_shell_tmp_parse_test file_map chunk_size num_domains;
+  Profile.finish "z3 subproc shell tmp test" t;
+
+  let t = Profile.start () in
+  z3_subproc_shell_notmp_parse_test file_map chunk_size num_domains;
+  Profile.finish "z3 subproc shell notmp test" t;
+
+  let t = Profile.start () in
+  z3_subproc_noshell_tmp_parse_test file_map chunk_size num_domains;
+  Profile.finish "z3 subproc noshell tmp test" t;
+
+  let t = Profile.start () in
+  z3_subproc_noshell_notmp_parse_test file_map chunk_size num_domains;
+  Profile.finish "z3 subproc noshell notmp test" t
 
 let () = main

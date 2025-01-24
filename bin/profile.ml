@@ -63,9 +63,9 @@ let start_smt () =
 let finish_smt t =
   update_profile (fun p ->
       let quit_loop = ref false in
+      let delta_t = Sys.time () -. t in
       let new_t = ref Float.nan in
       while not !quit_loop do
-        let delta_t = Sys.time () -. t in
         let old_t = Atomic.get p.smt_time in
         new_t := old_t +. delta_t;
         quit_loop := Atomic.compare_and_set p.smt_time old_t !new_t
