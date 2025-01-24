@@ -60,8 +60,117 @@ let pp_path_content_list ppf path_content_list =
 (* let dls_make_key do_model = Domain.DLS.new_key (fun () -> Z3.mk do_model) *)
 let dls_make_key = Domain.DLS.new_key (fun () -> Z3.mk false)
 
+let z3_exe_check_sat_notmp (z3_bin_path : string) (smt2 : string) =
+  let rec input_lines chan = function
+    | 0 -> []
+    | n ->
+        let l = input_line chan in
+        let ls = input_lines chan (n - 1) in
+        l :: ls
+  in
+
+  let rec input_all chan =
+    match input_line chan with
+    | l -> l :: input_all chan
+    | exception End_of_file -> []
+  in
+  let status, smt_output, smt_errors =
+    try
+      let smt_out, smt_in, smt_err =
+        let cmd = z3_bin_path ^ " -in -t:1000" ^ " -in " in
+        Unix.open_process_full cmd (Unix.environment ())
+      in
+      output_string smt_in smt2;
+      close_out smt_in;
+      let problems = [ Z3.Undef ] in
+      let smt_output =
+        try List.combine problems (input_lines smt_out (List.length problems))
+        with End_of_file -> List.combine problems [ "unknown" ]
+      in
+      let smt_errors = input_all smt_err in
+      let status = Unix.close_process_full (smt_out, smt_in, smt_err) in
+      (status, smt_output, smt_errors)
+    with exn ->
+      raise (Sys_error ("Error when calling smt: " ^ Printexc.to_string exn))
+  in
+  let _ =
+    match status with
+    | Unix.WEXITED 0 -> ()
+    | Unix.WEXITED n ->
+        raise
+          (Sys_error
+             ("SMT solver returned unexpected status " ^ string_of_int n ^ "\n"
+             ^ String.concat "\n" smt_errors))
+    | Unix.WSIGNALED n | Unix.WSTOPPED n ->
+        raise (Sys_error ("SMT solver killed by signal " ^ string_of_int n))
+  in
+  try
+    let _problem, _ =
+      List.find (fun (_, result) -> result = "unsat") smt_output
+    in
+    Z3.False
+  with Not_found ->
+    let unsolved =
+      List.filter (fun (_, result) -> result = "unknown") smt_output
+    in
+    if unsolved == [] then Z3.True else Z3.Undef
+
+let z3_exe_check_sat_tmp (z3_bin_path : string) (smt2 : string) =
+  let rec input_all chan =
+    match input_line chan with
+    | l -> l :: input_all chan
+    | exception End_of_file -> []
+  in
+  let input_file, tmp_chan =
+    try Filename.open_temp_file "constraint_" ".smt2"
+    with Sys_error msg ->
+      raise (Sys_error ("Could not open temp file when calling SMT: " ^ msg))
+  in
+  output_string tmp_chan smt2;
+  close_out tmp_chan;
+  let status, smt_output, smt_errors =
+    try
+      let smt_out, smt_in, smt_err =
+        let cmd = z3_bin_path ^ " -t:1000 " ^ input_file in
+        Unix.open_process_full cmd (Unix.environment ())
+      in
+      let problems = [ Z3.Undef ] in
+      let smt_output =
+        try List.combine problems (input_all smt_out)
+        with End_of_file -> List.combine problems [ "unknown" ]
+      in
+      let smt_errors = input_all smt_err in
+      let status = Unix.close_process_full (smt_out, smt_in, smt_err) in
+      (status, smt_output, smt_errors)
+    with exn ->
+      raise (Sys_error ("Error when calling smt: " ^ Printexc.to_string exn))
+  in
+  let _ =
+    match status with
+    | Unix.WEXITED 0 -> ()
+    | Unix.WEXITED n ->
+        raise
+          (Sys_error
+             ("SMT solver returned unexpected status " ^ string_of_int n ^ "\n"
+             ^ String.concat "\n" smt_errors))
+    | Unix.WSIGNALED n | Unix.WSTOPPED n ->
+        raise (Sys_error ("SMT solver killed by signal " ^ string_of_int n))
+  in
+  Sys.remove input_file;
+  try
+    let _problem, _ =
+      List.find (fun (_, result) -> result = "unsat") smt_output
+    in
+    Z3.False
+  with Not_found ->
+    let unsolved =
+      List.filter (fun (_, result) -> result = "unknown") smt_output
+    in
+    if unsolved == [] then Z3.True else Z3.Undef
+
 let z3_exe_check_sat (z3_bin_path : string) (no_tmp : bool) (smt2 : string) =
-  Z3.False
+  if no_tmp then z3_exe_check_sat_notmp z3_bin_path smt2
+  else z3_exe_check_sat_tmp z3_bin_path smt2
 
 (* Function to read file contents *)
 let read_file path =
@@ -183,9 +292,7 @@ let z3_subproc_parse_test file_map chunk_size num_domains no_shell no_tmp =
   let z3_bin_path = if no_shell then "/opt/homebrew/opt/z3/bin/z3" else "z3" in
   let shell_str = if no_shell then "noshell" else "shell" in
   let no_tmp_str =
-    if no_shell then ""
-    else if no_tmp then " without tmp files "
-    else " with tmp files "
+    if no_tmp then " without tmp files " else " with tmp files "
   in
   Format.printf
     "Z3 subproc %s %schecking SMT sat for %d programs with chunk_size: %d and \
@@ -271,6 +378,11 @@ let main =
   collect_files_as_map root_dir file_map;
   Profile.finish "reading input SMT2" t;
 
+  let file_map_subproc = Hashtbl.create (module FileMappingPath) in
+  let t = Profile.start () in
+  collect_files_as_map root_non_api_dir file_map_subproc;
+  Profile.finish "reading input SMT2 subproc" t;
+
   (* Format.printf "file_map: %a\n" FileMap.pp file_map; *)
 
   (*
@@ -289,19 +401,19 @@ let main =
   Profile.finish "Z3_mini FFI test" t;
 
   let t = Profile.start () in
-  z3_subproc_shell_tmp_parse_test file_map chunk_size num_domains;
+  z3_subproc_shell_tmp_parse_test file_map_subproc chunk_size num_domains;
   Profile.finish "z3 subproc shell tmp test" t;
 
   let t = Profile.start () in
-  z3_subproc_shell_notmp_parse_test file_map chunk_size num_domains;
+  z3_subproc_shell_notmp_parse_test file_map_subproc chunk_size num_domains;
   Profile.finish "z3 subproc shell notmp test" t;
 
   let t = Profile.start () in
-  z3_subproc_noshell_tmp_parse_test file_map chunk_size num_domains;
+  z3_subproc_noshell_tmp_parse_test file_map_subproc chunk_size num_domains;
   Profile.finish "z3 subproc noshell tmp test" t;
 
   let t = Profile.start () in
-  z3_subproc_noshell_notmp_parse_test file_map chunk_size num_domains;
+  z3_subproc_noshell_notmp_parse_test file_map_subproc chunk_size num_domains;
   Profile.finish "z3 subproc noshell notmp test" t
 
 let () = main
