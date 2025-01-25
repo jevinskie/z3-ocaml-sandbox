@@ -18,6 +18,13 @@ module Functions (F : Ctypes.FOREIGN) = struct
     let check_sat =
       foreign "Z3_mini_check_sat" (t @-> string @-> returning lbool)
 
+    let check_sat_reset_push_pop =
+      foreign "Z3_mini_check_sat_reset_push_pop"
+        (t @-> string @-> returning lbool)
+
+    let check_sat_reset_push =
+      foreign "Z3_mini_check_sat_reset_push" (t @-> string @-> returning lbool)
+
     let get_model_with_len =
       foreign "Z3_mini_get_model_with_len"
         (t @-> string @-> ptr size_t @-> returning (ptr (const char)))

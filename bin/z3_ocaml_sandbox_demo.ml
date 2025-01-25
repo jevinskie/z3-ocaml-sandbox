@@ -245,7 +245,7 @@ let do_test ctx =
 
 (* let () = Z3.with_z3_context true do_test *)
 
-let z3_mini_parse_test file_map chunk_size num_domains =
+let z3_mini_parse_test smt_check_fn file_map chunk_size num_domains =
   Format.printf
     "Z3_mini checking SMT sat for %d programs with chunk_size: %d and \
      num_domins: %d\n"
@@ -266,7 +266,7 @@ let z3_mini_parse_test file_map chunk_size num_domains =
           let t = Profile.start_smt () in
           let ctx = Domain.DLS.get dls_make_key in
           let blob = Array.get blobs i in
-          let sat = Z3.check_sat ctx blob in
+          let sat = smt_check_fn ctx blob in
           res.(i) <- sat;
           Profile.finish_smt t));
   Domainslib.Task.teardown_pool pool;
@@ -396,24 +396,32 @@ let main =
   *)
 
   (* Step 4: check SMT *)
-  let t = Profile.start () in
-  z3_mini_parse_test file_map chunk_size num_domains;
-  Profile.finish "Z3_mini FFI test" t;
-
-  let t = Profile.start () in
+  let p = Profile.start () in
   z3_subproc_shell_tmp_parse_test file_map_subproc chunk_size num_domains;
-  Profile.finish "z3 subproc shell tmp test" t;
+  Profile.finish "z3 subproc shell tmp test" p;
 
-  let t = Profile.start () in
+  let p = Profile.start () in
   z3_subproc_shell_notmp_parse_test file_map_subproc chunk_size num_domains;
-  Profile.finish "z3 subproc shell notmp test" t;
+  Profile.finish "z3 subproc shell notmp test" p;
 
-  let t = Profile.start () in
+  let p = Profile.start () in
   z3_subproc_noshell_tmp_parse_test file_map_subproc chunk_size num_domains;
-  Profile.finish "z3 subproc noshell tmp test" t;
+  Profile.finish "z3 subproc noshell tmp test" p;
 
-  let t = Profile.start () in
+  let p = Profile.start () in
   z3_subproc_noshell_notmp_parse_test file_map_subproc chunk_size num_domains;
-  Profile.finish "z3 subproc noshell notmp test" t
+  Profile.finish "z3 subproc noshell notmp test" p;
+
+  let p = Profile.start () in
+  z3_mini_parse_test Z3.check_sat file_map chunk_size num_domains;
+  Profile.finish "Z3_mini FFI test check_sat" p;
+
+  let p = Profile.start () in
+  z3_mini_parse_test Z3.check_sat_reset_push_pop file_map chunk_size num_domains;
+  Profile.finish "Z3_mini FFI test check_sat_reset_push_pop" p;
+
+  let p = Profile.start () in
+  z3_mini_parse_test Z3.check_sat_reset_push file_map chunk_size num_domains;
+  Profile.finish "Z3_mini FFI test check_sat_reset_push" p
 
 let () = main

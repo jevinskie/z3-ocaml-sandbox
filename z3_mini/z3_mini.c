@@ -63,6 +63,24 @@ Z3_mini_lbool Z3_mini_check_sat(Z3_mini_ctx ctx, const char *smt2) {
     return (Z3_mini_lbool)Z3_solver_check(ctx->ctx, ctx->solver);
 }
 
+Z3_mini_lbool Z3_mini_check_sat_reset_push_pop(Z3_mini_ctx ctx, const char *smt2) {
+    assert(ctx && smt2);
+    Z3_solver_reset(ctx->ctx, ctx->solver);
+    Z3_solver_push(ctx->ctx, ctx->solver);
+    Z3_solver_from_string(ctx->ctx, ctx->solver, smt2);
+    Z3_mini_lbool res = (Z3_mini_lbool)Z3_solver_check(ctx->ctx, ctx->solver);
+    Z3_solver_pop(ctx->ctx, ctx->solver, 1);
+    return res;
+}
+
+Z3_mini_lbool Z3_mini_check_sat_reset_push(Z3_mini_ctx ctx, const char *smt2) {
+    assert(ctx && smt2);
+    Z3_solver_reset(ctx->ctx, ctx->solver);
+    Z3_solver_push(ctx->ctx, ctx->solver);
+    Z3_solver_from_string(ctx->ctx, ctx->solver, smt2);
+    return (Z3_mini_lbool)Z3_solver_check(ctx->ctx, ctx->solver);
+}
+
 const char *Z3_mini_get_model(Z3_mini_ctx ctx, const char *smt2) {
     Z3_mini_lbool sat = Z3_mini_check_sat(ctx, smt2);
     if (sat != Z3_MINI_L_TRUE) {

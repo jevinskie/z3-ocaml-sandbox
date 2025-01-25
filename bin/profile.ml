@@ -55,7 +55,7 @@ type profile = {
   smt_wtime : float Atomic.t;
 }
 
-let new_profile =
+let new_profile () =
   {
     smt_calls = Atomic.make 0;
     smt_utime = Atomic.make 0.0;
@@ -70,7 +70,7 @@ let profile_stack = ref []
 let update_profile f =
   match !profile_stack with [] -> () | p :: ps -> profile_stack := f p :: ps
 
-let start_smt () =
+let start_smt () : Unix.process_times * float =
   update_profile (fun p ->
       Atomic.incr p.smt_calls;
       { p with smt_calls = p.smt_calls });
@@ -122,7 +122,7 @@ let finish_smt ((t : Unix.process_times), (wt : float)) =
       p)
 
 let start () =
-  profile_stack := new_profile :: !profile_stack;
+  profile_stack := [ new_profile () ];
   Unix.gettimeofday ()
 
 let finish (msg : string) (wt : float) =
