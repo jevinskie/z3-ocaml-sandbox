@@ -52,6 +52,7 @@ type profile = {
   smt_stime : float Atomic.t;
   smt_cutime : float Atomic.t;
   smt_cstime : float Atomic.t;
+  smt_wtime : float Atomic.t;
 }
 
 let new_profile =
@@ -61,6 +62,7 @@ let new_profile =
     smt_stime = Atomic.make 0.0;
     smt_cutime = Atomic.make 0.0;
     smt_cstime = Atomic.make 0.0;
+    smt_wtime = Atomic.make 0.0;
   }
 
 let profile_stack = ref []
@@ -72,19 +74,20 @@ let start_smt () =
   update_profile (fun p ->
       Atomic.incr p.smt_calls;
       { p with smt_calls = p.smt_calls });
-  Unix.times ()
+  (Unix.times (), Unix.gettimeofday ())
 
-let finish_smt (t : Unix.process_times) =
+let finish_smt ((t : Unix.process_times), (wt : float)) =
   update_profile (fun p ->
       let ut, st, cut, cst =
         (t.tms_utime, t.tms_stime, t.tms_cutime, t.tms_cstime)
       in
+      let nwt = Unix.gettimeofday () in
       let nt = Unix.times () in
       let nut, nst, ncut, ncst =
         (nt.tms_utime, nt.tms_stime, nt.tms_cutime, nt.tms_cstime)
       in
-      let dut, dst, dcut, dcst =
-        (nut -. ut, nst -. st, ncut -. cut, ncst -. cst)
+      let dut, dst, dcut, dcst, dwt =
+        (nut -. ut, nst -. st, ncut -. cut, ncst -. cst, nwt -. wt)
       in
       let quit_loop = ref false in
       while not !quit_loop do
@@ -110,13 +113,19 @@ let finish_smt (t : Unix.process_times) =
         let new_t = old_t +. dcst in
         quit_loop := Atomic.compare_and_set p.smt_cstime old_t new_t
       done;
+      quit_loop := false;
+      while not !quit_loop do
+        let old_t = Atomic.get p.smt_wtime in
+        let new_t = old_t +. dwt in
+        quit_loop := Atomic.compare_and_set p.smt_wtime old_t new_t
+      done;
       p)
 
 let start () =
   profile_stack := new_profile :: !profile_stack;
-  Sys.time ()
+  Unix.gettimeofday ()
 
-let finish msg t =
+let finish (msg : string) (wt : float) =
   let open Printf in
   if !opt_profile then
     let depth = 2 * (List.length !profile_stack - 1) in
@@ -128,13 +137,13 @@ let finish msg t =
           else ""
         in
         (* Note ksprintf prerr_endline flushes unlike eprintf so the profiling output occurs immediately *)
-        ksprintf prerr_endline "%s%s %s: %fs" indent "Profiled" msg
-          (Sys.time () -. t);
+        ksprintf prerr_endline "%s%s %s: %f s" indent "Profiled" msg
+          (Unix.gettimeofday () -. wt);
         ksprintf prerr_endline
           "%s  SMT calls: %d, SMT utime: %f s stime: %f s cutime: %f s cstime: \
-           %f s"
+           %f s wtime: %f s"
           indent (Atomic.get p.smt_calls) (Atomic.get p.smt_utime)
           (Atomic.get p.smt_stime) (Atomic.get p.smt_cutime)
-          (Atomic.get p.smt_cstime);
+          (Atomic.get p.smt_cstime) (Atomic.get p.smt_wtime);
         profile_stack := ps
     | [] -> ()
