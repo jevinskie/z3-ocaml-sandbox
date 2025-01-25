@@ -12,6 +12,12 @@ module Functions (F : Ctypes.FOREIGN) = struct
   module Z3_mini_ctx = struct
     include Z3_mini_ctx (* from Types *)
 
+    let set_thread_priority_11 =
+      foreign "Z3_mini_set_thread_priority_11" (void @-> returning void)
+
+    let set_thread_priority_10 =
+      foreign "Z3_mini_set_thread_priority_10" (void @-> returning void)
+
     let mk = foreign "Z3_mini_mk_context" (bool @-> returning t)
     let del = foreign "Z3_mini_del_context" (t @-> returning void)
 

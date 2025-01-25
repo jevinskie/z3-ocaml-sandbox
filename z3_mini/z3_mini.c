@@ -1,9 +1,12 @@
 #include "z3_mini.h"
 
+#undef NDEBUG
 #include <assert.h>
+#include <pthread/qos.h>
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/qos.h>
 
 #include <z3.h>
 
@@ -104,4 +107,12 @@ const char *Z3_mini_get_model_with_len(Z3_mini_ctx ctx, const char *smt2, size_t
     }
     *len = strlen(model_str);
     return model_str;
+}
+
+void Z3_mini_set_thread_priority_11(void) {
+    assert(!pthread_set_qos_class_self_np(QOS_CLASS_USER_INTERACTIVE, 0));
+}
+
+void Z3_mini_set_thread_priority_10(void) {
+    assert(!pthread_set_qos_class_self_np(QOS_CLASS_USER_INITIATED, 0));
 }

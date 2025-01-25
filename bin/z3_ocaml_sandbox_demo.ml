@@ -57,8 +57,10 @@ let pp_path_content_list ppf path_content_list =
          Format.fprintf ppf "@[%d: %a@]@." i pp_path_content_pair
            path_content_pair)
 
-(* let dls_make_key do_model = Domain.DLS.new_key (fun () -> Z3.mk do_model) *)
-let dls_make_key = Domain.DLS.new_key (fun () -> Z3.mk false)
+let dls_make_key =
+  Domain.DLS.new_key (fun () ->
+      Z3.set_thread_priority_10 ();
+      Z3.mk false)
 
 let z3_exe_check_sat_notmp (z3_bin_path : string) (smt2 : string) =
   let rec input_lines chan = function
@@ -356,6 +358,8 @@ let main =
       Sys.argv.(0);
     exit 1);
 
+  Z3.set_thread_priority_11 ();
+
   let root_dir = Sys.argv.(1) in
   let root_non_api_dir = Sys.argv.(2) in
   let chunk_size = int_of_string Sys.argv.(3) in
@@ -417,11 +421,11 @@ let main =
   Profile.finish "Z3_mini FFI test check_sat" p;
 
   let p = Profile.start () in
-  z3_mini_parse_test Z3.check_sat_reset_push_pop file_map chunk_size num_domains;
-  Profile.finish "Z3_mini FFI test check_sat_reset_push_pop" p;
+  z3_mini_parse_test Z3.check_sat_reset_push file_map chunk_size num_domains;
+  Profile.finish "Z3_mini FFI test check_sat_reset_push" p;
 
   let p = Profile.start () in
-  z3_mini_parse_test Z3.check_sat_reset_push file_map chunk_size num_domains;
-  Profile.finish "Z3_mini FFI test check_sat_reset_push" p
+  z3_mini_parse_test Z3.check_sat_reset_push_pop file_map chunk_size num_domains;
+  Profile.finish "Z3_mini FFI test check_sat_reset_push_pop" p
 
 let () = main
