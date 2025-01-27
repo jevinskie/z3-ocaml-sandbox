@@ -1,0 +1,43 @@
+[submodule "3rdparty/thread-pool"]
+	path = 3rdparty/thread-pool
+	url = https://github.com/bshoshany/thread-pool
+[submodule "3rdparty/fmt"]
+	path = 3rdparty/fmt
+	url = https://github.com/fmtlib/fmt
+[submodule "3rdparty/z3"]
+	path = 3rdparty/z3
+	url = https://github.com/Z3Prover/z3
+[submodule "3rdparty/kissat"]
+	path = 3rdparty/kissat
+	url = https://github.com/arminbiere/kissat
+[submodule "3rdparty/cryptominisat"]
+	path = 3rdparty/cryptominisat
+	url = https://github.com/msoos/cryptominisat
+[submodule "3rdparty/cadical"]
+	path = 3rdparty/cadical
+	url = https://github.com/arminbiere/cadical
+[submodule "3rdparty/bitwuzla"]
+	path = 3rdparty/bitwuzla
+	url = https://github.com/bitwuzla/bitwuzla
+[submodule "3rdparty/smt-switch"]
+	path = 3rdparty/smt-switch
+	url = https://github.com/stanford-centaur/smt-switch
+[submodule "3rdparty/yices2"]
+	path = 3rdparty/yices2
+	url = https://github.com/SRI-CSL/yices2
+[submodule "3rdparty/symfpu"]
+	path = 3rdparty/symfpu
+	url = https://github.com/cvc5/symfpu
+	branch = cvc5
+[submodule "3rdparty/libpoly"]
+	path = 3rdparty/libpoly
+	url = https://github.com/SRI-CSL/libpoly
+[submodule "3rdparty/cudd"]
+	path = 3rdparty/cudd
+	url = https://github.com/SSoelvsten/cudd
+[submodule "3rdparty/sha-2"]
+	path = 3rdparty/sha-2
+	url = https://github.com/martynafford/sha-2
+[submodule "3rdparty/pgbar"]
+	path = 3rdparty/pgbar
+	url = https://github.com/Konvt/pgbar

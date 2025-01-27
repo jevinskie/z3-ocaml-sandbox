@@ -24,12 +24,5 @@ set(FAST_LDFLAGS ${FAST_CXXFLAGS})
 # add_compile_options(-O0 -glldb)
 # add_link_options(-O0 -glldb)
 
-include(FetchContent)
-
-FetchContent_Declare(
-  fmt
-  GIT_REPOSITORY https://github.com/fmtlib/fmt
-  GIT_BRANCH     master)
-FetchContent_MakeAvailable(fmt)
-
+add_subdirectory(3rdparty)
 add_subdirectory(tools)
