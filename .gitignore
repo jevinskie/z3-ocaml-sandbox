@@ -1,6 +1,8 @@
 /bindings
 /bindings-oneshot
 
+/build*/
+
 *.annot
 *.cmo
 *.cma
