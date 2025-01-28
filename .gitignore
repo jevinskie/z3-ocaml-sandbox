@@ -12,12 +12,18 @@
 *.cmx
 *.cmxs
 *.cmxa
+*.opam
+*.exe
+*.s
+*.i
+*.ii
+*.ll
+*.bc
+*.asm
+*.S
 
 # Apple DWARF
 **/*.dSYM/
-
-# build artifacts
-*.o
 
 # ocamlbuild working directory
 _build/
@@ -38,3 +44,8 @@ setup.log
 
 # Local OPAM switch
 _opam/
+
+# z3
+.z3-trace
+
+*.log

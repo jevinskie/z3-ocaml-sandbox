@@ -41,3 +41,9 @@
 [submodule "3rdparty/pgbar"]
 	path = 3rdparty/pgbar
 	url = https://github.com/Konvt/pgbar
+[submodule "3rdparty/mimalloc"]
+	path = 3rdparty/mimalloc
+	url = https://github.com/microsoft/mimalloc
+[submodule "3rdparty/folly"]
+	path = 3rdparty/folly
+	url = https://github.com/facebook/folly

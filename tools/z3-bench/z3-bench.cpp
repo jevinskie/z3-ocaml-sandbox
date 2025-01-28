@@ -28,43 +28,6 @@ typedef enum Z3_mini_lbool {
     Z3_MINI_L_UNINIT,
 } Z3_mini_lbool;
 
-class mmaped_file {
-public:
-    mmaped_file(const fs::path &path);
-    ~mmaped_file();
-    const char *data() const noexcept {
-        return reinterpret_cast<const char *>(m_mapping);
-    }
-    size_t size() const noexcept {
-        return m_size;
-    }
-    std::span<const char> span() const noexcept {
-        return std::span<const char>(data(), data() + size());
-    }
-
-private:
-    const void *m_mapping{nullptr};
-    size_t m_size{0};
-};
-
-mmaped_file::mmaped_file(const fs::path &path) {
-    const auto fd = ::open(path.c_str(), O_RDONLY);
-    assert(fd >= 0);
-    struct stat st;
-    assert(!::fstat(fd, &st));
-    const auto sz = static_cast<size_t>(st.st_size);
-    if (sz) {
-        m_mapping = ::mmap(nullptr, sz, PROT_READ, MAP_PRIVATE, fd, 0);
-    }
-    assert(!::close(fd));
-    m_size = sz;
-}
-mmaped_file::~mmaped_file() {
-    if (size()) {
-        assert(!::munmap(const_cast<char *>(data()), size()));
-    }
-}
-
 static std::vector<char> slurp_file(const fs::path &path) {
     const auto fd = ::open(path.c_str(), O_RDONLY);
     assert(fd >= 0);
@@ -91,10 +54,9 @@ static void set_thread_priority_10(void) {
 
 // Thread-safe function to search a file and print matches
 // FIXME: why was this noinline from the other junk code I copied it from?
+// maybe for stack traces for profiling
 [[gnu::noinline]] void read_smt2(const fs::path &smt2_path, std::atomic<size_t> &num_files,
                                  std::vector<std::vector<char>> &blobs, std::mutex &blobs_mutex) {
-    // auto file          = mmaped_file{smt2_path};
-    // const auto content = std::vector<char>{file.data(), file.data() + file.size()};
     auto content = slurp_file(smt2_path);
     {
         std::lock_guard lock{blobs_mutex};
