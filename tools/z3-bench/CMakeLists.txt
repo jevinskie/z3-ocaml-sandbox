@@ -1,4 +1,4 @@
-add_executable(z3-bench z3-bench.cpp)
+add_executable(z3-bench z3-bench.cpp sexpr.cpp sexpr.h)
 target_compile_options(z3-bench PRIVATE ${FAST_CXXFLAGS})
 target_link_options(z3-bench PRIVATE ${FAST_LDFLAGS})
 target_link_libraries(z3-bench PRIVATE fmt::fmt folly thread-pool sha2 libz3)
