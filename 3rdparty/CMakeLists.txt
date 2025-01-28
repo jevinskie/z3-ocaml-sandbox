@@ -1,6 +1,9 @@
 add_library(thread-pool INTERFACE)
 target_include_directories(thread-pool INTERFACE thread-pool/include)
 
+add_library(sha2 INTERFACE)
+target_include_directories(sha2 INTERFACE sha-2-scoped-include)
+
 set(FMT_DOC OFF)
 set(FMT_TEST OFF)
 add_subdirectory(fmt)
