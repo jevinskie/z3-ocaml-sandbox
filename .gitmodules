@@ -47,3 +47,16 @@
 [submodule "3rdparty/folly"]
 	path = 3rdparty/folly
 	url = https://github.com/facebook/folly
+[submodule "3rdparty/abseil-cpp"]
+	path = 3rdparty/abseil-cpp
+	url = https://github.com/abseil/abseil-cpp
+[submodule "3rdparty/minisat"]
+	path = 3rdparty/minisat
+	url = https://github.com/LLVMParty/minisat
+	branch = modern-package
+[submodule "3rdparty/stp"]
+	path = 3rdparty/stp
+	url = https://github.com/stp/stp
+[submodule "3rdparty/picosat"]
+	path = 3rdparty/picosat
+	url = https://github.com/msoos/picosat

@@ -6,6 +6,7 @@
 #include <cstring>
 #include <filesystem>
 #include <limits>
+#include <memory>
 #include <mutex>
 #include <pthread/qos.h>
 #include <span>
@@ -15,12 +16,16 @@
 #include <sys/stat.h>
 #include <type_traits>
 #include <unistd.h>
-#include <vector>
 
 #include <BS_thread_pool.hpp>
 #include <fmt/format.h>
+#include <folly/FBString.h>
+#include <folly/FBVector.h>
 #include <sha2/sha2.hpp>
 #include <z3.h>
+
+template <class T, class Allocator = std::allocator<T>> using vector_t = folly::fbvector<T, Allocator>;
+using string_t                                                         = folly::fbstring;
 
 #define INLINE [[gnu::always_inline]]
 
@@ -191,8 +196,8 @@ static char nibble_to_ascii_hex(const uint8_t chr) {
     }
 }
 
-static std::string to_string(const sha2::sha256_hash &h) {
-    std::string ds;
+static string_t to_fbstring(const sha2::sha256_hash &h) {
+    string_t ds;
     ds.resize(2 * 256 / 8);
     for (size_t i = 0; i < sizeof(h); ++i) {
         ds[2 * i]     = nibble_to_ascii_hex((h[i] >> 4) & 0xF);
@@ -201,7 +206,7 @@ static std::string to_string(const sha2::sha256_hash &h) {
     return ds;
 }
 
-static std::vector<char> slurp_file(const fs::path &path) {
+static vector_t<char> slurp_file(const fs::path &path) {
     const auto fd = ::open(path.c_str(), O_RDONLY);
     assert(fd >= 0);
     struct stat st;
@@ -211,7 +216,7 @@ static std::vector<char> slurp_file(const fs::path &path) {
         assert(!::close(fd));
         return {};
     }
-    auto res = std::vector<char>(sz);
+    auto res = vector_t<char>(sz);
     assert(sz == ::read(fd, res.data(), res.size()));
     assert(!::close(fd));
     return res;
@@ -229,7 +234,7 @@ static void set_thread_priority_10(void) {
 // FIXME: why was this noinline from the other junk code I copied it from?
 // maybe for stack traces for profiling
 [[gnu::noinline]] void read_smt2(const fs::path &smt2_path, std::atomic<size_t> &num_files,
-                                 std::vector<std::vector<char>> &blobs, std::mutex &blobs_mutex) {
+                                 vector_t<vector_t<char>> &blobs, std::mutex &blobs_mutex) {
     auto content = slurp_file(smt2_path);
     {
         std::lock_guard lock{blobs_mutex};
@@ -240,7 +245,7 @@ static void set_thread_priority_10(void) {
 
 // Function to recursively search files using thread pool
 template <BS::opt_t OptFlags>
-void search_directory(const fs::path &root, std::atomic<size_t> &num_files, std::vector<std::vector<char>> &blobs,
+void search_directory(const fs::path &root, std::atomic<size_t> &num_files, vector_t<vector_t<char>> &blobs,
                       std::mutex &blobs_mutex, BS::thread_pool<OptFlags> &pool) {
     for (const auto &entry : std::filesystem::recursive_directory_iterator(root)) {
         if (entry.is_regular_file()) {
@@ -264,7 +269,7 @@ int main(int argc, const char **argv) {
     const auto dir_path = fs::path{argv[1]};
     std::atomic<size_t> num_files{0};
     std::mutex blobs_mutex;
-    std::vector<std::vector<char>> blobs;
+    vector_t<vector_t<char>> blobs;
     BS::thread_pool tp;
     search_directory(dir_path, num_files, blobs, blobs_mutex, tp);
     tp.wait();
