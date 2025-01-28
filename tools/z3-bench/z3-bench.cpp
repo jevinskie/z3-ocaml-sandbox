@@ -1,13 +1,17 @@
 #undef NDEBUG
 #include <cassert>
+
+#include <atomic>
 #include <cstdint>
 #include <cstring>
 #include <filesystem>
+#include <mutex>
 #include <pthread/qos.h>
 #include <span>
 #include <sys/fcntl.h>
 #include <sys/mman.h>
 #include <sys/qos.h>
+#include <sys/stat.h>
 #include <unistd.h>
 #include <vector>
 
@@ -17,18 +21,25 @@ namespace fs = std::filesystem;
 #include <fmt/format.h>
 #include <z3.h>
 
+typedef enum Z3_mini_lbool {
+    Z3_MINI_L_FALSE = -1,
+    Z3_MINI_L_UNDEF,
+    Z3_MINI_L_TRUE,
+    Z3_MINI_L_UNINIT,
+} Z3_mini_lbool;
+
 class mmaped_file {
 public:
     mmaped_file(const fs::path &path);
     ~mmaped_file();
-    const uint8_t *data() const noexcept {
-        return reinterpret_cast<const uint8_t *>(m_mapping);
+    const char *data() const noexcept {
+        return reinterpret_cast<const char *>(m_mapping);
     }
     size_t size() const noexcept {
         return m_size;
     }
-    std::span<const uint8_t> span() const noexcept {
-        return std::span<const uint8_t>(data(), data() + size());
+    std::span<const char> span() const noexcept {
+        return std::span<const char>(data(), data() + size());
     }
 
 private:
@@ -37,20 +48,37 @@ private:
 };
 
 mmaped_file::mmaped_file(const fs::path &path) {
-    const auto fd = open(path.c_str(), O_RDONLY);
+    const auto fd = ::open(path.c_str(), O_RDONLY);
     assert(fd >= 0);
-    const auto st = fstat(fd);
+    struct stat st;
+    assert(!::fstat(fd, &st));
     const auto sz = static_cast<size_t>(st.st_size);
     if (sz) {
-        m_mapping = checked_mmap(nullptr, sz, PROT_READ, MAP_PRIVATE, fd, 0);
+        m_mapping = ::mmap(nullptr, sz, PROT_READ, MAP_PRIVATE, fd, 0);
     }
-    checked_close(fd);
+    assert(!::close(fd));
     m_size = sz;
 }
 mmaped_file::~mmaped_file() {
     if (size()) {
-        checked_munmap(data(), size());
+        assert(!::munmap(const_cast<char *>(data()), size()));
     }
+}
+
+static std::vector<char> slurp_file(const fs::path &path) {
+    const auto fd = ::open(path.c_str(), O_RDONLY);
+    assert(fd >= 0);
+    struct stat st;
+    assert(!::fstat(fd, &st));
+    const auto sz = static_cast<size_t>(st.st_size);
+    if (!sz) {
+        assert(!::close(fd));
+        return {};
+    }
+    auto res = std::vector<char>(sz);
+    assert(sz == ::read(fd, res.data(), res.size()));
+    assert(!::close(fd));
+    return res;
 }
 
 static void set_thread_priority_11(void) {
@@ -62,27 +90,31 @@ static void set_thread_priority_10(void) {
 }
 
 // Thread-safe function to search a file and print matches
-[[gnu::noinline]] Z3_lbool check_sat(const fs::path &smt2_path) {
-    auto file          = mmaped_file{file_path};
-    const auto matches = find_immediate_in_binary(file.span(), imm16, aligned_32, elf_only);
-    if (!matches.empty()) {
-        num_matches += matches.size();
-        std::lock_guard lock(print_mutex);
-        fmt::print("Matches in file: {:g}\n", file_path);
-        for (const auto off : matches) {
-            fmt::print("Offset: {:#x}\n", off);
-        }
+// FIXME: why was this noinline from the other junk code I copied it from?
+[[gnu::noinline]] void read_smt2(const fs::path &smt2_path, std::atomic<size_t> &num_files,
+                                 std::vector<std::vector<char>> &blobs, std::mutex &blobs_mutex) {
+    // auto file          = mmaped_file{smt2_path};
+    // const auto content = std::vector<char>{file.data(), file.data() + file.size()};
+    auto content = slurp_file(smt2_path);
+    {
+        std::lock_guard lock{blobs_mutex};
+        blobs.push_back(content);
     }
+    ++num_files;
 }
 
 // Function to recursively search files using thread pool
-void search_directory(const fs::path &root, const uint16_t imm16, const bool aligned_32, const bool elf_only,
-                      std::atomic<size_t> &num_matches, BS::thread_pool &pool, std::mutex &print_mutex) {
+template <BS::opt_t OptFlags>
+void search_directory(const fs::path &root, std::atomic<size_t> &num_files, std::vector<std::vector<char>> &blobs,
+                      std::mutex &blobs_mutex, BS::thread_pool<OptFlags> &pool) {
     for (const auto &entry : std::filesystem::recursive_directory_iterator(root)) {
         if (entry.is_regular_file()) {
-            const auto file_path = entry.path();
-            pool.detach_task([file_path, imm16, aligned_32, elf_only, &num_matches, &print_mutex] {
-                search_file(file_path, imm16, aligned_32, elf_only, num_matches, print_mutex);
+            const auto smt2_path = entry.path();
+            if (!smt2_path.string().ends_with(".smt2")) {
+                continue;
+            }
+            pool.detach_task([smt2_path, &num_files, &blobs, &blobs_mutex] {
+                read_smt2(smt2_path, num_files, blobs, blobs_mutex);
             });
         }
     }
@@ -94,5 +126,13 @@ int main(int argc, const char **argv) {
         return -1;
     }
     set_thread_priority_11();
+    const auto dir_path = fs::path{argv[1]};
+    std::atomic<size_t> num_files{0};
+    std::mutex blobs_mutex;
+    std::vector<std::vector<char>> blobs;
+    BS::thread_pool tp;
+    search_directory(dir_path, num_files, blobs, blobs_mutex, tp);
+    tp.wait();
+    fmt::print("num .smt2 files: {:d}\n", num_files.load());
     return 0;
 }
