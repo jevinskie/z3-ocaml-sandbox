@@ -271,7 +271,7 @@ int main(int argc, const char **argv) {
         fmt::print(stderr, "usage: z3-bench <path to directory with .stm2 files>\n");
         return -1;
     }
-    sv.set_thread_priority_11();
+    set_thread_priority_11();
     const auto dir_path = fs::path{argv[1]};
     std::atomic<size_t> num_files{0};
     std::mutex blobs_mutex;

@@ -60,3 +60,12 @@
 [submodule "3rdparty/picosat"]
 	path = 3rdparty/picosat
 	url = https://github.com/msoos/picosat
+[submodule "3rdparty/glucose"]
+	path = 3rdparty/glucose
+	url = https://github.com/audemard/glucose
+[submodule "3rdparty/lingeling"]
+	path = 3rdparty/lingeling
+	url = https://github.com/arminbiere/lingeling
+[submodule "3rdparty/gmp"]
+	path = 3rdparty/gmp
+	url = https://github.com/gmp-mirror/gmp
