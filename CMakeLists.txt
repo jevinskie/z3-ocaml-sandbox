@@ -3,6 +3,7 @@ cmake_policy(SET CMP0077 NEW)
 
 project(z3-sandbox C CXX) # need C for e.g. CMAKE_C_COMPILER to work
 
+message(STATUS "CMAKE_MODULE_PATH: ${CMAKE_MODULE_PATH}")
 
 set(SMTFUN_ROOT "${CMAKE_CURRENT_SOURCE_DIR}")
 list(PREPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
@@ -37,6 +38,17 @@ else()
     set(LIB_EXT ${CMAKE_STATIC_LIBRARY_SUFFIX})
     set(LIB_TYPE_CMAKE STATIC)
 endif()
+
+set(BUILD_AS_SUBPROJECT GMP)
+
+macro(find_package)
+    if(NOT ${ARGV0} IN_LIST BUILD_AS_SUBPROJECT)
+        _find_package(${ARGV})
+    endif()
+endmacro()
+
+macro(cmake_minimum_required)
+endmacro()
 
 set(FAST_CISH_FLAGS -O3)
 set(FAST_CFLAGS ${FAST_CISH_FLAGS} ${COLOR_DIAGS} -fvectorize -flto=full -fvisibility=hidden -fvisibility-inlines-hidden -fvisibility-inlines-hidden-static-local-var -fdata-sections -ffunction-sections -march=native)

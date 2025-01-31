@@ -1,5 +1,6 @@
 include(gmp.cmake)
 include(fmt.cmake)
+include(boost.cmake)
 include(folly.cmake)
 include(sha2.cmake)
 include(thread-pool.cmake)

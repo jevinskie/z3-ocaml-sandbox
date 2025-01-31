@@ -71,10 +71,14 @@ target_link_libraries(GMP INTERFACE
 set_target_properties(GMP PROPERTIES
     IMPORTED_LOCATION "${CMAKE_CURRENT_BINARY_DIR}/gmp-prefix/lib/libgmp${LIB_EXT}"
     INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_BINARY_DIR}/gmp-prefix/include"
-    IMPORTED_LINK_INTERFACE_LANGUAGES "C"  # Or "CXX" for C++
+#    IMPORTED_LINK_INTERFACE_LANGUAGES "C"  # Or "CXX" for C++
 )
 
 add_dependencies(GMP gmp_ext)
 add_library(GMP::GMP ALIAS GMP)
 
 set(GMP_FOUND ON)
+set(GMP_INCLUDE_DIRS "${CMAKE_CURRENT_BINARY_DIR}/gmp-prefix/include")
+
+get_target_property(X GMP INTERFACE_INCLUDE_DIRECTORIES)
+message(STATUS "gmp: ${X}")
