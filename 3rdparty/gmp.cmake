@@ -59,26 +59,34 @@ ExternalProject_Add(gmp_ext
 # )
 
 
-add_library(GMP ${LIB_TYPE_CMAKE} IMPORTED)
-target_include_directories(GMP INTERFACE
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/gmp-prefix/include>
-    $<INSTALL_INTERFACE:include>
-)
-target_link_libraries(GMP INTERFACE
-    $<BUILD_INTERFACE:"${CMAKE_CURRENT_BINARY_DIR}/gmp-prefix/lib/libgmp${LIB_EXT}">
-    $<INSTALL_INTERFACE:"lib/libgmp${LIB_EXT}">
-)
-set_target_properties(GMP PROPERTIES
-    IMPORTED_LOCATION "${CMAKE_CURRENT_BINARY_DIR}/gmp-prefix/lib/libgmp${LIB_EXT}"
-    INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_BINARY_DIR}/gmp-prefix/include"
-#    IMPORTED_LINK_INTERFACE_LANGUAGES "C"  # Or "CXX" for C++
-)
+add_library(GMP::GMP UNKNOWN IMPORTED)
+# target_include_directories(GMP INTERFACE
+#     $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/gmp-prefix/include>
+#     $<INSTALL_INTERFACE:include>
+# )
+# target_link_libraries(GMP::GMP INTERFACE
+#     $<BUILD_INTERFACE:"${CMAKE_CURRENT_BINARY_DIR}/gmp-prefix/lib/libgmp${LIB_EXT}">
+#     $<INSTALL_INTERFACE:"lib/libgmp${LIB_EXT}">
+# )
+# set_target_properties(GMP::GMP PROPERTIES
+#     IMPORTED_LOCATION "${CMAKE_CURRENT_BINARY_DIR}/gmp-prefix/lib/libgmp${LIB_EXT}"
+#     INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_BINARY_DIR}/gmp-prefix/include"
+# #    IMPORTED_LINK_INTERFACE_LANGUAGES "C"  # Or "CXX" for C++
+# )
 
-add_dependencies(GMP gmp_ext)
-add_library(GMP::GMP ALIAS GMP)
+add_dependencies(GMP::GMP gmp_ext_build ${CMAKE_CURRENT_BINARY_DIR}/gmp-prefix/lib/libgmp.a ${CMAKE_CURRENT_BINARY_DIR}/gmp-prefix/include/gmp.h)
+add_library(GMP ALIAS GMP::GMP)
 
 set(GMP_FOUND ON)
-set(GMP_INCLUDE_DIRS "${CMAKE_CURRENT_BINARY_DIR}/gmp-prefix/include")
+set(GMP_C_INCLUDES "${CMAKE_CURRENT_BINARY_DIR}/gmp-prefix/include")
+set(GMP_CXX_INCLUDES "${CMAKE_CURRENT_BINARY_DIR}/gmp-prefix/include")
+set(GMP_INCLUDE_DIRS "${GMP_C_INCLUDES}" "${GMP_CXX_INCLUDES}")
+set(GMP_C_LIBRARIES "${CMAKE_CURRENT_BINARY_DIR}/gmp-prefix/lib/libgmp.a")
+set(GMP_CXX_LIBRARIES "${CMAKE_CURRENT_BINARY_DIR}/gmp-prefix/lib/libgmpxx.a")
+list(REMOVE_DUPLICATES GMP_INCLUDE_DIRS)
+set_target_properties(GMP::GMP PROPERTIES
+    INTERFACE_INCLUDE_DIRECTORIES "${GMP_C_INCLUDES}"
+    IMPORTED_LOCATION "${GMP_C_LIBRARIES}")
 
 get_target_property(X GMP INTERFACE_INCLUDE_DIRECTORIES)
 message(STATUS "gmp: ${X}")

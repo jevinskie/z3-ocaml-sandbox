@@ -3,6 +3,7 @@ set(Z3_SINGLE_THREADED ON)
 set(Z3_POLLING_TIMER OFF) # TODO: test
 set(Z3_BUILD_LIBZ3_SHARED ${BUILD_SHARED_LIBS})
 set(Z3_BUILD_EXECUTABLE OFF)
+set(Z3_COMPONENT_EXTRA_INCLUDE_DIRS "${Z3_COMPONENT_EXTRA_INCLUDE_DIRS};${GMP_INC_DIRS}")
 add_subdirectory(z3)
 # target_include_directories(libz3 PUBLIC "${CMAKE_CURRENT_BINARY_DIR}/z3/src/api")
 set_target_properties(libz3 PROPERTIES EXCLUDE_FROM_ALL ON)
@@ -12,6 +13,7 @@ target_include_directories(libz3 INTERFACE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/gmp-prefix/include>
     $<INSTALL_INTERFACE:include>
 )
+get_target_property(GMP_INC_DIRS GMP INTERFACE_INCLUDE_DIRECTORIES)
 add_custom_target(genexdebug COMMAND ${CMAKE_COMMAND} -E echo "$<TARGET_PROPERTY:GMP,INTERFACE_INCLUDE_DIRECTORIES>")
 add_custom_target(genexdebug2 COMMAND ${CMAKE_COMMAND} -E echo "$<TARGET_PROPERTY:GMP,INCLUDE_DIRECTORIES>")
 
