@@ -1,3 +1,4 @@
+include(gmp.cmake)
 include(fmt.cmake)
 include(folly.cmake)
 include(sha2.cmake)

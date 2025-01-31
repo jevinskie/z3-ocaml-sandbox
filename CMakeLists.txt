@@ -1,6 +1,13 @@
 cmake_minimum_required(VERSION 3.31)
+cmake_policy(SET CMP0077 NEW)
 
-project(z3-sandbox CXX)
+project(z3-sandbox C CXX) # need C for e.g. CMAKE_C_COMPILER to work
+
+
+set(SMTFUN_ROOT "${CMAKE_CURRENT_SOURCE_DIR}")
+list(PREPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+
+include(ExternalProject)
 
 option(FORCE_COLORED_OUTPUT "Always produce ANSI-colored output (GNU/Clang only)." ON)
 
@@ -14,7 +21,22 @@ if (${FORCE_COLORED_OUTPUT})
     endif ()
 endif ()
 
+cmake_host_system_information(RESULT NCPUS
+                              QUERY NUMBER_OF_LOGICAL_CORES)
+
 set(BUILD_SHARED_LIBS OFF)
+
+if(BUILD_SHARED_LIBS)
+    set(CONFIGURE_SHARED --enable-shared)
+    set(CONFIGURE_STATIC --disable-static)
+    set(LIB_EXT ${CMAKE_SHARED_LIBRARY_SUFFIX})
+    set(LIB_TYPE_CMAKE SHARED)
+else()
+    set(CONFIGURE_SHARED --disable-shared)
+    set(CONFIGURE_STATIC --enable-static)
+    set(LIB_EXT ${CMAKE_STATIC_LIBRARY_SUFFIX})
+    set(LIB_TYPE_CMAKE STATIC)
+endif()
 
 set(FAST_CISH_FLAGS -O3)
 set(FAST_CFLAGS ${FAST_CISH_FLAGS} ${COLOR_DIAGS} -fvectorize -flto=full -fvisibility=hidden -fvisibility-inlines-hidden -fvisibility-inlines-hidden-static-local-var -fdata-sections -ffunction-sections -march=native)

@@ -26,7 +26,10 @@
 #include <z3.h>
 
 template <class T, class Allocator = std::allocator<T>> using vector_t = folly::fbvector<T, Allocator>;
-using string_t                                                         = folly::fbstring;
+// using string_t                                                         = folly::fbstring;
+
+using string_t                       = std::string;
+template <typename T> using vector_t = std::vector<T>;
 
 #define INLINE [[gnu::always_inline]]
 
@@ -261,10 +264,10 @@ void search_directory(const fs::path &root, std::atomic<size_t> &num_files, vect
     }
 }
 
-using folly::small_vector_policy::policy_size_type;
+// using folly::small_vector_policy::policy_size_type;
 
-folly::fbstring ss;
-folly::small_vector<int, 8, policy_size_type<uint16_t>> sv;
+// folly::fbstring ss;
+// folly::small_vector<int, 8, policy_size_type<uint16_t>> sv;
 
 int main(int argc, const char **argv) {
     if (argc != 2) {
