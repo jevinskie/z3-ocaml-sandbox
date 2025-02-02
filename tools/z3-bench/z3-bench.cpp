@@ -26,10 +26,10 @@
 #include <z3.h>
 
 template <class T, class Allocator = std::allocator<T>> using vector_t = folly::fbvector<T, Allocator>;
-// using string_t                                                         = folly::fbstring;
+// template <class T, class Allocator = std::allocator<T>> using vector_t = std::vector<T, Allocator>;
 
-using string_t                       = std::string;
-template <typename T> using vector_t = std::vector<T>;
+using string_t = folly::fbstring;
+// using string_t = std::string;
 
 #define INLINE [[gnu::always_inline]]
 

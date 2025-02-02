@@ -1,6 +1,4 @@
-# add_custom_command()
-
-file(MAKE_DIRECTORY "cd ${CMAKE_CURRENT_BINARY_DIR}/gmp-build/tmp")
+file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/gmp-build/tmp")
 
 ExternalProject_Add(gmp_ext
     SOURCE_DIR          ${CMAKE_CURRENT_SOURCE_DIR}/gmp
@@ -27,7 +25,8 @@ ExternalProject_Add(gmp_ext
     # BUILD_JOB_SERVER_AWARE TRUE
     # BUILD_IN_SOURCE     OFF
     BUILD_BYPRODUCTS    gmp-prefix/include/gmp.h gmp-prefix/lib/libgmp.a
-    # EXCLUDE_FROM_ALL
+    STEP_TARGETS build
+    EXCLUDE_FROM_ALL ON
 )
 
 file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/gmp-prefix/include")
