@@ -1,8 +1,11 @@
 # add_custom_command()
 
+file(MAKE_DIRECTORY "cd ${CMAKE_CURRENT_BINARY_DIR}/gmp-build/tmp")
+
 ExternalProject_Add(gmp_ext
     SOURCE_DIR          ${CMAKE_CURRENT_SOURCE_DIR}/gmp
-    CONFIGURE_COMMAND   rsync -a ${CMAKE_CURRENT_SOURCE_DIR}/gmp/ . &&
+    CONFIGURE_COMMAND   cd ${CMAKE_CURRENT_BINARY_DIR}/gmp-build/tmp &&
+                        rsync -a ${CMAKE_CURRENT_SOURCE_DIR}/gmp/ . &&
                         ./.bootstrap &&
                         ./configure
                         CC=${CMAKE_C_COMPILER}
@@ -16,7 +19,8 @@ ExternalProject_Add(gmp_ext
                         ${CONFIGURE_SHARED}
                         ${CONFIGURE_STATIC}
                         --disable-cxx
-    BUILD_COMMAND       make -j ${NCPUS} install MAKEINFO=true
+    BUILD_COMMAND       cd ${CMAKE_CURRENT_BINARY_DIR}/gmp-build/tmp &&
+                        make -j ${NCPUS} install MAKEINFO=true
     INSTALL_COMMAND     ""
     PREFIX              gmp-build
     INSTALL_DIR         gmp-prefix
