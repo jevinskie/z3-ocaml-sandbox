@@ -20,9 +20,11 @@ ExternalProject_Add(gmp_ext
     INSTALL_COMMAND     make -j ${NCPUS} install MAKEINFO=true
     PREFIX              gmp-build
     INSTALL_DIR         gmp-prefix
+    BINARY_DIR          gmp-build/build
+    STAMP_DIR           gmp-build/stamp
     BUILD_JOB_SERVER_AWARE TRUE
     # BUILD_IN_SOURCE     OFF
-    INSTALL_BYPRODUCTS    ${CMAKE_CURRENT_BINARY_DIR}/gmp-prefix/include/gmp.h ${CMAKE_CURRENT_BINARY_DIR}/gmp-prefix/lib/libgmp.a
+    INSTALL_BYPRODUCTS    ${CMAKE_CURRENT_BINARY_DIR}/gmp-prefix/include/gmp.h ${CMAKE_CURRENT_BINARY_DIR}/gmp-prefix/lib/libgmp${LIB_EXT}
     # STEP_TARGETS build
     STEP_TARGETS install
     EXCLUDE_FROM_ALL ON
