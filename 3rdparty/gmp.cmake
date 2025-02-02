@@ -1,5 +1,3 @@
-#file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/gmp-build/tmp")
-
 ExternalProject_Add(gmp_ext
     SOURCE_DIR          ${CMAKE_CURRENT_SOURCE_DIR}/gmp
     CONFIGURE_COMMAND   cd <SOURCE_DIR> &&
@@ -27,6 +25,7 @@ ExternalProject_Add(gmp_ext
     EXCLUDE_FROM_ALL ON
 )
 
+# Imported target "GMP::GMP" includes non-existent path
 file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/gmp-prefix/include")
 
 # https://discourse.cmake.org/t/add-subdirectory-vs-externalproject-add-vs-include-path-to-projectconfig-cmake/2959/2
