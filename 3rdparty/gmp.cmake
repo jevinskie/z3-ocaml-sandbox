@@ -30,20 +30,22 @@ ExternalProject_Add(gmp_ext
 
 file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/gmp-prefix/include")
 
-add_library(GMP::GMP UNKNOWN IMPORTED)
-add_dependencies(GMP::GMP gmp_ext-install)
+# https://discourse.cmake.org/t/add-subdirectory-vs-externalproject-add-vs-include-path-to-projectconfig-cmake/2959/2
+# https://github.com/geospace-code/h5fortran/blob/main/CMakeLists.txt
+add_library(GMP::GMP INTERFACE IMPORTED GLOBAL)
+add_dependencies(GMP::GMP gmp_ext gmp_ext-install)
 
 set_target_properties(GMP::GMP PROPERTIES
     INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_BINARY_DIR}/gmp-prefix/include"
-    IMPORTED_LOCATION "${CMAKE_CURRENT_BINARY_DIR}/gmp-prefix/lib/libgmp.a"
+    IMPORTED_LOCATION "${CMAKE_CURRENT_BINARY_DIR}/gmp-prefix/lib/libgmp${LIB_EXT}"
 )
 
-add_library(GMP ALIAS GMP::GMP)
+# add_library(GMP ALIAS GMP::GMP)
 
-get_target_property(X GMP INTERFACE_INCLUDE_DIRECTORIES)
-message(WARNING "gmp include: ${X}")
-get_target_property(X GMP IMPORTED_LOCATION)
-message(WARNING "gmp lib: ${X}")
+# get_target_property(X GMP INTERFACE_INCLUDE_DIRECTORIES)
+# message(WARNING "gmp include: ${X}")
+# get_target_property(X GMP IMPORTED_LOCATION)
+# message(WARNING "gmp lib: ${X}")
 get_target_property(X GMP::GMP INTERFACE_INCLUDE_DIRECTORIES)
 message(WARNING "gmp::gmp include: ${X}")
 get_target_property(X GMP::GMP IMPORTED_LOCATION)
