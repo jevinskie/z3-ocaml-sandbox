@@ -14,7 +14,7 @@
 # install(TARGETS z3-bench)
 
 add_executable(z3-test z3-test.cpp)
-target_link_libraries(z3-test PRIVATE fmt::fmt GMP::GMP)
+target_link_libraries(z3-test PRIVATE fmt::fmt GMP)
 
 set_target_properties(z3-test PROPERTIES
     CXX_STANDARD 23
