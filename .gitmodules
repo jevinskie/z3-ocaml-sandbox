@@ -68,4 +68,5 @@
 	url = https://github.com/arminbiere/lingeling
 [submodule "3rdparty/gmp"]
 	path = 3rdparty/gmp
-	url = https://github.com/gmp-mirror/gmp
+	url = https://github.com/jevinskie/gmp
+	branch = default
