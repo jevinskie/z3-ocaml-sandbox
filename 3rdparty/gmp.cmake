@@ -21,8 +21,9 @@ ExternalProject_Add(gmp_ext
     BINARY_DIR          gmp-build/build
     STAMP_DIR           gmp-build/stamp
     BUILD_JOB_SERVER_AWARE TRUE
+    # BUILD_IN_SOURCE     ON
     INSTALL_BYPRODUCTS  gmp-prefix/include/gmp.h gmp-prefix/lib/libgmp${LIB_EXT}
-    EXCLUDE_FROM_ALL ON
+    EXCLUDE_FROM_ALL    ON
 )
 
 # Imported target "GMP::GMP" includes non-existent path

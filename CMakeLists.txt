@@ -39,9 +39,20 @@ else()
     set(LIB_TYPE_CMAKE STATIC)
 endif()
 
-set(BUILD_AS_SUBPROJECT GMP)
+find_package(Boost CONFIG REQUIRED)
+find_package(Threads REQUIRED)
+
+
+set(BUILD_AS_SUBPROJECT GMP LIBSODIUM Libsodium LIBAIO LibAIO LIBIBERTY Libiberty LIBURING LibUring Snappy LibDwarf DWARF LIBDWARF LIBUNWIND LibUnwind ZSTD Zstd LZ4 LibLZMA BZip2 OpenSSL ZLIB libevent gflags Gflags Glog DoubleConversion event LibEvent)
+# set(ALLOWED_FIND_PKGS Threads Threads::Threads boost_headers boost_headers::headers Boost Boost::headers)
+
+# function(orig_find_package)
+#     _find_package(${ARGV})
+# endfunction()
+
 
 macro(find_package)
+    # if((NOT ${ARGV0} IN_LIST BUILD_AS_SUBPROJECT) OR (${ARGV0} IN_LIST ALLOWED_FIND_PKGS))
     if(NOT ${ARGV0} IN_LIST BUILD_AS_SUBPROJECT)
         _find_package(${ARGV})
     endif()

@@ -70,6 +70,7 @@
 	path = 3rdparty/gmp
 	url = https://github.com/jevinskie/gmp
 	branch = default
+	ignore = untracked
 [submodule "3rdparty/indicators"]
 	path = 3rdparty/indicators
 	url = https://github.com/p-ranav/indicators
