@@ -5,3 +5,5 @@ include(folly.cmake)
 include(sha2.cmake)
 include(thread-pool.cmake)
 include(z3.cmake)
+
+add_subdirectory(indicators)

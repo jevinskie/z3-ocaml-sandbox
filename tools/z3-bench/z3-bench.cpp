@@ -2,6 +2,7 @@
 #include <cassert>
 
 #include <atomic>
+#include <chrono>
 #include <cstdint>
 #include <cstring>
 #include <filesystem>
@@ -14,6 +15,7 @@
 #include <sys/mman.h>
 #include <sys/qos.h>
 #include <sys/stat.h>
+#include <thread>
 #include <type_traits>
 #include <unistd.h>
 
@@ -22,6 +24,10 @@
 #include <folly/FBString.h>
 #include <folly/FBVector.h>
 #include <folly/small_vector.h>
+#include <indicators/cursor_control.hpp>
+#include <indicators/indeterminate_progress_bar.hpp>
+#include <indicators/progress_bar.hpp>
+#include <indicators/termcolor.hpp>
 #include <sha2/sha2.hpp>
 #include <z3.h>
 
@@ -251,17 +257,32 @@ static void set_thread_priority_10(void) {
 template <BS::opt_t OptFlags>
 void search_directory(const fs::path &root, std::atomic<size_t> &num_files, vector_t<vector_t<char>> &blobs,
                       std::mutex &blobs_mutex, BS::thread_pool<OptFlags> &pool) {
+    indicators::IndeterminateProgressBar bar{
+        indicators::option::BarWidth{40},
+        indicators::option::Start{"["},
+        indicators::option::Fill{"·"},
+        indicators::option::Lead{"<==>"},
+        indicators::option::End{"]"},
+        indicators::option::PostfixText{"Reading in SMT2"},
+        indicators::option::ForegroundColor{indicators::Color::yellow},
+        indicators::option::FontStyles{std::vector<indicators::FontStyle>{indicators::FontStyle::bold}}};
+
+    indicators::show_console_cursor(false);
     for (const auto &entry : std::filesystem::recursive_directory_iterator(root)) {
         if (entry.is_regular_file()) {
             const auto smt2_path = entry.path();
             if (!smt2_path.string().ends_with(".smt2")) {
                 continue;
             }
-            pool.detach_task([smt2_path, &num_files, &blobs, &blobs_mutex] {
+            pool.detach_task([smt2_path, &num_files, &blobs, &blobs_mutex, &bar] {
                 read_smt2(smt2_path, num_files, blobs, blobs_mutex);
+                bar.tick();
             });
         }
     }
+    pool.wait();
+    bar.mark_as_completed();
+    indicators::show_console_cursor(true);
 }
 
 // using folly::small_vector_policy::policy_size_type;
@@ -281,7 +302,6 @@ int main(int argc, const char **argv) {
     vector_t<vector_t<char>> blobs;
     BS::thread_pool tp;
     search_directory(dir_path, num_files, blobs, blobs_mutex, tp);
-    tp.wait();
     fmt::print("num .smt2 files: {:d}\n", num_files.load());
     return 0;
 }
