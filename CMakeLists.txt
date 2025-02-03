@@ -3,10 +3,14 @@ cmake_policy(SET CMP0077 NEW)
 
 project(z3-sandbox C CXX) # need C for e.g. CMAKE_C_COMPILER to work
 
-message(STATUS "CMAKE_MODULE_PATH: ${CMAKE_MODULE_PATH}")
-
-set(SMTFUN_ROOT "${CMAKE_CURRENT_SOURCE_DIR}")
+message(STATUS "CMAKE_MODULE_PATH orig: ${CMAKE_MODULE_PATH}")
 list(PREPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+message(STATUS "CMAKE_MODULE_PATH new: ${CMAKE_MODULE_PATH}")
+
+message(STATUS "CMAKE_SYSTEM_PREFIX_PATH orig: ${CMAKE_SYSTEM_PREFIX_PATH}")
+list(REMOVE_ITEM CMAKE_SYSTEM_PREFIX_PATH /opt/homebrew /usr/local)
+list(APPEND CMAKE_SYSTEM_PREFIX_PATH /opt/homebrew/opt/libevent /opt/homebrew/opt/double-conversion /opt/homebrew/opt/fast_float)
+message(STATUS "CMAKE_SYSTEM_PREFIX_PATH new: ${CMAKE_SYSTEM_PREFIX_PATH}")
 
 include(ExternalProject)
 
@@ -43,7 +47,8 @@ find_package(Boost CONFIG REQUIRED)
 find_package(Threads REQUIRED)
 
 
-set(BUILD_AS_SUBPROJECT GMP LIBSODIUM Libsodium LIBAIO LibAIO LIBIBERTY Libiberty LIBURING LibUring Snappy LibDwarf DWARF LIBDWARF LIBUNWIND LibUnwind ZSTD Zstd LZ4 LibLZMA BZip2 OpenSSL ZLIB libevent gflags Gflags Glog DoubleConversion event LibEvent)
+set(BUILD_AS_SUBPROJECT GMP OpenSSL ZLIB BZip2)
+# set(BUILD_AS_SUBPROJECT GMP LIBSODIUM Libsodium LIBAIO LibAIO LIBIBERTY Libiberty LIBURING LibUring Snappy LibDwarf DWARF LIBDWARF LIBUNWIND LibUnwind ZSTD Zstd LZ4 LibLZMA BZip2 OpenSSL ZLIB libevent gflags Gflags Glog DoubleConversion event LibEvent)
 # set(ALLOWED_FIND_PKGS Threads Threads::Threads boost_headers boost_headers::headers Boost Boost::headers)
 
 # function(orig_find_package)
