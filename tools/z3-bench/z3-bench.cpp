@@ -258,12 +258,12 @@ template <BS::opt_t OptFlags>
 void search_directory(const fs::path &root, std::atomic<size_t> &num_files, vector_t<vector_t<char>> &blobs,
                       std::mutex &blobs_mutex, BS::thread_pool<OptFlags> &pool) {
     indicators::IndeterminateProgressBar bar{
-        indicators::option::BarWidth{40},
+        // indicators::option::BarWidth{40},
         indicators::option::Start{"["},
-        indicators::option::Fill{"·"},
+        indicators::option::Fill{"."},
         indicators::option::Lead{"<==>"},
         indicators::option::End{"]"},
-        indicators::option::PostfixText{"Reading in SMT2"},
+        indicators::option::PrefixText{"Reading in SMT2"},
         indicators::option::ForegroundColor{indicators::Color::yellow},
         indicators::option::FontStyles{std::vector<indicators::FontStyle>{indicators::FontStyle::bold}}};
 
