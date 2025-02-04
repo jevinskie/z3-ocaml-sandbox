@@ -276,7 +276,7 @@ void search_directory(const fs::path &root, std::atomic<size_t> &num_files, vect
             }
             pool.detach_task([smt2_path, &num_files, &blobs, &blobs_mutex, &bar] {
                 read_smt2(smt2_path, num_files, blobs, blobs_mutex);
-                bar.tick();
+                // bar.tick();
             });
         }
     }
@@ -291,17 +291,19 @@ void search_directory(const fs::path &root, std::atomic<size_t> &num_files, vect
 // folly::small_vector<int, 8, policy_size_type<uint16_t>> sv;
 
 int main(int argc, const char **argv) {
-    if (argc != 2) {
-        fmt::print(stderr, "usage: z3-bench <path to directory with .stm2 files>\n");
-        return -1;
+    {
+        if (argc != 2) {
+            fmt::print(stderr, "usage: z3-bench <path to directory with .stm2 files>\n");
+            return -1;
+        }
+        set_thread_priority_11();
+        const auto dir_path = fs::path{argv[1]};
+        std::atomic<size_t> num_files{0};
+        std::mutex blobs_mutex;
+        vector_t<vector_t<char>> blobs;
+        BS::thread_pool tp;
+        search_directory(dir_path, num_files, blobs, blobs_mutex, tp);
+        fmt::print("num .smt2 files: {:d}\n", num_files.load());
     }
-    set_thread_priority_11();
-    const auto dir_path = fs::path{argv[1]};
-    std::atomic<size_t> num_files{0};
-    std::mutex blobs_mutex;
-    vector_t<vector_t<char>> blobs;
-    BS::thread_pool tp;
-    search_directory(dir_path, num_files, blobs, blobs_mutex, tp);
-    fmt::print("num .smt2 files: {:d}\n", num_files.load());
     return 0;
 }

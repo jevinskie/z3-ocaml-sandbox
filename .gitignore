@@ -21,6 +21,7 @@
 *.bc
 *.asm
 *.S
+*.dylib
 
 # Apple DWARF
 **/*.dSYM/
