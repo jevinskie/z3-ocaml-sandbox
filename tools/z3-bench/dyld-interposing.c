@@ -16,14 +16,14 @@
     } _interpose_##_replacee __attribute__((section("__DATA_CONST,__interpose,interposing"))) = { \
         (const void *)(unsigned long)&_replacement, (const void *)(unsigned long)&_replacee};
 
-DYLD_INTERPOSE(mi_malloc, malloc);
-DYLD_INTERPOSE(mi_calloc, calloc);
-DYLD_INTERPOSE(mi_free, free);
-DYLD_INTERPOSE(mi_realloc, realloc);
-DYLD_INTERPOSE(mi_reallocf, reallocf);
-DYLD_INTERPOSE(mi_valloc, valloc);
-DYLD_INTERPOSE(mi_aligned_alloc, aligned_alloc);
-DYLD_INTERPOSE(mi_posix_memalign, posix_memalign);
+// DYLD_INTERPOSE(mi_malloc, malloc);
+// DYLD_INTERPOSE(mi_calloc, calloc);
+// DYLD_INTERPOSE(mi_free, free);
+// DYLD_INTERPOSE(mi_realloc, realloc);
+// DYLD_INTERPOSE(mi_reallocf, reallocf);
+// DYLD_INTERPOSE(mi_valloc, valloc);
+// DYLD_INTERPOSE(mi_aligned_alloc, aligned_alloc);
+// DYLD_INTERPOSE(mi_posix_memalign, posix_memalign);
 
 struct _libpthread_functions {
     unsigned long version;
@@ -34,7 +34,12 @@ struct _libpthread_functions {
 
 extern int __pthread_init(struct _libpthread_functions *pthread_funcs, const char *envp[], const char *apple[]);
 
+extern void mi_prim_get_default_heap();
+extern struct mi_heap_t *_mi_heap_main_get(void);
+extern _Thread_local struct mi_heap_t *_mi_heap_default;
+
 static int my_pthread_init(struct _libpthread_functions *pthread_funcs, const char *envp[], const char *apple[]) {
+
     assert(pthread_funcs->version >= 2);
     const uintptr_t pi            = (uintptr_t)pthread_funcs;
     const uintptr_t pf_page_start = pi & ~((1ull << 14) - 1ull);
@@ -42,6 +47,10 @@ static int my_pthread_init(struct _libpthread_functions *pthread_funcs, const ch
     pthread_funcs->malloc = mi_malloc;
     pthread_funcs->free   = mi_free;
     assert(!mprotect((void *)pf_page_start, 16 * 1024, PROT_READ));
+
+    _mi_heap_main_get();
+    // volatile void *p = _mi_heap_default;
+
     return __pthread_init(pthread_funcs, envp, apple);
 }
 
