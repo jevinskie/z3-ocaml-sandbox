@@ -29,7 +29,8 @@ set_target_properties(z3-test PROPERTIES
 )
 
 add_executable(disk-test disk-test.cpp)
-target_link_libraries(disk-test PRIVATE fmt::fmt folly thread-pool indicators)
+target_link_libraries(disk-test PRIVATE fmt::fmt thread-pool indicators)
+target_compile_options(disk-test PRIVATE -O3 -g)
 
 set_target_properties(disk-test PROPERTIES
     CXX_STANDARD 23
