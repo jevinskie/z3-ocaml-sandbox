@@ -3,7 +3,7 @@
 #include "fishhook.h"
 #include <mimalloc.h>
 
-// #include <mimalloc-new-delete.h>
+#include <mimalloc-new-delete.h>
 
 extern "C" {
 void *malloc(size_t sz);
@@ -25,6 +25,7 @@ using valloc_t         = decltype(&valloc);
 using aligned_alloc_t  = decltype(&aligned_alloc);
 using posix_memalign_t = decltype(&posix_memalign);
 
+#if 0
 static malloc_t orig_malloc;
 static calloc_t orig_calloc;
 static free_t orig_free;
@@ -64,3 +65,4 @@ void deinit_mimalloc_helper(void) {
         8);
     write(STDOUT_FILENO, "ubd\n", 4);
 }
+#endif
