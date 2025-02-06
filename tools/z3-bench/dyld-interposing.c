@@ -9,11 +9,11 @@
 
 // #include <mimalloc-new-delete.h>
 
-#define DYLD_INTERPOSE(_replacement, _replacee)                                                   \
-    __attribute__((used)) static struct {                                                         \
-        const void *replacement;                                                                  \
-        const void *replacee;                                                                     \
-    } _interpose_##_replacee __attribute__((section("__DATA_CONST,__interpose,interposing"))) = { \
+#define DYLD_INTERPOSE(_replacement, _replacee)                                               \
+    __attribute__((used)) static struct {                                                     \
+        const void *replacement;                                                              \
+        const void *replacee;                                                                 \
+    } _interpose_##_replacee __attribute__((section("__DATA,__interpose,interposing"))) = {   \
         (const void *)(unsigned long)&_replacement, (const void *)(unsigned long)&_replacee};
 
 // DYLD_INTERPOSE(mi_malloc, malloc);
@@ -48,10 +48,10 @@ static int my_pthread_init(struct _libpthread_functions *pthread_funcs, const ch
     pthread_funcs->free   = mi_free;
     assert(!mprotect((void *)pf_page_start, 16 * 1024, PROT_READ));
 
-    _mi_heap_main_get();
+    // _mi_heap_main_get();
     // volatile void *p = _mi_heap_default;
 
     return __pthread_init(pthread_funcs, envp, apple);
 }
 
-DYLD_INTERPOSE(my_pthread_init, __pthread_init);
+// DYLD_INTERPOSE(my_pthread_init, __pthread_init);

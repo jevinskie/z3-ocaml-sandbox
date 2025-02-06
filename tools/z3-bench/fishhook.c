@@ -58,8 +58,11 @@ typedef struct nlist nlist_t;
 #define SEG_DATA_CONST "__DATA_CONST"
 #endif
 
-static typeof(malloc) *fishhook_malloc = malloc;
-static typeof(free) *fishhook_free     = free;
+extern typeof(malloc) mi_malloc;
+extern typeof(free) mi_free;
+
+static typeof(malloc) *fishhook_malloc = mi_malloc;
+static typeof(free) *fishhook_free     = mi_free;
 
 struct rebindings_entry {
     struct rebinding *rebindings;

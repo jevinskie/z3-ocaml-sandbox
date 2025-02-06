@@ -3,7 +3,7 @@
 #include "fishhook.h"
 #include <mimalloc.h>
 
-#include <mimalloc-new-delete.h>
+// #include <mimalloc-new-delete.h>
 
 extern "C" {
 void *malloc(size_t sz);
@@ -38,6 +38,7 @@ static posix_memalign_t orig_posix_memalign;
 extern "C" [[gnu::constructor]]
 void init_mimalloc_helper(void) {
     write(STDOUT_FILENO, "lol\n", 4);
+#if 0
     rebind_symbols((struct rebinding[8]){{"malloc", (void *)&mi_malloc, (void **)&orig_malloc},
                                          {"calloc", (void *)&mi_calloc, (void **)&orig_calloc},
                                          {"free", (void *)&mi_free, (void **)&orig_free},
@@ -47,12 +48,14 @@ void init_mimalloc_helper(void) {
                                          {"aligned_alloc", (void *)&mi_aligned_alloc},
                                          {"posix_memalign", (void *)&mi_posix_memalign, (void **)&orig_posix_memalign}},
                    8);
+#endif
     write(STDOUT_FILENO, "rbd\n", 4);
 }
 
 extern "C" [[gnu::destructor]]
 void deinit_mimalloc_helper(void) {
     write(STDOUT_FILENO, "bai\n", 4);
+#if 0
     rebind_symbols(
         (struct rebinding[8]){{"malloc", (void *)orig_malloc, (void **)&orig_malloc},
                               {"calloc", (void *)orig_calloc, (void **)&orig_calloc},
@@ -63,6 +66,7 @@ void deinit_mimalloc_helper(void) {
                               {"aligned_alloc", (void *)orig_aligned_alloc},
                               {"posix_memalign", (void *)orig_posix_memalign, (void **)&orig_posix_memalign}},
         8);
+#endif
     write(STDOUT_FILENO, "ubd\n", 4);
 }
 #endif
