@@ -1,7 +1,7 @@
 add_library(z3-bench-main SHARED z3-bench.cpp sexpr.cpp mimalloc-helper.cpp fishhook.c dyld-interposing.c)
 # target_compile_options(z3-bench-main PRIVATE ${FAST_CXXFLAGS})
 # target_link_options(z3-bench-main PRIVATE ${FAST_LDFLAGS})
-target_link_libraries(z3-bench-main PRIVATE fmt::fmt folly thread-pool mimalloc-static indicators::indicators sha2 libz3)
+target_link_libraries(z3-bench-main PRIVATE fmt::fmt folly thread-pool mimalloc-obj indicators::indicators sha2 libz3)
 
 set_target_properties(z3-bench-main PROPERTIES
     CXX_STANDARD 23
