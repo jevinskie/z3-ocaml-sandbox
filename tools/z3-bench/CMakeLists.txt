@@ -27,16 +27,3 @@ set_target_properties(z3-test PROPERTIES
     VISIBILITY_INLINES_HIDDEN ON
     EXCLUDE_FROM_ALL ON
 )
-
-add_executable(disk-test disk-test.cpp)
-target_link_libraries(disk-test PRIVATE fmt::fmt thread-pool indicators)
-target_compile_options(disk-test PRIVATE -O3 -g)
-
-set_target_properties(disk-test PROPERTIES
-    CXX_STANDARD 23
-    CXX_EXTENSIONS ON
-    CXX_STANDARD_REQUIRED ON
-    CXX_VISIBILITY_PRESET hidden
-    VISIBILITY_INLINES_HIDDEN ON
-    EXCLUDE_FROM_ALL ON
-)
