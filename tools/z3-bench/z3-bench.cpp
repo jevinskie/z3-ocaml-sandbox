@@ -21,9 +21,9 @@
 
 #include <BS_thread_pool.hpp>
 #include <fmt/format.h>
-#include <folly/FBString.h>
-#include <folly/FBVector.h>
-#include <folly/small_vector.h>
+// #include <folly/FBString.h>
+// #include <folly/FBVector.h>
+// #include <folly/small_vector.h>
 #include <indicators/cursor_control.hpp>
 #include <indicators/indeterminate_progress_bar.hpp>
 #include <indicators/progress_bar.hpp>
@@ -31,11 +31,11 @@
 #include <sha2/sha2.hpp>
 #include <z3.h>
 
-template <class T, class Allocator = std::allocator<T>> using vector_t = folly::fbvector<T, Allocator>;
-// template <class T, class Allocator = std::allocator<T>> using vector_t = std::vector<T, Allocator>;
+// template <class T, class Allocator = std::allocator<T>> using vector_t = folly::fbvector<T, Allocator>;
+template <class T, class Allocator = std::allocator<T>> using vector_t = std::vector<T, Allocator>;
 
-using string_t = folly::fbstring;
-// using string_t = std::string;
+// using string_t = folly::fbstring;
+using string_t = std::string;
 
 #define INLINE [[gnu::always_inline]]
 
@@ -257,17 +257,18 @@ static void set_thread_priority_10(void) {
 template <BS::opt_t OptFlags>
 void search_directory(const fs::path &root, std::atomic<size_t> &num_files, vector_t<vector_t<char>> &blobs,
                       std::mutex &blobs_mutex, BS::thread_pool<OptFlags> &pool) {
-    indicators::IndeterminateProgressBar bar{
-        // indicators::option::BarWidth{40},
-        indicators::option::Start{"["},
-        indicators::option::Fill{"."},
-        indicators::option::Lead{"<==>"},
-        indicators::option::End{"]"},
-        indicators::option::PrefixText{"Reading in SMT2"},
-        indicators::option::ForegroundColor{indicators::Color::yellow},
-        indicators::option::FontStyles{std::vector<indicators::FontStyle>{indicators::FontStyle::bold}}};
+    // indicators::IndeterminateProgressBar bar{
+    //     // indicators::option::BarWidth{40},
+    //     indicators::option::Start{"["},
+    //     indicators::option::Fill{"."},
+    //     indicators::option::Lead{"<==>"},
+    //     indicators::option::End{"]"},
+    //     indicators::option::PrefixText{"Reading in SMT2"},
+    //     indicators::option::ForegroundColor{indicators::Color::yellow},
+    //     indicators::option::FontStyles{std::vector<indicators::FontStyle>{indicators::FontStyle::bold}}};
+    int bar;
 
-    indicators::show_console_cursor(false);
+    // indicators::show_console_cursor(false);
     for (const auto &entry : std::filesystem::recursive_directory_iterator(root)) {
         if (entry.is_regular_file()) {
             const auto smt2_path = entry.path();
@@ -281,8 +282,8 @@ void search_directory(const fs::path &root, std::atomic<size_t> &num_files, vect
         }
     }
     pool.wait();
-    bar.mark_as_completed();
-    indicators::show_console_cursor(true);
+    // bar.mark_as_completed();
+    // indicators::show_console_cursor(true);
 }
 
 // using folly::small_vector_policy::policy_size_type;
@@ -295,6 +296,10 @@ extern "C" [[gnu::visibility("default")]] int z3_bench_main(int argc, const char
         return -1;
     }
     set_thread_priority_11();
+    printf("dylib malloc: %p\n", malloc);
+    void *p = malloc(4);
+    printf("dylib malloc(4) = %p\n", p);
+    free(p);
     const auto dir_path = fs::path{argv[1]};
     std::atomic<size_t> num_files{0};
     std::mutex blobs_mutex;
