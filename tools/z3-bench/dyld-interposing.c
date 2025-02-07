@@ -13,23 +13,9 @@
 // #include <mimalloc-new-delete.h>
 
 extern void vfree(void *ptr);
-extern void *reallocarray(void *in_ptr, size_t nmemb, size_t size) asm("_reallocarray$DARWIN_EXTSN");
-extern void *reallocarrayf(void *in_ptr, size_t nmemb, size_t size) asm("_reallocarrayf$DARWIN_EXTSN");
+extern void *reallocarray(void *in_ptr, size_t nmemb, size_t size) __asm("_reallocarray$DARWIN_EXTSN");
+extern void *reallocarrayf(void *in_ptr, size_t nmemb, size_t size) __asm("_reallocarrayf$DARWIN_EXTSN");
 extern size_t malloc_size(const void *ptr);
-
-extern typeof(malloc) mi_malloc;
-extern typeof(calloc) mi_calloc;
-extern typeof(free) mi_free;
-extern typeof(realloc) mi_realloc;
-extern typeof(reallocf) mi_reallocf;
-extern typeof(valloc) mi_valloc;
-extern typeof(reallocarray) mi_reallocarray;
-extern typeof(reallocarrayf) mi_reallocarrayf;
-extern typeof(aligned_alloc) mi_aligned_alloc;
-extern typeof(posix_memalign) mi_posix_memalign;
-extern typeof(malloc_size) mi_malloc_size;
-extern typeof(malloc_good_size) mi_malloc_good_size;
-extern typeof(malloc_good_size) mi_good_size;
 
 #define DYLD_INTERPOSE(_replacement, _replacee)                                               \
     __attribute__((used)) static struct {                                                     \
@@ -38,18 +24,42 @@ extern typeof(malloc_good_size) mi_good_size;
     } _interpose_##_replacee __attribute__((section("__DATA,__interpose,interposing"))) = {   \
         (const void *)(unsigned long)&_replacement, (const void *)(unsigned long)&_replacee};
 
-DYLD_INTERPOSE(mi_malloc, malloc);
-DYLD_INTERPOSE(mi_calloc, calloc);
-DYLD_INTERPOSE(mi_free, free);
-DYLD_INTERPOSE(mi_realloc, realloc);
-DYLD_INTERPOSE(mi_reallocf, reallocf);
-DYLD_INTERPOSE(mi_reallocarray, reallocarray);
-DYLD_INTERPOSE(mi_valloc, valloc);
-DYLD_INTERPOSE(mi_free, vfree);
-DYLD_INTERPOSE(mi_aligned_alloc, aligned_alloc);
-DYLD_INTERPOSE(mi_posix_memalign, posix_memalign);
-DYLD_INTERPOSE(mi_good_size, malloc_good_size);
-DYLD_INTERPOSE(mi_good_size, malloc_size);
+extern typeof(malloc) mi_malloc_ext;
+extern typeof(free) mi_free_ext;
+
+extern typeof(malloc) mi_malloc;
+extern typeof(calloc) mi_calloc;
+extern typeof(free) mi_free;
+extern typeof(realloc) mi_realloc;
+extern typeof(reallocf) mi_reallocf;
+extern typeof(valloc) mi_valloc;
+extern typeof(reallocarray) mi_reallocarray;
+// extern typeof(reallocarrayf) mi_reallocarrayf;
+extern typeof(aligned_alloc) mi_aligned_alloc;
+extern typeof(posix_memalign) mi_posix_memalign;
+extern typeof(malloc_size) mi_malloc_size;
+extern typeof(malloc_good_size) mi_malloc_good_size;
+extern typeof(malloc_good_size) mi_good_size;
+
+DYLD_INTERPOSE(mi_malloc_ext, malloc);
+// DYLD_INTERPOSE(mi_calloc, calloc);
+DYLD_INTERPOSE(mi_free_ext, free);
+// DYLD_INTERPOSE(mi_realloc, realloc);
+// DYLD_INTERPOSE(mi_reallocf, reallocf);
+// DYLD_INTERPOSE(mi_reallocarray, reallocarray);
+// DYLD_INTERPOSE(mi_reallocarrayf, reallocarrayf);
+// DYLD_INTERPOSE(mi_valloc, valloc);
+// DYLD_INTERPOSE(mi_free, vfree);
+// DYLD_INTERPOSE(mi_aligned_alloc, aligned_alloc);
+// DYLD_INTERPOSE(mi_posix_memalign, posix_memalign);
+// DYLD_INTERPOSE(mi_good_size, malloc_good_size);
+// DYLD_INTERPOSE(mi_good_size, malloc_size);
+
+extern typeof(malloc) _Znwm;
+extern typeof(free) _ZdlPv;
+
+DYLD_INTERPOSE(mi_malloc_ext, _Znwm);
+DYLD_INTERPOSE(mi_free_ext, _ZdlPv);
 
 struct _libpthread_functions {
     unsigned long version;
