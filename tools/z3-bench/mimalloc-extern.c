@@ -12,9 +12,12 @@
 
 // #include <mimalloc-new-delete.h>
 
+#define ALIAS_GLOBAL(name, target)         __asm__(".global _" name "\n_" name " = _" target "\n")
+#define ALIAS_PRIVATE_EXTERN(name, target) __asm__(".private_extern _" name "\n_" name " = _" target "\n")
+
 extern void vfree(void *ptr);
-extern void *reallocarray(void *in_ptr, size_t nmemb, size_t size) __asm("_reallocarray$DARWIN_EXTSN");
-extern void *reallocarrayf(void *in_ptr, size_t nmemb, size_t size) __asm("_reallocarrayf$DARWIN_EXTSN");
+extern void *reallocarray(void *in_ptr, size_t nmemb, size_t size) __asm__("_reallocarray$DARWIN_EXTSN");
+extern void *reallocarrayf(void *in_ptr, size_t nmemb, size_t size) __asm__("_reallocarrayf$DARWIN_EXTSN");
 extern size_t malloc_size(const void *ptr);
 
 extern typeof(malloc) mi_malloc;
@@ -34,12 +37,14 @@ extern typeof(malloc_good_size) mi_good_size;
 extern typeof(malloc) _Znwm;
 extern typeof(free) _ZdlPv;
 
-__asm(".global _mi_malloc_ext\n_mi_malloc_ext = _mi_malloc\n");
-__asm(".global _mi_free_ext\n_mi_free_ext = _mi_free\n");
-__asm(".private_extern _malloc\n_malloc = _mi_malloc\n");
-__asm(".private_extern _free\n_free = _mi_free\n");
+// mi_malloc and mi_free aliases
+ALIAS_GLOBAL("mi_malloc_ext", "mi_malloc");
+ALIAS_GLOBAL("mi_free_ext", "mi_free");
+ALIAS_PRIVATE_EXTERN("malloc", "mi_malloc");
+ALIAS_PRIVATE_EXTERN("free", "mi_free");
 
-__asm(".global __Znwm_ext\n__Znwm_ext = _mi_malloc\n");
-__asm(".global __ZdlPv_ext\n__ZdlPv_ext = _mi_free\n");
-__asm(".private_extern __Znwm\n__Znwm = _mi_malloc\n");
-__asm(".private_extern __ZdlPv\n__ZdlPv = _mi_free\n");
+// C++ new/delete operator aliases
+ALIAS_GLOBAL("_Znwm_ext", "mi_malloc");
+ALIAS_GLOBAL("_ZdlPv_ext", "mi_free");
+ALIAS_PRIVATE_EXTERN("_Znwm", "mi_malloc");
+ALIAS_PRIVATE_EXTERN("_ZdlPv", "mi_free");
