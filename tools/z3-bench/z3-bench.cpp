@@ -299,8 +299,10 @@ extern "C" [[gnu::visibility("default")]] int z3_bench_main(int argc, const char
     std::atomic<size_t> num_files{0};
     std::mutex blobs_mutex;
     vector_t<vector_t<char>> blobs;
-    BS::thread_pool tp;
-    search_directory(dir_path, num_files, blobs, blobs_mutex, tp);
+    {
+        BS::thread_pool tp;
+        search_directory(dir_path, num_files, blobs, blobs_mutex, tp);
+    }
     fmt::print("num .smt2 files: {:d}\n", num_files.load());
     return 0;
 }
