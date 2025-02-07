@@ -1,8 +1,9 @@
 ExternalProject_Add(gmp_ext
     SOURCE_DIR          ${CMAKE_CURRENT_SOURCE_DIR}/gmp
     CONFIGURE_COMMAND   cd <SOURCE_DIR> &&
-                        ./.bootstrap
-    BUILD_COMMAND       <SOURCE_DIR>/configure
+                        ./.bootstrap &&
+                        cd <BINARY_DIR> &&
+                        <SOURCE_DIR>/configure
                         CC=${CMAKE_C_COMPILER}
                         CFLAGS=${CMAKE_C_FLAGS}
                         CXX=${CMAKE_CXX_COMPILER}
@@ -13,8 +14,8 @@ ExternalProject_Add(gmp_ext
                         --prefix=<INSTALL_DIR>
                         ${CONFIGURE_SHARED}
                         ${CONFIGURE_STATIC}
-                        --disable-cxx &&
-                        make -j ${NCPUS} MAKEINFO=true
+                        --disable-cxx
+    BUILD_COMMAND       make -j ${NCPUS} MAKEINFO=true
     INSTALL_COMMAND     make -j ${NCPUS} install MAKEINFO=true
     PREFIX              gmp-build
     INSTALL_DIR         gmp-prefix

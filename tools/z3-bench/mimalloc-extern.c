@@ -36,3 +36,10 @@ extern typeof(free) _ZdlPv;
 
 __asm(".global _mi_malloc_ext\n_mi_malloc_ext = _mi_malloc\n");
 __asm(".global _mi_free_ext\n_mi_free_ext = _mi_free\n");
+__asm(".private_extern _malloc\n_malloc = _mi_malloc\n");
+__asm(".private_extern _free\n_free = _mi_free\n");
+
+__asm(".global __Znwm_ext\n__Znwm_ext = _mi_malloc\n");
+__asm(".global __ZdlPv_ext\n__ZdlPv_ext = _mi_free\n");
+__asm(".private_extern __Znwm\n__Znwm = _mi_malloc\n");
+__asm(".private_extern __ZdlPv\n__ZdlPv = _mi_free\n");
