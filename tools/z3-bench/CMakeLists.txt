@@ -1,4 +1,4 @@
-add_library(z3-bench-main SHARED z3-bench.cpp sexpr.cpp mimalloc-helper.cpp fishhook.c dyld-interposing.c)
+add_library(z3-bench-main SHARED z3-bench.cpp sexpr.cpp mimalloc-helper.cpp fishhook.c)
 # target_compile_options(z3-bench-main PRIVATE ${FAST_CXXFLAGS})
 # target_link_options(z3-bench-main PRIVATE ${FAST_LDFLAGS})
 target_link_libraries(z3-bench-main PRIVATE fmt::fmt folly thread-pool mimalloc-obj indicators::indicators sha2 libz3)
@@ -16,8 +16,17 @@ set_target_properties(z3-bench-main PROPERTIES
 
 install(TARGETS z3-bench-main)
 
+add_library(interposing SHARED dyld-interposing.c)
+target_link_libraries(interposing PUBLIC z3-bench-main)
+set_target_properties(interposing PROPERTIES
+    C_STANDARD 17
+    C_EXTENSIONS ON
+    C_STANDARD_REQUIRED ON
+)
+install(TARGETS interposing)
+
 add_executable(z3-bench z3-bench-exe.c)
-target_link_libraries(z3-bench z3-bench-main)
+target_link_libraries(z3-bench interposing)
 # target_compile_options(z3-bench PRIVATE ${FAST_CXXFLAGS})
 # target_link_options(z3-bench PRIVATE ${FAST_LDFLAGS})
 
@@ -28,6 +37,7 @@ set_target_properties(z3-bench PROPERTIES
 )
 
 install(TARGETS z3-bench)
+
 
 add_executable(z3-test z3-test.cpp)
 target_link_libraries(z3-test PRIVATE fmt::fmt GMP)
