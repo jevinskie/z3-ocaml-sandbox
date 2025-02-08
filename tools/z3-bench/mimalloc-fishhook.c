@@ -5,7 +5,6 @@
 
 // #include <mimalloc-new-delete.h>
 
-extern "C" {
 void *malloc(size_t sz);
 void *calloc(size_t count, size_t sz);
 void free(void *p);
@@ -14,16 +13,23 @@ void *reallocf(void *p, size_t sz);
 void *valloc(size_t sz);
 void *aligned_alloc(size_t alignment, size_t sz);
 int posix_memalign(void **p, size_t alignment, size_t sz);
-}
 
-using malloc_t         = decltype(&malloc);
-using calloc_t         = decltype(&calloc);
-using free_t           = decltype(&free);
-using realloc_t        = decltype(&realloc);
-using reallocf_t       = decltype(&reallocf);
-using valloc_t         = decltype(&valloc);
-using aligned_alloc_t  = decltype(&aligned_alloc);
-using posix_memalign_t = decltype(&posix_memalign);
+typedef typeof(&malloc) malloc_t;
+typedef typeof(&calloc) calloc_t;
+typedef typeof(&free) free_t;
+typedef typeof(&realloc) realloc_t;
+typedef typeof(&reallocf) reallocf_t;
+typedef typeof(&valloc) valloc_t;
+typedef typeof(&aligned_alloc) aligned_alloc_t;
+typedef typeof(&posix_memalign) posix_memalign_t;
+
+typedef malloc_t x_Znwm_t;
+typedef free_t x_ZdlPv_t;
+
+extern malloc_t mi_malloc_ext;
+extern free_t mi_free_ext;
+extern x_Znwm_t _Znwm;
+extern x_ZdlPv_t _ZdlPv;
 
 #if 1
 static malloc_t orig_malloc;
@@ -35,8 +41,10 @@ static valloc_t orig_valloc;
 static aligned_alloc_t orig_aligned_alloc;
 static posix_memalign_t orig_posix_memalign;
 
-extern "C" [[gnu::constructor]]
-void init_mimalloc_helper(void) {
+static x_Znwm_t orig__Znwm;
+static x_ZdlPv_t orig__ZdlPv;
+
+__attribute__((constructor)) void init_mimalloc_helper(void) {
     write(STDOUT_FILENO, "lol\n", 4);
 #if 0
     rebind_symbols((struct rebinding[8]){{"malloc", (void *)&mi_malloc, (void **)&orig_malloc},
@@ -49,11 +57,18 @@ void init_mimalloc_helper(void) {
                                          {"posix_memalign", (void *)&mi_posix_memalign, (void **)&orig_posix_memalign}},
                    8);
 #endif
+    rebind_symbols(
+        (struct rebinding[4]){
+            {"malloc", (void *)&mi_malloc_ext, (void **)&orig_malloc},
+            {"free", (void *)&mi_free_ext, (void **)&orig_free},
+            {"_Znwm", (void *)&mi_malloc_ext, (void **)&orig__Znwm},
+            {"_ZdlPv", (void *)&mi_free_ext, (void **)&orig__ZdlPv},
+        },
+        4);
     write(STDOUT_FILENO, "rbd\n", 4);
 }
 
-extern "C" [[gnu::destructor]]
-void deinit_mimalloc_helper(void) {
+__attribute__((destructor)) void deinit_mimalloc_helper(void) {
     write(STDOUT_FILENO, "bai\n", 4);
 #if 0
     rebind_symbols(
@@ -67,6 +82,14 @@ void deinit_mimalloc_helper(void) {
                               {"posix_memalign", (void *)orig_posix_memalign, (void **)&orig_posix_memalign}},
         8);
 #endif
+    rebind_symbols(
+        (struct rebinding[4]){
+            {"malloc", (void *)orig_malloc, (void **)&orig_malloc},
+            {"free", (void *)orig_free, (void **)&orig_free},
+            {"_Znwm", (void *)orig__Znwm, (void **)&orig__Znwm},
+            {"_ZdlPv", (void *)orig__ZdlPv, (void **)&orig__ZdlPv},
+        },
+        4);
     write(STDOUT_FILENO, "ubd\n", 4);
 }
 #endif
