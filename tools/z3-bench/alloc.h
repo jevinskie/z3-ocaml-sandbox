@@ -1,15 +1,15 @@
 #pragma once
 
-typedef __SIZE_TYPE__ lsize_t;
+#include "types-bare.h"
 
-extern void *malloc(lsize_t sz);
-extern void *calloc(lsize_t count, lsize_t sz);
+extern void *malloc(jsize_t sz);
+extern void *calloc(jsize_t count, jsize_t sz);
 extern void free(void *p);
-extern void *realloc(void *p, size_t sz);
-extern void *reallocf(void *p, size_t sz);
-extern void *valloc(lsize_t sz);
-extern void *aligned_alloc(lsize_t alignment, lsize_t sz);
-extern int posix_memalign(void **p, lsize_t alignment, lsize_t sz);
+extern void *realloc(void *p, jsize_t sz);
+extern void *reallocf(void *p, jsize_t sz);
+extern void *valloc(jsize_t sz);
+extern void *aligned_alloc(jsize_t alignment, jsize_t sz);
+extern int posix_memalign(void **p, jsize_t alignment, jsize_t sz);
 
 typedef typeof(malloc) malloc_t;
 typedef typeof(calloc) calloc_t;

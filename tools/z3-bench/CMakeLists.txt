@@ -52,7 +52,7 @@ set_target_properties(z3-test PROPERTIES
     EXCLUDE_FROM_ALL ON
 )
 
-add_library(mimalloc-tester-c SHARED mimalloc-tester-dylib-c.c)
+add_library(mimalloc-tester-c SHARED mimalloc-tester-dylib-c.c noalloc-stdio.c)
 set_target_properties(mimalloc-tester-c PROPERTIES
     C_STANDARD 17
     C_EXTENSIONS ON
@@ -60,8 +60,8 @@ set_target_properties(mimalloc-tester-c PROPERTIES
     EXCLUDE_FROM_ALL ON
 )
 
-add_executable(mimalloc-tester mimalloc-tester-exe.c)
-target_link_libraries(mimalloc-tester mimalloc-tester-c)
+add_executable(mimalloc-tester mimalloc-tester-exe.c noalloc-stdio.c)
+target_link_libraries(mimalloc-tester PRIVATE mimalloc-tester-c)
 set_target_properties(mimalloc-tester PROPERTIES
     C_STANDARD 17
     C_EXTENSIONS ON
