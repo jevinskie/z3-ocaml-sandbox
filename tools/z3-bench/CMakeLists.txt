@@ -51,3 +51,20 @@ set_target_properties(z3-test PROPERTIES
     VISIBILITY_INLINES_HIDDEN ON
     EXCLUDE_FROM_ALL ON
 )
+
+add_library(mimalloc-tester-c SHARED mimalloc-tester-dylib-c.c)
+set_target_properties(mimalloc-tester-c PROPERTIES
+    C_STANDARD 17
+    C_EXTENSIONS ON
+    C_STANDARD_REQUIRED ON
+    EXCLUDE_FROM_ALL ON
+)
+
+add_executable(mimalloc-tester mimalloc-tester-exe.c)
+target_link_libraries(mimalloc-tester mimalloc-tester-c)
+set_target_properties(mimalloc-tester PROPERTIES
+    C_STANDARD 17
+    C_EXTENSIONS ON
+    C_STANDARD_REQUIRED ON
+    EXCLUDE_FROM_ALL ON
+)
