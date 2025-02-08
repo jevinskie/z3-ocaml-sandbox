@@ -40,6 +40,8 @@
 #include <ptrauth.h>
 #endif
 
+#include "alloc.h"
+
 #ifdef __LP64__
 typedef struct mach_header_64 mach_header_t;
 typedef struct segment_command_64 segment_command_t;
@@ -57,9 +59,6 @@ typedef struct nlist nlist_t;
 #ifndef SEG_DATA_CONST
 #define SEG_DATA_CONST "__DATA_CONST"
 #endif
-
-extern typeof(malloc) mi_malloc;
-extern typeof(free) mi_free;
 
 static typeof(malloc) *fishhook_malloc = mi_malloc;
 static typeof(free) *fishhook_free     = mi_free;
@@ -180,6 +179,8 @@ static void perform_rebinding_with_section(struct rebindings_entry *rebindings, 
     }
 }
 
+extern int puts(const char *s);
+
 static void rebind_symbols_for_image(struct rebindings_entry *rebindings, const struct mach_header *header,
                                      intptr_t slide) {
     Dl_info info;
@@ -187,7 +188,12 @@ static void rebind_symbols_for_image(struct rebindings_entry *rebindings, const 
         return;
     }
 
-    if (!strcmp(info.dli_fname, "/usr/lib/system/libsystem_malloc.dylib")) {
+    puts("rebind_symbols_for_image");
+    puts(info.dli_fname);
+
+    if (!strcmp(info.dli_fname, "/usr/lib/system/libsystem_malloc.dylib") ||
+        !strcmp(info.dli_fname, "/usr/lib/system/libsystem_pthread.dylib")) {
+        puts("skip");
         return;
     }
 
