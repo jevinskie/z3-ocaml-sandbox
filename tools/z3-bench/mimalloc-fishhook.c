@@ -1,16 +1,18 @@
-#include <unistd.h>
+// #include <unistd.h>
 
 #include "fishhook.h"
-#include <mimalloc.h>
+#include "types-bare.h"
+// #include <mimalloc.h>
 
 // #include <mimalloc-new-delete.h>
 
 #include "alloc.h"
+#include "malloc-wrapped.h"
 
 #if 1
-static malloc_t *orig_malloc;
+malloc_t *orig_malloc;
+free_t *orig_free;
 static calloc_t *orig_calloc;
-static free_t *orig_free;
 static realloc_t *orig_realloc;
 static reallocf_t *orig_reallocf;
 static valloc_t *orig_valloc;
@@ -33,6 +35,7 @@ __attribute__((constructor)) void init_mimalloc_helper(void) {
                                          {"posix_memalign", (void *)&mi_posix_memalign, (void **)&orig_posix_memalign}},
                    8);
 #endif
+#if 0
     rebind_symbols(
         (struct rebinding[4]){
             {"malloc", (void *)&mi_malloc_ext, (void **)&orig_malloc},
@@ -41,6 +44,15 @@ __attribute__((constructor)) void init_mimalloc_helper(void) {
             {"_ZdlPv", (void *)&mi_free_ext, (void **)&orig__ZdlPv},
         },
         4);
+#endif
+#if 0
+    rebind_symbols(
+        (struct rebinding[2]){
+            {"malloc", (void *)&printing_malloc, (void **)&orig_malloc},
+            {"free", (void *)&printing_free, (void **)&orig_free},
+        },
+        2);
+#endif
     write(STDOUT_FILENO, "rbd\n", 4);
 }
 
@@ -58,6 +70,7 @@ __attribute__((destructor)) void deinit_mimalloc_helper(void) {
                               {"posix_memalign", (void *)orig_posix_memalign, (void **)&orig_posix_memalign}},
         8);
 #endif
+#if 0
     rebind_symbols(
         (struct rebinding[4]){
             {"malloc", (void *)orig_malloc, (void **)&orig_malloc},
@@ -66,6 +79,15 @@ __attribute__((destructor)) void deinit_mimalloc_helper(void) {
             {"_ZdlPv", (void *)orig__ZdlPv, (void **)&orig__ZdlPv},
         },
         4);
+#endif
+#if 0
+    rebind_symbols(
+        (struct rebinding[2]){
+            {"malloc", (void *)orig_malloc, (void **)&orig_malloc},
+            {"free", (void *)orig_free, (void **)&orig_free},
+        },
+        2);
+#endif
     write(STDOUT_FILENO, "ubd\n", 4);
 }
 #endif

@@ -1,3 +1,4 @@
+#include "malloc-wrapped.h"
 #undef NDEBUG
 #include <assert.h>
 
@@ -41,9 +42,15 @@ extern typeof(malloc_size) mi_malloc_size;
 extern typeof(malloc_good_size) mi_malloc_good_size;
 extern typeof(malloc_good_size) mi_good_size;
 
-DYLD_INTERPOSE(mi_malloc_ext, malloc);
+extern typeof(malloc) printing_malloc;
+extern typeof(free) printing_free;
+
+DYLD_INTERPOSE(printing_malloc, malloc);
+DYLD_INTERPOSE(printing_free, free);
+
+// DYLD_INTERPOSE(mi_malloc_ext, malloc);
 // DYLD_INTERPOSE(mi_calloc, calloc);
-DYLD_INTERPOSE(mi_free_ext, free);
+// DYLD_INTERPOSE(mi_free_ext, free);
 // DYLD_INTERPOSE(mi_realloc, realloc);
 // DYLD_INTERPOSE(mi_reallocf, reallocf);
 // DYLD_INTERPOSE(mi_reallocarray, reallocarray);
@@ -58,8 +65,8 @@ DYLD_INTERPOSE(mi_free_ext, free);
 extern typeof(malloc) _Znwm;
 extern typeof(free) _ZdlPv;
 
-DYLD_INTERPOSE(mi_malloc_ext, _Znwm);
-DYLD_INTERPOSE(mi_free_ext, _ZdlPv);
+// DYLD_INTERPOSE(mi_malloc_ext, _Znwm);
+// DYLD_INTERPOSE(mi_free_ext, _ZdlPv);
 
 struct _libpthread_functions {
     unsigned long version;

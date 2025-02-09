@@ -53,7 +53,7 @@ set_target_properties(z3-test PROPERTIES
 )
 
 # mimalloc-extern.c
-add_library(mimalloc-tester-c SHARED mimalloc-tester-dylib-c.c noalloc-stdio.c)
+add_library(mimalloc-tester-c SHARED mimalloc-tester-dylib-c.c noalloc-stdio.c malloc-wrapped.c mimalloc-fishhook.c fishhook.c dyld-interposing.c)
 # target_link_libraries(mimalloc-tester-c PRIVATE mimalloc-obj)
 set_target_properties(mimalloc-tester-c PROPERTIES
     C_STANDARD 17

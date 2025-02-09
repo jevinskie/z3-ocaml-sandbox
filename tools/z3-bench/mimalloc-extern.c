@@ -6,13 +6,13 @@ ALIAS_GLOBAL("mi_malloc_ext", "mi_malloc");
 ALIAS_GLOBAL("mi_free_ext", "mi_free");
 // ALIAS_PRIVATE_EXTERN("malloc", "mi_malloc");
 // ALIAS_PRIVATE_EXTERN("free", "mi_free");
-ALIAS_GLOBAL("malloc", "mi_malloc");
-ALIAS_GLOBAL("free", "mi_free");
+// ALIAS_GLOBAL("malloc", "mi_malloc");
+// ALIAS_GLOBAL("free", "mi_free");
 
 // C++ new/delete operator aliases
-ALIAS_GLOBAL("_Znwm_ext", "mi_malloc");
-ALIAS_GLOBAL("_ZdlPv_ext", "mi_free");
+// ALIAS_GLOBAL("_Znwm_ext", "mi_malloc");
+// ALIAS_GLOBAL("_ZdlPv_ext", "mi_free");
 // ALIAS_PRIVATE_EXTERN("_Znwm", "mi_malloc");
 // ALIAS_PRIVATE_EXTERN("_ZdlPv", "mi_free");
-ALIAS_GLOBAL("_Znwm", "mi_malloc");
-ALIAS_GLOBAL("_ZdlPv", "mi_free");
+// ALIAS_GLOBAL("_Znwm", "mi_malloc");
+// ALIAS_GLOBAL("_ZdlPv", "mi_free");

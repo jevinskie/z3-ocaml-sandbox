@@ -63,7 +63,7 @@ __attribute__((visibility("default"))) int mimalloc_tester_main(int argc, const 
     puts_ptr(p);
     puts(p);
     free(p);
-    dump_tsd();
+    // dump_tsd();
     puts("pthread_self() =>");
     puts_ptr(pthread_self());
     puts("jev_pthread_self() =>");
