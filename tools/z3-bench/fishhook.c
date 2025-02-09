@@ -60,8 +60,26 @@ typedef struct nlist nlist_t;
 #define SEG_DATA_CONST "__DATA_CONST"
 #endif
 
-static typeof(malloc) *fishhook_malloc = mi_malloc;
-static typeof(free) *fishhook_free     = mi_free;
+// static typeof(malloc) *fishhook_malloc = mi_malloc;
+// static typeof(free) *fishhook_free     = mi_free;
+
+static char fishhook_static_heap[16 * 1024];
+static void *const fishhook_heap_end = fishhook_static_heap + sizeof(fishhook_static_heap);
+static void *fishhook_heap_cur_ptr   = fishhook_static_heap;
+
+static void *fishhook_malloc(size_t sz) {
+    void *next = fishhook_heap_cur_ptr + sz;
+    if (next > fishhook_heap_end) {
+        abort();
+    }
+    void *p               = fishhook_heap_cur_ptr;
+    fishhook_heap_cur_ptr = next;
+    return p;
+}
+
+static void fishhook_free(void *p) {
+    (void)p;
+}
 
 struct rebindings_entry {
     struct rebinding *rebindings;
