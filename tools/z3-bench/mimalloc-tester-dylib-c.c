@@ -13,9 +13,11 @@ static __attribute__((always_inline, const)) void **jev_os_tsd_get_base(void) {
 }
 
 static __attribute__((always_inline, const)) juint64_t jev_thread_id(void) {
-    juintptr_t tsd;
-    __asm__("mrs %0, TPIDRRO_EL0" : "=r"(tsd));
-    return (void **)tsd;
+    return (juint64_t)jev_os_tsd_get_base()[-1];
+}
+
+static __attribute__((always_inline, const)) pthread_t jev_pthread_self(void) {
+    return (pthread_t)jev_os_tsd_get_base()[0];
 }
 
 static void dump_tsd(void) {
@@ -62,11 +64,15 @@ __attribute__((visibility("default"))) int mimalloc_tester_main(int argc, const 
     puts(p);
     free(p);
     dump_tsd();
-    dump_thread_id();
     puts("pthread_self() =>");
     puts_ptr(pthread_self());
+    puts("jev_pthread_self() =>");
+    puts_ptr(jev_pthread_self());
     puts("__thread_selfid() =>");
     puts_ptr((void *)(juintptr_t)__thread_selfid());
+    dump_thread_id();
+    puts("jev_thread_id() =>");
+    puts_ptr((void *)jev_thread_id());
     // printf("thread_id printf: %p\n", (void*)(juintptr_t))
     return 0;
 }
