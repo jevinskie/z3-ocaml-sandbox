@@ -1,7 +1,7 @@
 #include "noalloc-stdio.h"
 #include "types-bare.h"
 
-static char nibble_to_ascii_hex(const juint8_t nib) {
+char nibble_to_ascii_hex(const juint8_t nib) {
     if (nib <= 9) {
         return nib + '0';
     } else if (nib >= 0xA && nib <= 0xF) {
@@ -11,10 +11,25 @@ static char nibble_to_ascii_hex(const juint8_t nib) {
     }
 }
 
-void puts_ptr(const void *p) {
-    char buf[2 + sizeof(p) * 2 + 1] = {'0', 'x'};
-    char *os                        = &buf[2];
-    juintptr_t ip                   = (juintptr_t)p;
+void write_size_to_strbuf(juintptr_t v, char *buf, const jsize_t sz) {
+    jsize_t idx = sz - 1;
+    char *os    = buf + sz - 1;
+    _Bool done  = 0;
+    for (jsize_t i = 0; i < sz; ++i) {
+        *os-- = done ? ' ' : (v % 10) + '0';
+        v /= 10;
+        done |= v == 0;
+    }
+    if (!done) {
+        abort();
+    }
+}
+
+void write_ptr_to_strbuf(const void *p, char *buf) {
+    buf[0]        = '0';
+    buf[1]        = 'x';
+    char *os      = &buf[2];
+    juintptr_t ip = (juintptr_t)p;
     juint8_t ipb[sizeof(ip)];
     memcpy(ipb, &ip, sizeof(ip));
     // assumes little endian
@@ -27,5 +42,11 @@ void puts_ptr(const void *p) {
         os[1]       = nibble_to_ascii_hex(bl);
         os += 2;
     }
-    puts(buf);
+}
+
+int puts_ptr(const void *p) {
+    char buf[2 + sizeof(p) * 2 + 1];
+    write_ptr_to_strbuf(p, buf);
+    buf[sizeof(buf) - 1] = '\0';
+    return puts(buf);
 }

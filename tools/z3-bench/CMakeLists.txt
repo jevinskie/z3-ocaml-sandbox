@@ -52,7 +52,9 @@ set_target_properties(z3-test PROPERTIES
     EXCLUDE_FROM_ALL ON
 )
 
+# mimalloc-extern.c
 add_library(mimalloc-tester-c SHARED mimalloc-tester-dylib-c.c noalloc-stdio.c)
+# target_link_libraries(mimalloc-tester-c PRIVATE mimalloc-obj)
 set_target_properties(mimalloc-tester-c PROPERTIES
     C_STANDARD 17
     C_EXTENSIONS ON
