@@ -1,6 +1,13 @@
 #include "noalloc-stdio.h"
 #include "types-bare.h"
 
+jsize_t puts_str(const char *s) {
+    const jsize_t sz = strlen(s);
+    write(STDOUT_FILENO, s, sz);
+    write(STDOUT_FILENO, "\n", 1);
+    return sz;
+}
+
 char nibble_to_ascii_hex(const juint8_t nib) {
     if (nib <= 9) {
         return nib + '0';
@@ -48,5 +55,5 @@ int puts_ptr(const void *p) {
     char buf[2 + sizeof(p) * 2 + 1];
     write_ptr_to_strbuf(p, buf);
     buf[sizeof(buf) - 1] = '\0';
-    return puts(buf);
+    return puts_str(buf);
 }

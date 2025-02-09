@@ -197,7 +197,7 @@ static void perform_rebinding_with_section(struct rebindings_entry *rebindings, 
     }
 }
 
-extern int puts(const char *s);
+extern int puts_str(const char *s);
 
 static void rebind_symbols_for_image(struct rebindings_entry *rebindings, const struct mach_header *header,
                                      intptr_t slide) {
@@ -206,12 +206,12 @@ static void rebind_symbols_for_image(struct rebindings_entry *rebindings, const 
         return;
     }
 
-    puts("rebind_symbols_for_image");
-    puts(info.dli_fname);
+    puts_str("rebind_symbols_for_image");
+    puts_str(info.dli_fname);
 
     if (!strcmp(info.dli_fname, "/usr/lib/system/libsystem_malloc.dylib") ||
         !strcmp(info.dli_fname, "/usr/lib/system/libsystem_pthread.dylib")) {
-        puts("skip");
+        puts_str("skip");
         return;
     }
 

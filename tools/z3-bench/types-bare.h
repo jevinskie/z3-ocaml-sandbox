@@ -34,4 +34,5 @@ extern char *strdup(const char *s);
 extern int pthread_threadid_np(pthread_t thread, juint64_t *thread_id);
 extern pthread_t pthread_self(void);
 extern juint64_t __thread_selfid(void);
-extern jssize_t write(int fd, const void *buf, jsize_t sz);
+extern jsize_t write(int fd, const void *buf, jsize_t sz);
+extern jsize_t strlen(const char *p);

@@ -26,10 +26,10 @@ static void *pthread_test(void *arg) {
 
 int main(int argc, const char **argv) {
     int res;
-    puts("exe malloc:");
+    puts_str("exe malloc:");
     puts_ptr(malloc);
     void *p = malloc(4);
-    puts("exe malloc(4) =");
+    puts_str("exe malloc(4) =");
     puts_ptr(p);
     free(p);
 #if 0
@@ -39,7 +39,7 @@ int main(int argc, const char **argv) {
     res = pthread_join(t, NULL);
     printf("pthread_join(): %d\n", res);
 #endif
-    puts("mimalloc_tester_main:");
+    puts_str("mimalloc_tester_main:");
     puts_ptr(mimalloc_tester_main);
     // puts_ptr(NULL);
     return mimalloc_tester_main(argc, argv);

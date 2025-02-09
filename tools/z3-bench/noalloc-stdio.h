@@ -3,6 +3,7 @@
 #include "types-bare.h"
 
 extern int puts(const char *s);
+extern jsize_t puts_str(const char *s);
 extern int puts_ptr(const void *p);
 extern void write_size_to_strbuf(juintptr_t v, char *buf, const jsize_t sz);
 extern char nibble_to_ascii_hex(const juint8_t nib);
