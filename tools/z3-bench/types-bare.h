@@ -11,3 +11,4 @@ typedef __UINTPTR_TYPE__ juintptr_t;
 __attribute__((noreturn)) extern void abort(void);
 extern int printf(const char *fmt, ...);
 extern void *memcpy(void *dst, const void *src, jsize_t sz);
+extern char *strdup(const char *s);
