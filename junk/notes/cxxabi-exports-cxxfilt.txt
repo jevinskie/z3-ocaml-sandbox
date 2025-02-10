@@ -1,0 +1,368 @@
+std::bad_typeid::what() const
+std::logic_error::what() const
+std::bad_exception::what() const
+std::runtime_error::what() const
+std::bad_array_new_length::what() const
+std::bad_cast::what() const
+std::bad_alloc::what() const
+std::exception::what() const
+std::bad_typeid::bad_typeid()
+std::bad_typeid::bad_typeid()
+std::bad_typeid::~bad_typeid()
+std::bad_typeid::~bad_typeid()
+std::bad_typeid::~bad_typeid()
+std::logic_error::~logic_error()
+std::logic_error::~logic_error()
+std::logic_error::~logic_error()
+std::range_error::~range_error()
+std::range_error::~range_error()
+std::range_error::~range_error()
+std::domain_error::~domain_error()
+std::domain_error::~domain_error()
+std::domain_error::~domain_error()
+std::length_error::~length_error()
+std::length_error::~length_error()
+std::length_error::~length_error()
+std::out_of_range::~out_of_range()
+std::out_of_range::~out_of_range()
+std::out_of_range::~out_of_range()
+std::bad_exception::~bad_exception()
+std::bad_exception::~bad_exception()
+std::bad_exception::~bad_exception()
+std::runtime_error::~runtime_error()
+std::runtime_error::~runtime_error()
+std::runtime_error::~runtime_error()
+std::overflow_error::~overflow_error()
+std::overflow_error::~overflow_error()
+std::overflow_error::~overflow_error()
+std::underflow_error::~underflow_error()
+std::underflow_error::~underflow_error()
+std::underflow_error::~underflow_error()
+std::invalid_argument::~invalid_argument()
+std::invalid_argument::~invalid_argument()
+std::invalid_argument::~invalid_argument()
+std::bad_array_new_length::bad_array_new_length()
+std::bad_array_new_length::bad_array_new_length()
+std::bad_array_new_length::~bad_array_new_length()
+std::bad_array_new_length::~bad_array_new_length()
+std::bad_array_new_length::~bad_array_new_length()
+std::bad_cast::bad_cast()
+std::bad_cast::bad_cast()
+std::bad_cast::~bad_cast()
+std::bad_cast::~bad_cast()
+std::bad_cast::~bad_cast()
+std::bad_alloc::bad_alloc()
+std::bad_alloc::bad_alloc()
+std::bad_alloc::~bad_alloc()
+std::bad_alloc::~bad_alloc()
+std::bad_alloc::~bad_alloc()
+std::exception::~exception()
+std::exception::~exception()
+std::exception::~exception()
+std::type_info::~type_info()
+std::type_info::~type_info()
+std::type_info::~type_info()
+std::unexpected()
+std::get_terminate()
+std::set_terminate(void (*)())
+std::get_unexpected()
+std::set_unexpected(void (*)())
+std::get_new_handler()
+std::set_new_handler(void (*)())
+std::terminate()
+typeinfo for half
+typeinfo for char32_t
+typeinfo for std::nullptr_t
+typeinfo for char16_t
+typeinfo for char8_t
+typeinfo for __cxxabiv1::__enum_type_info
+typeinfo for __cxxabiv1::__shim_type_info
+typeinfo for __cxxabiv1::__array_type_info
+typeinfo for __cxxabiv1::__class_type_info
+typeinfo for __cxxabiv1::__pbase_type_info
+typeinfo for __cxxabiv1::__pointer_type_info
+typeinfo for __cxxabiv1::__function_type_info
+typeinfo for __cxxabiv1::__si_class_type_info
+typeinfo for __cxxabiv1::__vmi_class_type_info
+typeinfo for __cxxabiv1::__fundamental_type_info
+typeinfo for __cxxabiv1::__pointer_to_member_type_info
+typeinfo for half*
+typeinfo for char32_t*
+typeinfo for std::nullptr_t*
+typeinfo for char16_t*
+typeinfo for char8_t*
+typeinfo for half const*
+typeinfo for char32_t const*
+typeinfo for std::nullptr_t const*
+typeinfo for char16_t const*
+typeinfo for char8_t const*
+typeinfo for signed char const*
+typeinfo for bool const*
+typeinfo for char const*
+typeinfo for double const*
+typeinfo for long double const*
+typeinfo for float const*
+typeinfo for __float128 const*
+typeinfo for unsigned char const*
+typeinfo for int const*
+typeinfo for unsigned int const*
+typeinfo for long const*
+typeinfo for unsigned long const*
+typeinfo for __int128 const*
+typeinfo for unsigned __int128 const*
+typeinfo for short const*
+typeinfo for unsigned short const*
+typeinfo for void const*
+typeinfo for wchar_t const*
+typeinfo for long long const*
+typeinfo for unsigned long long const*
+typeinfo for signed char*
+typeinfo for bool*
+typeinfo for char*
+typeinfo for double*
+typeinfo for long double*
+typeinfo for float*
+typeinfo for __float128*
+typeinfo for unsigned char*
+typeinfo for int*
+typeinfo for unsigned int*
+typeinfo for long*
+typeinfo for unsigned long*
+typeinfo for __int128*
+typeinfo for unsigned __int128*
+typeinfo for short*
+typeinfo for unsigned short*
+typeinfo for void*
+typeinfo for wchar_t*
+typeinfo for long long*
+typeinfo for unsigned long long*
+typeinfo for std::bad_typeid
+typeinfo for std::logic_error
+typeinfo for std::range_error
+typeinfo for std::domain_error
+typeinfo for std::length_error
+typeinfo for std::out_of_range
+typeinfo for std::bad_exception
+typeinfo for std::runtime_error
+typeinfo for std::overflow_error
+typeinfo for std::underflow_error
+typeinfo for std::invalid_argument
+typeinfo for std::bad_array_new_length
+typeinfo for std::bad_cast
+typeinfo for std::bad_alloc
+typeinfo for std::exception
+typeinfo for std::type_info
+typeinfo for signed char
+typeinfo for bool
+typeinfo for char
+typeinfo for double
+typeinfo for long double
+typeinfo for float
+typeinfo for __float128
+typeinfo for unsigned char
+typeinfo for int
+typeinfo for unsigned int
+typeinfo for long
+typeinfo for unsigned long
+typeinfo for __int128
+typeinfo for unsigned __int128
+typeinfo for short
+typeinfo for unsigned short
+typeinfo for void
+typeinfo for wchar_t
+typeinfo for long long
+typeinfo for unsigned long long
+typeinfo name for half
+typeinfo name for char32_t
+typeinfo name for std::nullptr_t
+typeinfo name for char16_t
+typeinfo name for char8_t
+typeinfo name for __cxxabiv1::__enum_type_info
+typeinfo name for __cxxabiv1::__shim_type_info
+typeinfo name for __cxxabiv1::__array_type_info
+typeinfo name for __cxxabiv1::__class_type_info
+typeinfo name for __cxxabiv1::__pbase_type_info
+typeinfo name for __cxxabiv1::__pointer_type_info
+typeinfo name for __cxxabiv1::__function_type_info
+typeinfo name for __cxxabiv1::__si_class_type_info
+typeinfo name for __cxxabiv1::__vmi_class_type_info
+typeinfo name for __cxxabiv1::__fundamental_type_info
+typeinfo name for __cxxabiv1::__pointer_to_member_type_info
+typeinfo name for half*
+typeinfo name for char32_t*
+typeinfo name for std::nullptr_t*
+typeinfo name for char16_t*
+typeinfo name for char8_t*
+typeinfo name for half const*
+typeinfo name for char32_t const*
+typeinfo name for std::nullptr_t const*
+typeinfo name for char16_t const*
+typeinfo name for char8_t const*
+typeinfo name for signed char const*
+typeinfo name for bool const*
+typeinfo name for char const*
+typeinfo name for double const*
+typeinfo name for long double const*
+typeinfo name for float const*
+typeinfo name for __float128 const*
+typeinfo name for unsigned char const*
+typeinfo name for int const*
+typeinfo name for unsigned int const*
+typeinfo name for long const*
+typeinfo name for unsigned long const*
+typeinfo name for __int128 const*
+typeinfo name for unsigned __int128 const*
+typeinfo name for short const*
+typeinfo name for unsigned short const*
+typeinfo name for void const*
+typeinfo name for wchar_t const*
+typeinfo name for long long const*
+typeinfo name for unsigned long long const*
+typeinfo name for signed char*
+typeinfo name for bool*
+typeinfo name for char*
+typeinfo name for double*
+typeinfo name for long double*
+typeinfo name for float*
+typeinfo name for __float128*
+typeinfo name for unsigned char*
+typeinfo name for int*
+typeinfo name for unsigned int*
+typeinfo name for long*
+typeinfo name for unsigned long*
+typeinfo name for __int128*
+typeinfo name for unsigned __int128*
+typeinfo name for short*
+typeinfo name for unsigned short*
+typeinfo name for void*
+typeinfo name for wchar_t*
+typeinfo name for long long*
+typeinfo name for unsigned long long*
+typeinfo name for std::bad_typeid
+typeinfo name for std::logic_error
+typeinfo name for std::range_error
+typeinfo name for std::domain_error
+typeinfo name for std::length_error
+typeinfo name for std::out_of_range
+typeinfo name for std::bad_exception
+typeinfo name for std::runtime_error
+typeinfo name for std::overflow_error
+typeinfo name for std::underflow_error
+typeinfo name for std::invalid_argument
+typeinfo name for std::bad_array_new_length
+typeinfo name for std::bad_cast
+typeinfo name for std::bad_alloc
+typeinfo name for std::exception
+typeinfo name for std::type_info
+typeinfo name for signed char
+typeinfo name for bool
+typeinfo name for char
+typeinfo name for double
+typeinfo name for long double
+typeinfo name for float
+typeinfo name for __float128
+typeinfo name for unsigned char
+typeinfo name for int
+typeinfo name for unsigned int
+typeinfo name for long
+typeinfo name for unsigned long
+typeinfo name for __int128
+typeinfo name for unsigned __int128
+typeinfo name for short
+typeinfo name for unsigned short
+typeinfo name for void
+typeinfo name for wchar_t
+typeinfo name for long long
+typeinfo name for unsigned long long
+vtable for __cxxabiv1::__enum_type_info
+vtable for __cxxabiv1::__shim_type_info
+vtable for __cxxabiv1::__array_type_info
+vtable for __cxxabiv1::__class_type_info
+vtable for __cxxabiv1::__pbase_type_info
+vtable for __cxxabiv1::__pointer_type_info
+vtable for __cxxabiv1::__function_type_info
+vtable for __cxxabiv1::__si_class_type_info
+vtable for __cxxabiv1::__vmi_class_type_info
+vtable for __cxxabiv1::__fundamental_type_info
+vtable for __cxxabiv1::__pointer_to_member_type_info
+vtable for std::bad_typeid
+vtable for std::logic_error
+vtable for std::range_error
+vtable for std::domain_error
+vtable for std::length_error
+vtable for std::out_of_range
+vtable for std::bad_exception
+vtable for std::runtime_error
+vtable for std::overflow_error
+vtable for std::underflow_error
+vtable for std::invalid_argument
+vtable for std::bad_array_new_length
+vtable for std::bad_cast
+vtable for std::bad_alloc
+vtable for std::exception
+vtable for std::type_info
+operator delete[](void*)
+operator delete[](void*, std::nothrow_t const&)
+operator delete[](void*, std::align_val_t)
+operator delete[](void*, std::align_val_t, std::nothrow_t const&)
+operator delete[](void*, unsigned long)
+operator delete[](void*, unsigned long, std::align_val_t)
+operator delete(void*)
+operator delete(void*, std::nothrow_t const&)
+operator delete(void*, std::align_val_t)
+operator delete(void*, std::align_val_t, std::nothrow_t const&)
+operator delete(void*, unsigned long)
+operator delete(void*, unsigned long, std::align_val_t)
+operator new[](unsigned long)
+operator new[](unsigned long, std::nothrow_t const&)
+operator new[](unsigned long, std::align_val_t)
+operator new[](unsigned long, std::align_val_t, std::nothrow_t const&)
+operator new[](unsigned long, std::__type_descriptor_t)
+operator new(unsigned long)
+operator new(unsigned long, std::nothrow_t const&)
+operator new(unsigned long, std::align_val_t)
+operator new(unsigned long, std::align_val_t, std::nothrow_t const&)
+operator new(unsigned long, std::__type_descriptor_t)
+___cxa_allocate_dependent_exception
+___cxa_allocate_exception
+___cxa_bad_cast
+___cxa_bad_typeid
+___cxa_begin_catch
+___cxa_call_unexpected
+___cxa_current_exception_type
+___cxa_current_primary_exception
+___cxa_decrement_exception_refcount
+___cxa_deleted_virtual
+___cxa_demangle
+___cxa_end_catch
+___cxa_free_dependent_exception
+___cxa_free_exception
+___cxa_get_exception_ptr
+___cxa_get_globals
+___cxa_get_globals_fast
+___cxa_guard_abort
+___cxa_guard_acquire
+___cxa_guard_release
+___cxa_increment_exception_refcount
+___cxa_new_handler
+___cxa_pure_virtual
+___cxa_rethrow
+___cxa_rethrow_primary_exception
+___cxa_terminate_handler
+___cxa_throw
+___cxa_throw_bad_array_new_length
+___cxa_uncaught_exception
+___cxa_uncaught_exceptions
+___cxa_unexpected_handler
+___cxa_vec_cctor
+___cxa_vec_cleanup
+___cxa_vec_ctor
+___cxa_vec_delete
+___cxa_vec_delete2
+___cxa_vec_delete3
+___cxa_vec_dtor
+___cxa_vec_new
+___cxa_vec_new2
+___cxa_vec_new3
+___dynamic_cast
+___gxx_personality_v0

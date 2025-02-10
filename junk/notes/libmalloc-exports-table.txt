@@ -1,0 +1,12 @@
+malloc           -> mi_malloc
+calloc           -> mi_calloc
+free             -> mi_free
+realloc          -> mi_realloc
+reallocf         -> mi_reallocf
+reallocarray     -> mi_reallocarray
+valloc           -> mi_valloc
+vfree            -> mi_free
+aligned_alloc    -> mi_aligned_alloc
+posix_memalign   -> mi_posix_memalign
+malloc_good_size -> mi_good_size
+malloc_size      -> mi_good_size

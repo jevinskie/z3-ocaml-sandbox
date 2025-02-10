@@ -1,0 +1,368 @@
+__ZNKSt10bad_typeid4whatEv                         -> std::bad_typeid::what() const
+__ZNKSt11logic_error4whatEv                        -> std::logic_error::what() const
+__ZNKSt13bad_exception4whatEv                      -> std::bad_exception::what() const
+__ZNKSt13runtime_error4whatEv                      -> std::runtime_error::what() const
+__ZNKSt20bad_array_new_length4whatEv               -> std::bad_array_new_length::what() const
+__ZNKSt8bad_cast4whatEv                            -> std::bad_cast::what() const
+__ZNKSt9bad_alloc4whatEv                           -> std::bad_alloc::what() const
+__ZNKSt9exception4whatEv                           -> std::exception::what() const
+__ZNSt10bad_typeidC1Ev                             -> std::bad_typeid::bad_typeid()
+__ZNSt10bad_typeidC2Ev                             -> std::bad_typeid::bad_typeid()
+__ZNSt10bad_typeidD0Ev                             -> std::bad_typeid::~bad_typeid()
+__ZNSt10bad_typeidD1Ev                             -> std::bad_typeid::~bad_typeid()
+__ZNSt10bad_typeidD2Ev                             -> std::bad_typeid::~bad_typeid()
+__ZNSt11logic_errorD0Ev                            -> std::logic_error::~logic_error()
+__ZNSt11logic_errorD1Ev                            -> std::logic_error::~logic_error()
+__ZNSt11logic_errorD2Ev                            -> std::logic_error::~logic_error()
+__ZNSt11range_errorD0Ev                            -> std::range_error::~range_error()
+__ZNSt11range_errorD1Ev                            -> std::range_error::~range_error()
+__ZNSt11range_errorD2Ev                            -> std::range_error::~range_error()
+__ZNSt12domain_errorD0Ev                           -> std::domain_error::~domain_error()
+__ZNSt12domain_errorD1Ev                           -> std::domain_error::~domain_error()
+__ZNSt12domain_errorD2Ev                           -> std::domain_error::~domain_error()
+__ZNSt12length_errorD0Ev                           -> std::length_error::~length_error()
+__ZNSt12length_errorD1Ev                           -> std::length_error::~length_error()
+__ZNSt12length_errorD2Ev                           -> std::length_error::~length_error()
+__ZNSt12out_of_rangeD0Ev                           -> std::out_of_range::~out_of_range()
+__ZNSt12out_of_rangeD1Ev                           -> std::out_of_range::~out_of_range()
+__ZNSt12out_of_rangeD2Ev                           -> std::out_of_range::~out_of_range()
+__ZNSt13bad_exceptionD0Ev                          -> std::bad_exception::~bad_exception()
+__ZNSt13bad_exceptionD1Ev                          -> std::bad_exception::~bad_exception()
+__ZNSt13bad_exceptionD2Ev                          -> std::bad_exception::~bad_exception()
+__ZNSt13runtime_errorD0Ev                          -> std::runtime_error::~runtime_error()
+__ZNSt13runtime_errorD1Ev                          -> std::runtime_error::~runtime_error()
+__ZNSt13runtime_errorD2Ev                          -> std::runtime_error::~runtime_error()
+__ZNSt14overflow_errorD0Ev                         -> std::overflow_error::~overflow_error()
+__ZNSt14overflow_errorD1Ev                         -> std::overflow_error::~overflow_error()
+__ZNSt14overflow_errorD2Ev                         -> std::overflow_error::~overflow_error()
+__ZNSt15underflow_errorD0Ev                        -> std::underflow_error::~underflow_error()
+__ZNSt15underflow_errorD1Ev                        -> std::underflow_error::~underflow_error()
+__ZNSt15underflow_errorD2Ev                        -> std::underflow_error::~underflow_error()
+__ZNSt16invalid_argumentD0Ev                       -> std::invalid_argument::~invalid_argument()
+__ZNSt16invalid_argumentD1Ev                       -> std::invalid_argument::~invalid_argument()
+__ZNSt16invalid_argumentD2Ev                       -> std::invalid_argument::~invalid_argument()
+__ZNSt20bad_array_new_lengthC1Ev                   -> std::bad_array_new_length::bad_array_new_length()
+__ZNSt20bad_array_new_lengthC2Ev                   -> std::bad_array_new_length::bad_array_new_length()
+__ZNSt20bad_array_new_lengthD0Ev                   -> std::bad_array_new_length::~bad_array_new_length()
+__ZNSt20bad_array_new_lengthD1Ev                   -> std::bad_array_new_length::~bad_array_new_length()
+__ZNSt20bad_array_new_lengthD2Ev                   -> std::bad_array_new_length::~bad_array_new_length()
+__ZNSt8bad_castC1Ev                                -> std::bad_cast::bad_cast()
+__ZNSt8bad_castC2Ev                                -> std::bad_cast::bad_cast()
+__ZNSt8bad_castD0Ev                                -> std::bad_cast::~bad_cast()
+__ZNSt8bad_castD1Ev                                -> std::bad_cast::~bad_cast()
+__ZNSt8bad_castD2Ev                                -> std::bad_cast::~bad_cast()
+__ZNSt9bad_allocC1Ev                               -> std::bad_alloc::bad_alloc()
+__ZNSt9bad_allocC2Ev                               -> std::bad_alloc::bad_alloc()
+__ZNSt9bad_allocD0Ev                               -> std::bad_alloc::~bad_alloc()
+__ZNSt9bad_allocD1Ev                               -> std::bad_alloc::~bad_alloc()
+__ZNSt9bad_allocD2Ev                               -> std::bad_alloc::~bad_alloc()
+__ZNSt9exceptionD0Ev                               -> std::exception::~exception()
+__ZNSt9exceptionD1Ev                               -> std::exception::~exception()
+__ZNSt9exceptionD2Ev                               -> std::exception::~exception()
+__ZNSt9type_infoD0Ev                               -> std::type_info::~type_info()
+__ZNSt9type_infoD1Ev                               -> std::type_info::~type_info()
+__ZNSt9type_infoD2Ev                               -> std::type_info::~type_info()
+__ZSt10unexpectedv                                 -> std::unexpected()
+__ZSt13get_terminatev                              -> std::get_terminate()
+__ZSt13set_terminatePFvvE                          -> std::set_terminate(void (*)())
+__ZSt14get_unexpectedv                             -> std::get_unexpected()
+__ZSt14set_unexpectedPFvvE                         -> std::set_unexpected(void (*)())
+__ZSt15get_new_handlerv                            -> std::get_new_handler()
+__ZSt15set_new_handlerPFvvE                        -> std::set_new_handler(void (*)())
+__ZSt9terminatev                                   -> std::terminate()
+__ZTIDh                                            -> typeinfo for half
+__ZTIDi                                            -> typeinfo for char32_t
+__ZTIDn                                            -> typeinfo for std::nullptr_t
+__ZTIDs                                            -> typeinfo for char16_t
+__ZTIDu                                            -> typeinfo for char8_t
+__ZTIN10__cxxabiv116__enum_type_infoE              -> typeinfo for __cxxabiv1::__enum_type_info
+__ZTIN10__cxxabiv116__shim_type_infoE              -> typeinfo for __cxxabiv1::__shim_type_info
+__ZTIN10__cxxabiv117__array_type_infoE             -> typeinfo for __cxxabiv1::__array_type_info
+__ZTIN10__cxxabiv117__class_type_infoE             -> typeinfo for __cxxabiv1::__class_type_info
+__ZTIN10__cxxabiv117__pbase_type_infoE             -> typeinfo for __cxxabiv1::__pbase_type_info
+__ZTIN10__cxxabiv119__pointer_type_infoE           -> typeinfo for __cxxabiv1::__pointer_type_info
+__ZTIN10__cxxabiv120__function_type_infoE          -> typeinfo for __cxxabiv1::__function_type_info
+__ZTIN10__cxxabiv120__si_class_type_infoE          -> typeinfo for __cxxabiv1::__si_class_type_info
+__ZTIN10__cxxabiv121__vmi_class_type_infoE         -> typeinfo for __cxxabiv1::__vmi_class_type_info
+__ZTIN10__cxxabiv123__fundamental_type_infoE       -> typeinfo for __cxxabiv1::__fundamental_type_info
+__ZTIN10__cxxabiv129__pointer_to_member_type_infoE -> typeinfo for __cxxabiv1::__pointer_to_member_type_info
+__ZTIPDh                                           -> typeinfo for half*
+__ZTIPDi                                           -> typeinfo for char32_t*
+__ZTIPDn                                           -> typeinfo for std::nullptr_t*
+__ZTIPDs                                           -> typeinfo for char16_t*
+__ZTIPDu                                           -> typeinfo for char8_t*
+__ZTIPKDh                                          -> typeinfo for half const*
+__ZTIPKDi                                          -> typeinfo for char32_t const*
+__ZTIPKDn                                          -> typeinfo for std::nullptr_t const*
+__ZTIPKDs                                          -> typeinfo for char16_t const*
+__ZTIPKDu                                          -> typeinfo for char8_t const*
+__ZTIPKa                                           -> typeinfo for signed char const*
+__ZTIPKb                                           -> typeinfo for bool const*
+__ZTIPKc                                           -> typeinfo for char const*
+__ZTIPKd                                           -> typeinfo for double const*
+__ZTIPKe                                           -> typeinfo for long double const*
+__ZTIPKf                                           -> typeinfo for float const*
+__ZTIPKg                                           -> typeinfo for __float128 const*
+__ZTIPKh                                           -> typeinfo for unsigned char const*
+__ZTIPKi                                           -> typeinfo for int const*
+__ZTIPKj                                           -> typeinfo for unsigned int const*
+__ZTIPKl                                           -> typeinfo for long const*
+__ZTIPKm                                           -> typeinfo for unsigned long const*
+__ZTIPKn                                           -> typeinfo for __int128 const*
+__ZTIPKo                                           -> typeinfo for unsigned __int128 const*
+__ZTIPKs                                           -> typeinfo for short const*
+__ZTIPKt                                           -> typeinfo for unsigned short const*
+__ZTIPKv                                           -> typeinfo for void const*
+__ZTIPKw                                           -> typeinfo for wchar_t const*
+__ZTIPKx                                           -> typeinfo for long long const*
+__ZTIPKy                                           -> typeinfo for unsigned long long const*
+__ZTIPa                                            -> typeinfo for signed char*
+__ZTIPb                                            -> typeinfo for bool*
+__ZTIPc                                            -> typeinfo for char*
+__ZTIPd                                            -> typeinfo for double*
+__ZTIPe                                            -> typeinfo for long double*
+__ZTIPf                                            -> typeinfo for float*
+__ZTIPg                                            -> typeinfo for __float128*
+__ZTIPh                                            -> typeinfo for unsigned char*
+__ZTIPi                                            -> typeinfo for int*
+__ZTIPj                                            -> typeinfo for unsigned int*
+__ZTIPl                                            -> typeinfo for long*
+__ZTIPm                                            -> typeinfo for unsigned long*
+__ZTIPn                                            -> typeinfo for __int128*
+__ZTIPo                                            -> typeinfo for unsigned __int128*
+__ZTIPs                                            -> typeinfo for short*
+__ZTIPt                                            -> typeinfo for unsigned short*
+__ZTIPv                                            -> typeinfo for void*
+__ZTIPw                                            -> typeinfo for wchar_t*
+__ZTIPx                                            -> typeinfo for long long*
+__ZTIPy                                            -> typeinfo for unsigned long long*
+__ZTISt10bad_typeid                                -> typeinfo for std::bad_typeid
+__ZTISt11logic_error                               -> typeinfo for std::logic_error
+__ZTISt11range_error                               -> typeinfo for std::range_error
+__ZTISt12domain_error                              -> typeinfo for std::domain_error
+__ZTISt12length_error                              -> typeinfo for std::length_error
+__ZTISt12out_of_range                              -> typeinfo for std::out_of_range
+__ZTISt13bad_exception                             -> typeinfo for std::bad_exception
+__ZTISt13runtime_error                             -> typeinfo for std::runtime_error
+__ZTISt14overflow_error                            -> typeinfo for std::overflow_error
+__ZTISt15underflow_error                           -> typeinfo for std::underflow_error
+__ZTISt16invalid_argument                          -> typeinfo for std::invalid_argument
+__ZTISt20bad_array_new_length                      -> typeinfo for std::bad_array_new_length
+__ZTISt8bad_cast                                   -> typeinfo for std::bad_cast
+__ZTISt9bad_alloc                                  -> typeinfo for std::bad_alloc
+__ZTISt9exception                                  -> typeinfo for std::exception
+__ZTISt9type_info                                  -> typeinfo for std::type_info
+__ZTIa                                             -> typeinfo for signed char
+__ZTIb                                             -> typeinfo for bool
+__ZTIc                                             -> typeinfo for char
+__ZTId                                             -> typeinfo for double
+__ZTIe                                             -> typeinfo for long double
+__ZTIf                                             -> typeinfo for float
+__ZTIg                                             -> typeinfo for __float128
+__ZTIh                                             -> typeinfo for unsigned char
+__ZTIi                                             -> typeinfo for int
+__ZTIj                                             -> typeinfo for unsigned int
+__ZTIl                                             -> typeinfo for long
+__ZTIm                                             -> typeinfo for unsigned long
+__ZTIn                                             -> typeinfo for __int128
+__ZTIo                                             -> typeinfo for unsigned __int128
+__ZTIs                                             -> typeinfo for short
+__ZTIt                                             -> typeinfo for unsigned short
+__ZTIv                                             -> typeinfo for void
+__ZTIw                                             -> typeinfo for wchar_t
+__ZTIx                                             -> typeinfo for long long
+__ZTIy                                             -> typeinfo for unsigned long long
+__ZTSDh                                            -> typeinfo name for half
+__ZTSDi                                            -> typeinfo name for char32_t
+__ZTSDn                                            -> typeinfo name for std::nullptr_t
+__ZTSDs                                            -> typeinfo name for char16_t
+__ZTSDu                                            -> typeinfo name for char8_t
+__ZTSN10__cxxabiv116__enum_type_infoE              -> typeinfo name for __cxxabiv1::__enum_type_info
+__ZTSN10__cxxabiv116__shim_type_infoE              -> typeinfo name for __cxxabiv1::__shim_type_info
+__ZTSN10__cxxabiv117__array_type_infoE             -> typeinfo name for __cxxabiv1::__array_type_info
+__ZTSN10__cxxabiv117__class_type_infoE             -> typeinfo name for __cxxabiv1::__class_type_info
+__ZTSN10__cxxabiv117__pbase_type_infoE             -> typeinfo name for __cxxabiv1::__pbase_type_info
+__ZTSN10__cxxabiv119__pointer_type_infoE           -> typeinfo name for __cxxabiv1::__pointer_type_info
+__ZTSN10__cxxabiv120__function_type_infoE          -> typeinfo name for __cxxabiv1::__function_type_info
+__ZTSN10__cxxabiv120__si_class_type_infoE          -> typeinfo name for __cxxabiv1::__si_class_type_info
+__ZTSN10__cxxabiv121__vmi_class_type_infoE         -> typeinfo name for __cxxabiv1::__vmi_class_type_info
+__ZTSN10__cxxabiv123__fundamental_type_infoE       -> typeinfo name for __cxxabiv1::__fundamental_type_info
+__ZTSN10__cxxabiv129__pointer_to_member_type_infoE -> typeinfo name for __cxxabiv1::__pointer_to_member_type_info
+__ZTSPDh                                           -> typeinfo name for half*
+__ZTSPDi                                           -> typeinfo name for char32_t*
+__ZTSPDn                                           -> typeinfo name for std::nullptr_t*
+__ZTSPDs                                           -> typeinfo name for char16_t*
+__ZTSPDu                                           -> typeinfo name for char8_t*
+__ZTSPKDh                                          -> typeinfo name for half const*
+__ZTSPKDi                                          -> typeinfo name for char32_t const*
+__ZTSPKDn                                          -> typeinfo name for std::nullptr_t const*
+__ZTSPKDs                                          -> typeinfo name for char16_t const*
+__ZTSPKDu                                          -> typeinfo name for char8_t const*
+__ZTSPKa                                           -> typeinfo name for signed char const*
+__ZTSPKb                                           -> typeinfo name for bool const*
+__ZTSPKc                                           -> typeinfo name for char const*
+__ZTSPKd                                           -> typeinfo name for double const*
+__ZTSPKe                                           -> typeinfo name for long double const*
+__ZTSPKf                                           -> typeinfo name for float const*
+__ZTSPKg                                           -> typeinfo name for __float128 const*
+__ZTSPKh                                           -> typeinfo name for unsigned char const*
+__ZTSPKi                                           -> typeinfo name for int const*
+__ZTSPKj                                           -> typeinfo name for unsigned int const*
+__ZTSPKl                                           -> typeinfo name for long const*
+__ZTSPKm                                           -> typeinfo name for unsigned long const*
+__ZTSPKn                                           -> typeinfo name for __int128 const*
+__ZTSPKo                                           -> typeinfo name for unsigned __int128 const*
+__ZTSPKs                                           -> typeinfo name for short const*
+__ZTSPKt                                           -> typeinfo name for unsigned short const*
+__ZTSPKv                                           -> typeinfo name for void const*
+__ZTSPKw                                           -> typeinfo name for wchar_t const*
+__ZTSPKx                                           -> typeinfo name for long long const*
+__ZTSPKy                                           -> typeinfo name for unsigned long long const*
+__ZTSPa                                            -> typeinfo name for signed char*
+__ZTSPb                                            -> typeinfo name for bool*
+__ZTSPc                                            -> typeinfo name for char*
+__ZTSPd                                            -> typeinfo name for double*
+__ZTSPe                                            -> typeinfo name for long double*
+__ZTSPf                                            -> typeinfo name for float*
+__ZTSPg                                            -> typeinfo name for __float128*
+__ZTSPh                                            -> typeinfo name for unsigned char*
+__ZTSPi                                            -> typeinfo name for int*
+__ZTSPj                                            -> typeinfo name for unsigned int*
+__ZTSPl                                            -> typeinfo name for long*
+__ZTSPm                                            -> typeinfo name for unsigned long*
+__ZTSPn                                            -> typeinfo name for __int128*
+__ZTSPo                                            -> typeinfo name for unsigned __int128*
+__ZTSPs                                            -> typeinfo name for short*
+__ZTSPt                                            -> typeinfo name for unsigned short*
+__ZTSPv                                            -> typeinfo name for void*
+__ZTSPw                                            -> typeinfo name for wchar_t*
+__ZTSPx                                            -> typeinfo name for long long*
+__ZTSPy                                            -> typeinfo name for unsigned long long*
+__ZTSSt10bad_typeid                                -> typeinfo name for std::bad_typeid
+__ZTSSt11logic_error                               -> typeinfo name for std::logic_error
+__ZTSSt11range_error                               -> typeinfo name for std::range_error
+__ZTSSt12domain_error                              -> typeinfo name for std::domain_error
+__ZTSSt12length_error                              -> typeinfo name for std::length_error
+__ZTSSt12out_of_range                              -> typeinfo name for std::out_of_range
+__ZTSSt13bad_exception                             -> typeinfo name for std::bad_exception
+__ZTSSt13runtime_error                             -> typeinfo name for std::runtime_error
+__ZTSSt14overflow_error                            -> typeinfo name for std::overflow_error
+__ZTSSt15underflow_error                           -> typeinfo name for std::underflow_error
+__ZTSSt16invalid_argument                          -> typeinfo name for std::invalid_argument
+__ZTSSt20bad_array_new_length                      -> typeinfo name for std::bad_array_new_length
+__ZTSSt8bad_cast                                   -> typeinfo name for std::bad_cast
+__ZTSSt9bad_alloc                                  -> typeinfo name for std::bad_alloc
+__ZTSSt9exception                                  -> typeinfo name for std::exception
+__ZTSSt9type_info                                  -> typeinfo name for std::type_info
+__ZTSa                                             -> typeinfo name for signed char
+__ZTSb                                             -> typeinfo name for bool
+__ZTSc                                             -> typeinfo name for char
+__ZTSd                                             -> typeinfo name for double
+__ZTSe                                             -> typeinfo name for long double
+__ZTSf                                             -> typeinfo name for float
+__ZTSg                                             -> typeinfo name for __float128
+__ZTSh                                             -> typeinfo name for unsigned char
+__ZTSi                                             -> typeinfo name for int
+__ZTSj                                             -> typeinfo name for unsigned int
+__ZTSl                                             -> typeinfo name for long
+__ZTSm                                             -> typeinfo name for unsigned long
+__ZTSn                                             -> typeinfo name for __int128
+__ZTSo                                             -> typeinfo name for unsigned __int128
+__ZTSs                                             -> typeinfo name for short
+__ZTSt                                             -> typeinfo name for unsigned short
+__ZTSv                                             -> typeinfo name for void
+__ZTSw                                             -> typeinfo name for wchar_t
+__ZTSx                                             -> typeinfo name for long long
+__ZTSy                                             -> typeinfo name for unsigned long long
+__ZTVN10__cxxabiv116__enum_type_infoE              -> vtable for __cxxabiv1::__enum_type_info
+__ZTVN10__cxxabiv116__shim_type_infoE              -> vtable for __cxxabiv1::__shim_type_info
+__ZTVN10__cxxabiv117__array_type_infoE             -> vtable for __cxxabiv1::__array_type_info
+__ZTVN10__cxxabiv117__class_type_infoE             -> vtable for __cxxabiv1::__class_type_info
+__ZTVN10__cxxabiv117__pbase_type_infoE             -> vtable for __cxxabiv1::__pbase_type_info
+__ZTVN10__cxxabiv119__pointer_type_infoE           -> vtable for __cxxabiv1::__pointer_type_info
+__ZTVN10__cxxabiv120__function_type_infoE          -> vtable for __cxxabiv1::__function_type_info
+__ZTVN10__cxxabiv120__si_class_type_infoE          -> vtable for __cxxabiv1::__si_class_type_info
+__ZTVN10__cxxabiv121__vmi_class_type_infoE         -> vtable for __cxxabiv1::__vmi_class_type_info
+__ZTVN10__cxxabiv123__fundamental_type_infoE       -> vtable for __cxxabiv1::__fundamental_type_info
+__ZTVN10__cxxabiv129__pointer_to_member_type_infoE -> vtable for __cxxabiv1::__pointer_to_member_type_info
+__ZTVSt10bad_typeid                                -> vtable for std::bad_typeid
+__ZTVSt11logic_error                               -> vtable for std::logic_error
+__ZTVSt11range_error                               -> vtable for std::range_error
+__ZTVSt12domain_error                              -> vtable for std::domain_error
+__ZTVSt12length_error                              -> vtable for std::length_error
+__ZTVSt12out_of_range                              -> vtable for std::out_of_range
+__ZTVSt13bad_exception                             -> vtable for std::bad_exception
+__ZTVSt13runtime_error                             -> vtable for std::runtime_error
+__ZTVSt14overflow_error                            -> vtable for std::overflow_error
+__ZTVSt15underflow_error                           -> vtable for std::underflow_error
+__ZTVSt16invalid_argument                          -> vtable for std::invalid_argument
+__ZTVSt20bad_array_new_length                      -> vtable for std::bad_array_new_length
+__ZTVSt8bad_cast                                   -> vtable for std::bad_cast
+__ZTVSt9bad_alloc                                  -> vtable for std::bad_alloc
+__ZTVSt9exception                                  -> vtable for std::exception
+__ZTVSt9type_info                                  -> vtable for std::type_info
+__ZdaPv                                            -> operator delete[](void*)
+__ZdaPvRKSt9nothrow_t                              -> operator delete[](void*, std::nothrow_t const&)
+__ZdaPvSt11align_val_t                             -> operator delete[](void*, std::align_val_t)
+__ZdaPvSt11align_val_tRKSt9nothrow_t               -> operator delete[](void*, std::align_val_t, std::nothrow_t const&)
+__ZdaPvm                                           -> operator delete[](void*, unsigned long)
+__ZdaPvmSt11align_val_t                            -> operator delete[](void*, unsigned long, std::align_val_t)
+__ZdlPv                                            -> operator delete(void*)
+__ZdlPvRKSt9nothrow_t                              -> operator delete(void*, std::nothrow_t const&)
+__ZdlPvSt11align_val_t                             -> operator delete(void*, std::align_val_t)
+__ZdlPvSt11align_val_tRKSt9nothrow_t               -> operator delete(void*, std::align_val_t, std::nothrow_t const&)
+__ZdlPvm                                           -> operator delete(void*, unsigned long)
+__ZdlPvmSt11align_val_t                            -> operator delete(void*, unsigned long, std::align_val_t)
+__Znam                                             -> operator new[](unsigned long)
+__ZnamRKSt9nothrow_t                               -> operator new[](unsigned long, std::nothrow_t const&)
+__ZnamSt11align_val_t                              -> operator new[](unsigned long, std::align_val_t)
+__ZnamSt11align_val_tRKSt9nothrow_t                -> operator new[](unsigned long, std::align_val_t, std::nothrow_t const&)
+__ZnamSt19__type_descriptor_t                      -> operator new[](unsigned long, std::__type_descriptor_t)
+__Znwm                                             -> operator new(unsigned long)
+__ZnwmRKSt9nothrow_t                               -> operator new(unsigned long, std::nothrow_t const&)
+__ZnwmSt11align_val_t                              -> operator new(unsigned long, std::align_val_t)
+__ZnwmSt11align_val_tRKSt9nothrow_t                -> operator new(unsigned long, std::align_val_t, std::nothrow_t const&)
+__ZnwmSt19__type_descriptor_t                      -> operator new(unsigned long, std::__type_descriptor_t)
+___cxa_allocate_dependent_exception                -> ___cxa_allocate_dependent_exception
+___cxa_allocate_exception                          -> ___cxa_allocate_exception
+___cxa_bad_cast                                    -> ___cxa_bad_cast
+___cxa_bad_typeid                                  -> ___cxa_bad_typeid
+___cxa_begin_catch                                 -> ___cxa_begin_catch
+___cxa_call_unexpected                             -> ___cxa_call_unexpected
+___cxa_current_exception_type                      -> ___cxa_current_exception_type
+___cxa_current_primary_exception                   -> ___cxa_current_primary_exception
+___cxa_decrement_exception_refcount                -> ___cxa_decrement_exception_refcount
+___cxa_deleted_virtual                             -> ___cxa_deleted_virtual
+___cxa_demangle                                    -> ___cxa_demangle
+___cxa_end_catch                                   -> ___cxa_end_catch
+___cxa_free_dependent_exception                    -> ___cxa_free_dependent_exception
+___cxa_free_exception                              -> ___cxa_free_exception
+___cxa_get_exception_ptr                           -> ___cxa_get_exception_ptr
+___cxa_get_globals                                 -> ___cxa_get_globals
+___cxa_get_globals_fast                            -> ___cxa_get_globals_fast
+___cxa_guard_abort                                 -> ___cxa_guard_abort
+___cxa_guard_acquire                               -> ___cxa_guard_acquire
+___cxa_guard_release                               -> ___cxa_guard_release
+___cxa_increment_exception_refcount                -> ___cxa_increment_exception_refcount
+___cxa_new_handler                                 -> ___cxa_new_handler
+___cxa_pure_virtual                                -> ___cxa_pure_virtual
+___cxa_rethrow                                     -> ___cxa_rethrow
+___cxa_rethrow_primary_exception                   -> ___cxa_rethrow_primary_exception
+___cxa_terminate_handler                           -> ___cxa_terminate_handler
+___cxa_throw                                       -> ___cxa_throw
+___cxa_throw_bad_array_new_length                  -> ___cxa_throw_bad_array_new_length
+___cxa_uncaught_exception                          -> ___cxa_uncaught_exception
+___cxa_uncaught_exceptions                         -> ___cxa_uncaught_exceptions
+___cxa_unexpected_handler                          -> ___cxa_unexpected_handler
+___cxa_vec_cctor                                   -> ___cxa_vec_cctor
+___cxa_vec_cleanup                                 -> ___cxa_vec_cleanup
+___cxa_vec_ctor                                    -> ___cxa_vec_ctor
+___cxa_vec_delete                                  -> ___cxa_vec_delete
+___cxa_vec_delete2                                 -> ___cxa_vec_delete2
+___cxa_vec_delete3                                 -> ___cxa_vec_delete3
+___cxa_vec_dtor                                    -> ___cxa_vec_dtor
+___cxa_vec_new                                     -> ___cxa_vec_new
+___cxa_vec_new2                                    -> ___cxa_vec_new2
+___cxa_vec_new3                                    -> ___cxa_vec_new3
+___dynamic_cast                                    -> ___dynamic_cast
+___gxx_personality_v0                              -> ___gxx_personality_v0
