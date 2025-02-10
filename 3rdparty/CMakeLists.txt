@@ -1,12 +1,12 @@
-include(gmp.cmake)
-include(fmt.cmake)
+# include(gmp.cmake)
+# include(fmt.cmake)
 # include(boost.cmake)
 # include(folly.cmake)
-include(sha2.cmake)
-include(thread-pool.cmake)
-include(z3.cmake)
+# include(sha2.cmake)
+# include(thread-pool.cmake)
+# include(z3.cmake)
 
-add_subdirectory(indicators)
+# add_subdirectory(indicators)
 
 if(JEV_USE_MIMALLOC)
     set(MI_USE_CXX OFF)
