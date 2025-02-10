@@ -16,6 +16,7 @@
 [submodule "3rdparty/cadical"]
 	path = 3rdparty/cadical
 	url = https://github.com/arminbiere/cadical
+	branch = development
 [submodule "3rdparty/bitwuzla"]
 	path = 3rdparty/bitwuzla
 	url = https://github.com/bitwuzla/bitwuzla

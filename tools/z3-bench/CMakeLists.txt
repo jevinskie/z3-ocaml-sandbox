@@ -53,8 +53,9 @@ set_target_properties(z3-test PROPERTIES
 )
 
 # mimalloc-extern.c
-add_library(mimalloc-tester-c SHARED mimalloc-tester-dylib-c.c noalloc-stdio.c malloc-wrapped.c mimalloc-fishhook.c fishhook.c dyld-interposing.c)
-# target_link_libraries(mimalloc-tester-c PRIVATE mimalloc-obj)
+# /opt/homebrew/opt/ccache/libexec/cc -g -arch arm64 -dynamiclib -Wl,-headerpad_max_install_names  -o tools/z3-bench/libmimalloc-tester-c.dylib -install_name @rpath/libmimalloc-tester-c.dylib 3rdparty/mimalloc/CMakeFiles/mimalloc-obj.dir/src/static.c.o tools/z3-bench/CMakeFiles/mimalloc-tester-c.dir/mimalloc-tester-dylib-c.c.o tools/z3-bench/CMakeFiles/mimalloc-tester-c.dir/noalloc-stdio.c.o tools/z3-bench/CMakeFiles/mimalloc-tester-c.dir/malloc-wrapped.c.o tools/z3-bench/CMakeFiles/mimalloc-tester-c.dir/mimalloc-fishhook.c.o tools/z3-bench/CMakeFiles/mimalloc-tester-c.dir/fishhook.c.o tools/z3-bench/CMakeFiles/mimalloc-tester-c.dir/dyld-interposing.c.o tools/z3-bench/CMakeFiles/mimalloc-tester-c.dir/mimalloc-extern.c.o
+add_library(mimalloc-tester-c SHARED mimalloc-tester-dylib-c.c noalloc-stdio.c malloc-wrapped.c mimalloc-fishhook.c fishhook.c dyld-interposing.c mimalloc-extern.c)
+target_link_libraries(mimalloc-tester-c PRIVATE mimalloc-obj)
 set_target_properties(mimalloc-tester-c PROPERTIES
     C_STANDARD 17
     C_EXTENSIONS ON
@@ -64,6 +65,10 @@ set_target_properties(mimalloc-tester-c PROPERTIES
 
 add_executable(mimalloc-tester mimalloc-tester-exe.c noalloc-stdio.c)
 target_link_libraries(mimalloc-tester PRIVATE mimalloc-tester-c)
+# bad: /opt/homebrew/opt/ccache/libexec/cc -g -arch arm64 -Wl,-search_paths_first -Wl,-headerpad_max_install_names -Wl,-upward_library,/Users/jevin/code/sail/git/z3-ocaml-sandbox/build/tools/z3-bench/libmimalloc-tester-c.dylib tools/z3-bench/CMakeFiles/mimalloc-tester.dir/mimalloc-tester-exe.c.o tools/z3-bench/CMakeFiles/mimalloc-tester.dir/noalloc-stdio.c.o -o tools/z3-bench/mimalloc-tester
+# good: /opt/homebrew/opt/ccache/libexec/cc -g -arch arm64 -Wl,-search_paths_first -Wl,-headerpad_max_install_names  tools/z3-bench/CMakeFiles/mimalloc-tester.dir/mimalloc-tester-exe.c.o tools/z3-bench/CMakeFiles/mimalloc-tester.dir/noalloc-stdio.c.o -o tools/z3-bench/mimalloc-tester  -Wl,-rpath,/Users/jevin/code/sail/git/z3-ocaml-sandbox/build/tools/z3-bench  tools/z3-bench/libmimalloc-tester-c.dylib
+add_dependencies(mimalloc-tester mimalloc-tester-c)
+# target_link_options(mimalloc-tester PRIVATE "-Wl,-upward_library,$<TARGET_FILE:mimalloc-tester-c>,-rpath,$<PATH:GET_PARENT_PATH,$<TARGET_FILE:mimalloc-tester-c>>")
 set_target_properties(mimalloc-tester PROPERTIES
     C_STANDARD 17
     C_EXTENSIONS ON

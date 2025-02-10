@@ -1,4 +1,5 @@
 #include "malloc-wrapped.h"
+#include "types-bare.h"
 #undef NDEBUG
 #include <assert.h>
 
@@ -27,10 +28,12 @@ extern size_t malloc_size(const void *ptr);
 
 extern typeof(malloc) mi_malloc_ext;
 extern typeof(free) mi_free_ext;
+extern typeof(calloc) mi_calloc_ext;
+extern typeof(malloc_size) mi_malloc_size_ext;
 
 extern typeof(malloc) mi_malloc;
-extern typeof(calloc) mi_calloc;
 extern typeof(free) mi_free;
+extern typeof(calloc) mi_calloc;
 extern typeof(realloc) mi_realloc;
 extern typeof(reallocf) mi_reallocf;
 extern typeof(valloc) mi_valloc;
@@ -45,12 +48,14 @@ extern typeof(malloc_good_size) mi_good_size;
 extern typeof(malloc) printing_malloc;
 extern typeof(free) printing_free;
 
-DYLD_INTERPOSE(printing_malloc, malloc);
-DYLD_INTERPOSE(printing_free, free);
+// DYLD_INTERPOSE(printing_malloc, malloc);
+// DYLD_INTERPOSE(printing_free, free);
 
-// DYLD_INTERPOSE(mi_malloc_ext, malloc);
+DYLD_INTERPOSE(mi_malloc_ext, malloc);
+DYLD_INTERPOSE(mi_free_ext, free);
+DYLD_INTERPOSE(mi_calloc_ext, calloc);
+DYLD_INTERPOSE(mi_malloc_size_ext, malloc_size);
 // DYLD_INTERPOSE(mi_calloc, calloc);
-// DYLD_INTERPOSE(mi_free_ext, free);
 // DYLD_INTERPOSE(mi_realloc, realloc);
 // DYLD_INTERPOSE(mi_reallocf, reallocf);
 // DYLD_INTERPOSE(mi_reallocarray, reallocarray);
@@ -97,4 +102,30 @@ static int my_pthread_init(struct _libpthread_functions *pthread_funcs, const ch
     return __pthread_init(pthread_funcs, envp, apple);
 }
 
-// DYLD_INTERPOSE(my_pthread_init, __pthread_init);
+DYLD_INTERPOSE(my_pthread_init, __pthread_init);
+
+typedef juint32_t jmach_port_t;
+
+extern void _pthread_start(pthread_t self, jmach_port_t kport, void *(*fun)(void *), void *arg, jsize_t stacksize,
+                           unsigned int pflags);
+
+static __attribute__((always_inline, const)) void **my_os_tsd_get_base(void) {
+    juintptr_t tsd;
+    __asm__("mrs %0, TPIDRRO_EL0" : "=r"(tsd));
+    return (void **)tsd;
+}
+
+#ifndef MI_TLS_SLOT_HEAP_DEFAULT
+#define MI_TLS_SLOT_HEAP_DEFAULT 6 // wine
+#endif
+
+extern void *_mi_heap_empty;
+
+static void my_pthread_start(pthread_t self, jmach_port_t kport, void *(*fun)(void *), void *arg, jsize_t stacksize,
+                             unsigned int pflags) {
+    my_os_tsd_get_base()[MI_TLS_SLOT_HEAP_DEFAULT] = _mi_heap_empty;
+
+    _pthread_start(self, kport, fun, arg, stacksize, pflags);
+}
+
+DYLD_INTERPOSE(my_pthread_start, _pthread_start);
