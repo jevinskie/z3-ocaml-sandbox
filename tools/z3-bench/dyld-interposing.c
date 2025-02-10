@@ -92,8 +92,8 @@ static int my_pthread_init(struct _libpthread_functions *pthread_funcs, const ch
     const uintptr_t pi            = (uintptr_t)pthread_funcs;
     const uintptr_t pf_page_start = pi & ~((1ull << 14) - 1ull);
     assert(!mprotect((void *)pf_page_start, 16 * 1024, PROT_READ | PROT_WRITE));
-    pthread_funcs->malloc = mi_malloc;
-    pthread_funcs->free   = mi_free;
+    pthread_funcs->malloc = mi_malloc_ext;
+    pthread_funcs->free   = mi_free_ext;
     assert(!mprotect((void *)pf_page_start, 16 * 1024, PROT_READ));
 
     // _mi_heap_main_get();
@@ -128,4 +128,4 @@ static void my_pthread_start(pthread_t self, jmach_port_t kport, void *(*fun)(vo
     _pthread_start(self, kport, fun, arg, stacksize, pflags);
 }
 
-DYLD_INTERPOSE(my_pthread_start, _pthread_start);
+// DYLD_INTERPOSE(my_pthread_start, _pthread_start);
