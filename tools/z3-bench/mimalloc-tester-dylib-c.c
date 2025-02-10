@@ -4,6 +4,10 @@
 
 // #include <stdio.h>
 
+__attribute__((constructor)) static void init_dylib(void) {
+    write(STDOUT_FILENO, "init_dylib\n", 11);
+}
+
 #define TSD_SZ 256
 
 static __attribute__((always_inline, const)) void **jev_os_tsd_get_base(void) {
