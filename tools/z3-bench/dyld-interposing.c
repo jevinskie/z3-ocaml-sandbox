@@ -46,10 +46,10 @@ extern typeof(free) printing_free;
 // DYLD_INTERPOSE(printing_malloc, malloc);
 // DYLD_INTERPOSE(printing_free, free);
 
-DYLD_INTERPOSE(mi_malloc_ext, malloc);
-DYLD_INTERPOSE(mi_free_ext, free);
-DYLD_INTERPOSE(mi_calloc_ext, calloc);
-DYLD_INTERPOSE(mi_malloc_size_ext, malloc_size);
+// DYLD_INTERPOSE(mi_malloc_ext, malloc);
+// DYLD_INTERPOSE(mi_free_ext, free);
+// DYLD_INTERPOSE(mi_calloc_ext, calloc);
+// DYLD_INTERPOSE(mi_malloc_size_ext, malloc_size);
 // DYLD_INTERPOSE(mi_calloc, calloc);
 // DYLD_INTERPOSE(mi_realloc, realloc);
 // DYLD_INTERPOSE(mi_reallocf, reallocf);
