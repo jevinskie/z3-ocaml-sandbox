@@ -1,12 +1,11 @@
-{
-  "launchAnalysis": {
-    "arm64-apple-macos14": {
-      "comments": [],
-      "crashOnLaunch": false,
-      "missingDylibs": [],
-      "missingLazySymbols": {},
-      "missingSymbols": {},
-      "otherErrors": []
-    }
-  }
-}
+--- !tapi-tbd
+tbd-version:     4
+targets:         [ arm64-macos ]
+uuids:
+  - target:          arm64-macos
+    value:           154BF850-537D-33A2-8849-DDC179146FF7
+flags:           [ not_app_extension_safe ]
+install-name:    '@rpath/mimalloc-tester-trick'
+current-version: 0
+compatibility-version: 0
+...
