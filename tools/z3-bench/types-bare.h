@@ -9,6 +9,7 @@ typedef __UINT64_TYPE__ juint64_t;
 typedef __UINTPTR_TYPE__ juintptr_t;
 typedef struct _opaque_pthread_t *pthread_t;
 typedef struct _opaque_pthread_attr_t pthread_attr_t;
+typedef juint32_t jmach_port_t;
 
 #ifndef STDIN_FILENO
 #define STDIN_FILENO 0
@@ -26,6 +27,13 @@ typedef struct _opaque_pthread_attr_t pthread_attr_t;
 #define NULL ((void *)0)
 #endif
 
+struct _libpthread_functions {
+    unsigned long version;
+    void (*exit)(int);        // added with version=1
+    void *(*malloc)(jsize_t); // added with version=2
+    void (*free)(void *);     // added with version=2
+};
+
 __attribute__((noreturn)) extern void abort(void);
 extern int printf(const char *fmt, ...);
 #ifndef memcpy
@@ -40,3 +48,6 @@ extern jsize_t strlen(const char *p);
 extern int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*func)(void *arg), void *arg);
 extern int pthread_join(pthread_t thread, void *arg);
 extern juint32_t _dyld_launch_mode(void);
+extern void _pthread_start(pthread_t self, jmach_port_t kport, void *(*fun)(void *), void *arg, jsize_t stacksize,
+                           unsigned int pflags);
+extern int __pthread_init(struct _libpthread_functions *pthread_funcs, const char *envp[], const char *apple[]);

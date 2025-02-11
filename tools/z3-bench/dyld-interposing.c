@@ -69,15 +69,6 @@ extern typeof(free) _ZdlPv;
 // DYLD_INTERPOSE(mi_malloc_ext, _Znwm);
 // DYLD_INTERPOSE(mi_free_ext, _ZdlPv);
 
-struct _libpthread_functions {
-    unsigned long version;
-    void (*exit)(int);       // added with version=1
-    void *(*malloc)(size_t); // added with version=2
-    void (*free)(void *);    // added with version=2
-};
-
-extern int __pthread_init(struct _libpthread_functions *pthread_funcs, const char *envp[], const char *apple[]);
-
 extern void mi_prim_get_default_heap();
 extern struct mi_heap_t *_mi_heap_main_get(void);
 // extern _Thread_local struct mi_heap_t *_mi_heap_default;
@@ -99,11 +90,6 @@ static int my_pthread_init(struct _libpthread_functions *pthread_funcs, const ch
 }
 
 // DYLD_INTERPOSE(my_pthread_init, __pthread_init);
-
-typedef juint32_t jmach_port_t;
-
-extern void _pthread_start(pthread_t self, jmach_port_t kport, void *(*fun)(void *), void *arg, jsize_t stacksize,
-                           unsigned int pflags);
 
 static __attribute__((always_inline, const)) void **my_os_tsd_get_base(void) {
     juintptr_t tsd;

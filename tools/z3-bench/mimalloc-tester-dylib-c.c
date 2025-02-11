@@ -75,6 +75,10 @@ __attribute__((visibility("default"))) int mimalloc_tester_main(int argc, const 
     puts_str("mimalloc_tester_main");
     puts_str("_dyld_launch_mode() =>");
     puts_ptr((void *)(uintptr_t)_dyld_launch_mode());
+    puts_str("mimalloc_tester_main: _pthread_start =>");
+    puts_ptr(_pthread_start);
+    puts_str("mimalloc_tester_main: __pthread_init =>");
+    puts_ptr(__pthread_init);
     puts_str("dylib malloc:");
     puts_ptr(malloc);
     void *p = malloc(4);
