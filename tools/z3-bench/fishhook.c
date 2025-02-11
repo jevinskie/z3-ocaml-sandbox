@@ -40,7 +40,7 @@
 #include <ptrauth.h>
 #endif
 
-#include "alloc.h"
+#include "mimalloc-types.h"
 
 #ifdef __LP64__
 typedef struct mach_header_64 mach_header_t;

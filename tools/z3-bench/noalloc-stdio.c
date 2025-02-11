@@ -1,14 +1,15 @@
 #include "noalloc-stdio.h"
+#include "misc-decls.h"
 #include "types-bare.h"
 
-jsize_t puts_str(const char *s) {
+SYM_INT jsize_t puts_str(const char *s) {
     const jsize_t sz = strlen(s);
     write(STDOUT_FILENO, s, sz);
     write(STDOUT_FILENO, "\n", 1);
     return sz;
 }
 
-char nibble_to_ascii_hex(const juint8_t nib) {
+SYM_INT char nibble_to_ascii_hex(const juint8_t nib) {
     if (nib <= 9) {
         return nib + '0';
     } else if (nib >= 0xA && nib <= 0xF) {
@@ -18,7 +19,7 @@ char nibble_to_ascii_hex(const juint8_t nib) {
     }
 }
 
-void write_size_to_strbuf(juintptr_t v, char *buf, const jsize_t sz) {
+SYM_INT void write_size_to_strbuf(juintptr_t v, char *buf, const jsize_t sz) {
     jsize_t idx = sz - 1;
     char *os    = buf + sz - 1;
     _Bool done  = 0;
@@ -32,7 +33,7 @@ void write_size_to_strbuf(juintptr_t v, char *buf, const jsize_t sz) {
     }
 }
 
-void write_ptr_to_strbuf(const void *p, char *buf) {
+SYM_INT void write_ptr_to_strbuf(const void *p, char *buf) {
     buf[0]        = '0';
     buf[1]        = 'x';
     char *os      = &buf[2];
@@ -51,7 +52,7 @@ void write_ptr_to_strbuf(const void *p, char *buf) {
     }
 }
 
-int puts_ptr(const void *p) {
+SYM_INT int puts_ptr(const void *p) {
     char buf[2 + sizeof(p) * 2 + 1];
     write_ptr_to_strbuf(p, buf);
     buf[sizeof(buf) - 1] = '\0';

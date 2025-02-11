@@ -1,7 +1,7 @@
 // #include <pthread.h>
 // #include <stdint.h>
 
-#include "alloc.h"
+#include "mimalloc-types.h"
 #include "noalloc-stdio.h"
 #include "types-bare.h"
 

@@ -6,12 +6,13 @@
 
 // #include <mimalloc-new-delete.h>
 
-#include "alloc.h"
 #include "malloc-wrapped.h"
+#include "mimalloc-types.h"
+#include "misc-decls.h"
 
 #if 1
-malloc_t *orig_malloc;
-free_t *orig_free;
+SYM_INT malloc_t *orig_malloc;
+SYM_INT free_t *orig_free;
 static calloc_t *orig_calloc;
 static realloc_t *orig_realloc;
 static reallocf_t *orig_reallocf;
@@ -22,7 +23,7 @@ static posix_memalign_t *orig_posix_memalign;
 static x_Znwm_t *orig__Znwm;
 static x_ZdlPv_t *orig__ZdlPv;
 
-__attribute__((constructor)) void init_mimalloc_helper(void) {
+__attribute__((constructor)) static void init_mimalloc_helper(void) {
     write(STDOUT_FILENO, "lol\n", 4);
 #if 0
     rebind_symbols((struct rebinding[8]){{"malloc", (void *)&mi_malloc, (void **)&orig_malloc},
@@ -56,7 +57,7 @@ __attribute__((constructor)) void init_mimalloc_helper(void) {
     write(STDOUT_FILENO, "rbd\n", 4);
 }
 
-__attribute__((destructor)) void deinit_mimalloc_helper(void) {
+__attribute__((destructor)) static void deinit_mimalloc_helper(void) {
     write(STDOUT_FILENO, "bai\n", 4);
 #if 0
     rebind_symbols(

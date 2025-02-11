@@ -1,5 +1,7 @@
 #include "malloc-wrapped.h"
+#include "misc-decls.h"
 #include "types-bare.h"
+
 #undef NDEBUG
 #include <assert.h>
 
@@ -18,13 +20,6 @@ extern void vfree(void *ptr);
 extern void *reallocarray(void *in_ptr, size_t nmemb, size_t size) __asm("_reallocarray$DARWIN_EXTSN");
 extern void *reallocarrayf(void *in_ptr, size_t nmemb, size_t size) __asm("_reallocarrayf$DARWIN_EXTSN");
 extern size_t malloc_size(const void *ptr);
-
-#define DYLD_INTERPOSE(_replacement, _replacee)                                               \
-    __attribute__((used)) static struct {                                                     \
-        const void *replacement;                                                              \
-        const void *replacee;                                                                 \
-    } _interpose_##_replacee __attribute__((section("__DATA,__interpose,interposing"))) = {   \
-        (const void *)(unsigned long)&_replacement, (const void *)(unsigned long)&_replacee};
 
 extern typeof(malloc) mi_malloc_ext;
 extern typeof(free) mi_free_ext;

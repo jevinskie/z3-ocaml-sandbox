@@ -1,5 +1,5 @@
 #include "malloc-wrapped.h"
-#include "alloc.h"
+#include "mimalloc-types.h"
 #include "noalloc-stdio.h"
 
 extern typeof(&printing_malloc) orig_malloc;

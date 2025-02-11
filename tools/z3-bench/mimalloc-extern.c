@@ -1,5 +1,4 @@
-#define ALIAS_GLOBAL(name, target)         __asm__(".global _" name "\n_" name " = _" target "\n")
-#define ALIAS_PRIVATE_EXTERN(name, target) __asm__(".private_extern _" name "\n_" name " = _" target "\n")
+#include "misc-decls.h"
 
 // mi_malloc and mi_free aliases
 ALIAS_GLOBAL("mi_malloc_ext", "mi_malloc");
