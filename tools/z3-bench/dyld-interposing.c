@@ -119,7 +119,10 @@ extern void *_mi_heap_empty_ext;
 
 static void my_pthread_start(pthread_t self, jmach_port_t kport, void *(*fun)(void *), void *arg, jsize_t stacksize,
                              unsigned int pflags) {
-    puts_str("my_pthread_start()");
+    puts_str("dyld-interposing my_pthread_start() =>");
+    puts_ptr(my_pthread_start);
+    puts_str("dyld-interposing _pthread_start() =>");
+    puts_ptr(_pthread_start);
     my_os_tsd_get_base()[MI_TLS_SLOT_HEAP_DEFAULT] = _mi_heap_empty_ext;
 
     _pthread_start(self, kport, fun, arg, stacksize, pflags);

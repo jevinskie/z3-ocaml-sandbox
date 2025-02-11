@@ -65,7 +65,8 @@ static void *pthread_test(void *arg) {
     p = strdup("HAI");
     puts_ptr(p);
     puts_str(p);
-    free(p);
+    // FIXME: malloc in strdup not interposed >:[
+    // free(p);
     puts_str("pthread_test body end");
     return NULL;
 }
@@ -84,7 +85,8 @@ __attribute__((visibility("default"))) int mimalloc_tester_main(int argc, const 
     p = strdup("hai");
     puts_ptr(p);
     puts_str(p);
-    free(p);
+    // FIXME: malloc in strdup not interposed >:[
+    // free(p);
     // dump_tsd();
     puts_str("pthread_self() =>");
     puts_ptr(pthread_self());
