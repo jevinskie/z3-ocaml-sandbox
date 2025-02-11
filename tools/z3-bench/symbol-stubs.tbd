@@ -1,0 +1,12 @@
+{
+  "launchAnalysis": {
+    "arm64-apple-macos14": {
+      "comments": [],
+      "crashOnLaunch": false,
+      "missingDylibs": [],
+      "missingLazySymbols": {},
+      "missingSymbols": {},
+      "otherErrors": []
+    }
+  }
+}
