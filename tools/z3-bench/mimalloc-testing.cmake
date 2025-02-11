@@ -76,6 +76,7 @@ set_target_properties(mimalloc-tester PROPERTIES
 )
 
 add_library(dyld-interposing SHARED dyld-interposing.c noalloc-stdio.c)
+target_compile_options(dyld-interposing PRIVATE "-mno-stack-arg-probe" "-fno-stack-check" "-fno-stack-clash-protection" "-fno-stack-protector")
 target_link_libraries(dyld-interposing PRIVATE "$<LINK_LIBRARY:UPWARD_LIBRARY,symbol-stubs>")
 set_target_properties(dyld-interposing PROPERTIES
     C_STANDARD 17

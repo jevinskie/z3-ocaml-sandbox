@@ -61,7 +61,7 @@ static void *pthread_test(void *arg) {
     puts_str("dylib pthread_test malloc(4) =");
     puts_ptr(p);
     free(p);
-    puts_str("strdup(\"HAI\") =");
+    puts_str("dylib pthread_test strdup(\"HAI\") =");
     p = strdup("HAI");
     puts_ptr(p);
     puts_str(p);
@@ -85,7 +85,7 @@ __attribute__((visibility("default"))) int mimalloc_tester_main(int argc, const 
     puts_str("dylib malloc(4) =");
     puts_ptr(p);
     free(p);
-    puts_str("strdup(\"hai\") =");
+    puts_str("dylib strdup(\"hai\") =");
     p = strdup("hai");
     puts_ptr(p);
     puts_str(p);

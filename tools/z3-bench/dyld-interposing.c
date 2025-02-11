@@ -73,6 +73,53 @@ extern void mi_prim_get_default_heap();
 extern struct mi_heap_t *_mi_heap_main_get(void);
 // extern _Thread_local struct mi_heap_t *_mi_heap_default;
 
+static __attribute__((always_inline, const)) void **my_os_tsd_get_base(void) {
+    juintptr_t tsd;
+    __asm__("mrs %0, TPIDRRO_EL0" : "=r"(tsd));
+    return (void **)tsd;
+}
+
+#ifndef MI_TLS_SLOT_HEAP_DEFAULT
+#define MI_TLS_SLOT_HEAP_DEFAULT 6 // wine
+#endif
+
+extern void *_mi_heap_empty_ext;
+
+static __attribute__((constructor)) void init_mimalloc_tls(void) {
+    puts_str("dyld-interposing init_mimalloc_tls()");
+    puts_str("dyld-interposing init_mimalloc_tls my_os_tsd_get_base()[MI_TLS_SLOT_HEAP_DEFAULT] =>");
+    puts_ptr(my_os_tsd_get_base()[MI_TLS_SLOT_HEAP_DEFAULT]);
+    puts_str("dyld-interposing init_mimalloc_tls _mi_heap_empty_ext =>");
+    puts_ptr(_mi_heap_empty_ext);
+    my_os_tsd_get_base()[MI_TLS_SLOT_HEAP_DEFAULT] = &_mi_heap_empty_ext;
+}
+
+static __attribute__((noreturn)) void my_thread_start(pthread_t thread, jmach_port_t kport, void *(*fun)(void *),
+                                                      void *arg, jsize_t stacksize, unsigned int flags) {
+    puts_str("dyld-interposing my_thread_start =>");
+    puts_ptr(my_thread_start);
+    puts_str("dyld-interposing thread_start =>");
+    puts_ptr(thread_start);
+    my_os_tsd_get_base()[MI_TLS_SLOT_HEAP_DEFAULT] = &_mi_heap_empty_ext;
+    // my_os_tsd_get_base()[MI_TLS_SLOT_HEAP_DEFAULT] = NULL;
+    thread_start(thread, kport, fun, arg, stacksize, flags);
+}
+
+static int my_bsdthread_register(void *threadstart, void *wqthread, int pthsize, void *pthread_init_data,
+                                 jint32_t *pthread_init_data_size, juint64_t dispatchqueue_offset) {
+    (void)threadstart;
+    puts_str("dyld-interposing my_bsdthread_register =>");
+    puts_ptr(my_bsdthread_register);
+    puts_str("dyld-interposing __bsdthread_register =>");
+    puts_ptr(__bsdthread_register);
+    puts_str("dyld-interposing my_bsdthread_register() threadstart =>");
+    puts_ptr(threadstart);
+    return __bsdthread_register(my_thread_start, wqthread, pthsize, pthread_init_data, pthread_init_data_size,
+                                dispatchqueue_offset);
+}
+
+DYLD_INTERPOSE(my_bsdthread_register, __bsdthread_register);
+
 static int my_pthread_init(struct _libpthread_functions *pthread_funcs, const char *envp[], const char *apple[]) {
     puts_str("dyld-interposing my_pthread_init =>");
     puts_ptr(my_pthread_init);
@@ -93,29 +140,17 @@ static int my_pthread_init(struct _libpthread_functions *pthread_funcs, const ch
     return __pthread_init(pthread_funcs, envp, apple);
 }
 
-DYLD_INTERPOSE(my_pthread_init, __pthread_init);
-
-static __attribute__((always_inline, const)) void **my_os_tsd_get_base(void) {
-    juintptr_t tsd;
-    __asm__("mrs %0, TPIDRRO_EL0" : "=r"(tsd));
-    return (void **)tsd;
-}
-
-#ifndef MI_TLS_SLOT_HEAP_DEFAULT
-#define MI_TLS_SLOT_HEAP_DEFAULT 6 // wine
-#endif
-
-extern void *_mi_heap_empty_ext;
+// DYLD_INTERPOSE(my_pthread_init, __pthread_init);
 
 static void my_pthread_start(pthread_t self, jmach_port_t kport, void *(*fun)(void *), void *arg, jsize_t stacksize,
                              unsigned int pflags) {
-    puts_str("dyld-interposing my_pthread_start() =>");
+    puts_str("dyld-interposing my_pthread_start =>");
     puts_ptr(my_pthread_start);
-    puts_str("dyld-interposing _pthread_start() =>");
+    puts_str("dyld-interposing _pthread_start =>");
     puts_ptr(_pthread_start);
     my_os_tsd_get_base()[MI_TLS_SLOT_HEAP_DEFAULT] = _mi_heap_empty_ext;
 
     _pthread_start(self, kport, fun, arg, stacksize, pflags);
 }
 
-DYLD_INTERPOSE(my_pthread_start, _pthread_start);
+// DYLD_INTERPOSE(my_pthread_start, _pthread_start);

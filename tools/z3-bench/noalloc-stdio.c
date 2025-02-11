@@ -2,10 +2,44 @@
 #include "misc-decls.h"
 #include "types-bare.h"
 
+// #include <sys/syscall.h>
+#ifndef SYS_write
+#define SYS_write 4
+#endif
+
+static jsize_t my_strlen(const char *s) {
+    jsize_t sz = 0;
+    while (*s++) {
+        ++sz;
+    }
+    return sz;
+}
+
+static void *my_memcpy(void *dst, const void *src, jsize_t sz) {
+    const char *ip = (const char *)src;
+    char *op       = (char *)dst;
+    for (jsize_t i = 0; i < sz; ++i) {
+        *op++ = *ip++;
+    }
+    return op;
+}
+
+static void write_raw(int fd, const void *buf, jsize_t sz) {
+    register int _fd_and_res __asm("w0") = fd;
+    register juintptr_t _buf __asm("x1") = (juintptr_t)buf;
+    register jsize_t _sz __asm("x2")     = sz;
+
+    __asm__ __volatile("mov x16, %[syscall_num]\n\t"
+                       "svc #0x80"
+                       : "+r"(_fd_and_res)
+                       : [syscall_num] "I"(SYS_write), "r"(_fd_and_res), "r"(_buf), "r"(_sz)
+                       : "cc");
+}
+
 SYM_INT jsize_t puts_str(const char *s) {
-    const jsize_t sz = strlen(s);
-    write(STDOUT_FILENO, s, sz);
-    write(STDOUT_FILENO, "\n", 1);
+    const jsize_t sz = my_strlen(s);
+    write_raw(STDOUT_FILENO, s, sz);
+    write_raw(STDOUT_FILENO, "\n", 1);
     return sz;
 }
 
@@ -39,7 +73,7 @@ SYM_INT void write_ptr_to_strbuf(const void *p, char *buf) {
     char *os      = &buf[2];
     juintptr_t ip = (juintptr_t)p;
     juint8_t ipb[sizeof(ip)];
-    memcpy(ipb, &ip, sizeof(ip));
+    my_memcpy(ipb, &ip, sizeof(ip));
     // assumes little endian
     for (jsize_t i = 0; i < sizeof(p); ++i) {
         jsize_t j   = sizeof(p) - 1 - i;
