@@ -74,14 +74,18 @@ extern struct mi_heap_t *_mi_heap_main_get(void);
 // extern _Thread_local struct mi_heap_t *_mi_heap_default;
 
 static int my_pthread_init(struct _libpthread_functions *pthread_funcs, const char *envp[], const char *apple[]) {
+    puts_str("dyld-interposing my_pthread_init =>");
+    puts_ptr(my_pthread_init);
+    puts_str("dyld-interposing __pthread_init =>");
+    puts_ptr(__pthread_init);
 
-    assert(pthread_funcs->version >= 2);
-    const uintptr_t pi            = (uintptr_t)pthread_funcs;
-    const uintptr_t pf_page_start = pi & ~((1ull << 14) - 1ull);
-    assert(!mprotect((void *)pf_page_start, 16 * 1024, PROT_READ | PROT_WRITE));
-    pthread_funcs->malloc = mi_malloc_ext;
-    pthread_funcs->free   = mi_free_ext;
-    assert(!mprotect((void *)pf_page_start, 16 * 1024, PROT_READ));
+    // assert(pthread_funcs->version >= 2);
+    // const uintptr_t pi            = (uintptr_t)pthread_funcs;
+    // const uintptr_t pf_page_start = pi & ~((1ull << 14) - 1ull);
+    // assert(!mprotect((void *)pf_page_start, 16 * 1024, PROT_READ | PROT_WRITE));
+    // pthread_funcs->malloc = mi_malloc_ext;
+    // pthread_funcs->free   = mi_free_ext;
+    // assert(!mprotect((void *)pf_page_start, 16 * 1024, PROT_READ));
 
     // _mi_heap_main_get();
     // volatile void *p = _mi_heap_default;
@@ -89,7 +93,7 @@ static int my_pthread_init(struct _libpthread_functions *pthread_funcs, const ch
     return __pthread_init(pthread_funcs, envp, apple);
 }
 
-// DYLD_INTERPOSE(my_pthread_init, __pthread_init);
+DYLD_INTERPOSE(my_pthread_init, __pthread_init);
 
 static __attribute__((always_inline, const)) void **my_os_tsd_get_base(void) {
     juintptr_t tsd;
