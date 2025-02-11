@@ -1,6 +1,7 @@
 #include "mimalloc-types.h"
 #include "noalloc-stdio.h"
 #include "types-bare.h"
+#include <stdint.h>
 
 // #include <stdio.h>
 
@@ -53,9 +54,26 @@ static void dump_thread_id(void) {
     puts_ptr((void *)(juintptr_t)r);
 }
 
+static void *pthread_test(void *arg) {
+    (void)arg;
+    puts_str("pthread_test body begin");
+    void *p = malloc(4);
+    puts_str("dylib pthread_test malloc(4) =");
+    puts_ptr(p);
+    free(p);
+    puts_str("strdup(\"HAI\") =");
+    p = strdup("HAI");
+    puts_ptr(p);
+    puts_str(p);
+    free(p);
+    puts_str("pthread_test body end");
+    return NULL;
+}
+
 __attribute__((visibility("default"))) int mimalloc_tester_main(int argc, const char **argv) {
-    // printf("mimalloc_tester_main: argc: %d argv: %p\n", argc, argv);
     puts_str("mimalloc_tester_main");
+    puts_str("_dyld_launch_mode() =>");
+    puts_ptr((void *)(uintptr_t)_dyld_launch_mode());
     puts_str("dylib malloc:");
     puts_ptr(malloc);
     void *p = malloc(4);
@@ -77,6 +95,13 @@ __attribute__((visibility("default"))) int mimalloc_tester_main(int argc, const 
     dump_thread_id();
     puts_str("jev_thread_id() =>");
     puts_ptr((void *)jev_thread_id());
-    // printf("thread_id printf: %p\n", (void*)(juintptr_t))
+    puts_str("pthread_create() =>");
+    pthread_t t;
+    int res = pthread_create(&t, NULL, pthread_test, NULL);
+    puts_ptr(t);
+    puts_ptr((void *)(juintptr_t)res);
+    puts_str("pthread_join() =>");
+    res = pthread_join(t, NULL);
+    puts_ptr((void *)(juintptr_t)res);
     return 0;
 }

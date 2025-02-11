@@ -75,7 +75,7 @@ set_target_properties(mimalloc-tester PROPERTIES
     EXCLUDE_FROM_ALL ON
 )
 
-add_library(dyld-interposing SHARED dyld-interposing.c)
+add_library(dyld-interposing SHARED dyld-interposing.c noalloc-stdio.c)
 target_link_libraries(dyld-interposing PRIVATE "$<LINK_LIBRARY:UPWARD_LIBRARY,symbol-stubs>")
 set_target_properties(dyld-interposing PROPERTIES
     C_STANDARD 17

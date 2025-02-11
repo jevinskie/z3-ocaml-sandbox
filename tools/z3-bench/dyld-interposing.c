@@ -1,5 +1,6 @@
 #include "malloc-wrapped.h"
 #include "misc-decls.h"
+#include "noalloc-stdio.h"
 #include "types-bare.h"
 
 #undef NDEBUG
@@ -46,10 +47,10 @@ extern typeof(free) printing_free;
 // DYLD_INTERPOSE(printing_malloc, malloc);
 // DYLD_INTERPOSE(printing_free, free);
 
-// DYLD_INTERPOSE(mi_malloc_ext, malloc);
-// DYLD_INTERPOSE(mi_free_ext, free);
-// DYLD_INTERPOSE(mi_calloc_ext, calloc);
-// DYLD_INTERPOSE(mi_malloc_size_ext, malloc_size);
+DYLD_INTERPOSE(mi_malloc_ext, malloc);
+DYLD_INTERPOSE(mi_free_ext, free);
+DYLD_INTERPOSE(mi_calloc_ext, calloc);
+DYLD_INTERPOSE(mi_malloc_size_ext, malloc_size);
 // DYLD_INTERPOSE(mi_calloc, calloc);
 // DYLD_INTERPOSE(mi_realloc, realloc);
 // DYLD_INTERPOSE(mi_reallocf, reallocf);
@@ -79,7 +80,7 @@ extern int __pthread_init(struct _libpthread_functions *pthread_funcs, const cha
 
 extern void mi_prim_get_default_heap();
 extern struct mi_heap_t *_mi_heap_main_get(void);
-extern _Thread_local struct mi_heap_t *_mi_heap_default;
+// extern _Thread_local struct mi_heap_t *_mi_heap_default;
 
 static int my_pthread_init(struct _libpthread_functions *pthread_funcs, const char *envp[], const char *apple[]) {
 
@@ -97,7 +98,7 @@ static int my_pthread_init(struct _libpthread_functions *pthread_funcs, const ch
     return __pthread_init(pthread_funcs, envp, apple);
 }
 
-DYLD_INTERPOSE(my_pthread_init, __pthread_init);
+// DYLD_INTERPOSE(my_pthread_init, __pthread_init);
 
 typedef juint32_t jmach_port_t;
 
@@ -114,13 +115,14 @@ static __attribute__((always_inline, const)) void **my_os_tsd_get_base(void) {
 #define MI_TLS_SLOT_HEAP_DEFAULT 6 // wine
 #endif
 
-extern void *_mi_heap_empty;
+extern void *_mi_heap_empty_ext;
 
 static void my_pthread_start(pthread_t self, jmach_port_t kport, void *(*fun)(void *), void *arg, jsize_t stacksize,
                              unsigned int pflags) {
-    my_os_tsd_get_base()[MI_TLS_SLOT_HEAP_DEFAULT] = _mi_heap_empty;
+    puts_str("my_pthread_start()");
+    my_os_tsd_get_base()[MI_TLS_SLOT_HEAP_DEFAULT] = _mi_heap_empty_ext;
 
     _pthread_start(self, kport, fun, arg, stacksize, pflags);
 }
 
-// DYLD_INTERPOSE(my_pthread_start, _pthread_start);
+DYLD_INTERPOSE(my_pthread_start, _pthread_start);

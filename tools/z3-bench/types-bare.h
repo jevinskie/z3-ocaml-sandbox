@@ -8,6 +8,7 @@ typedef __UINT32_TYPE__ juint32_t;
 typedef __UINT64_TYPE__ juint64_t;
 typedef __UINTPTR_TYPE__ juintptr_t;
 typedef struct _opaque_pthread_t *pthread_t;
+typedef struct _opaque_pthread_attr_t pthread_attr_t;
 
 #ifndef STDIN_FILENO
 #define STDIN_FILENO 0
@@ -36,3 +37,6 @@ extern pthread_t pthread_self(void);
 extern juint64_t __thread_selfid(void);
 extern jsize_t write(int fd, const void *buf, jsize_t sz);
 extern jsize_t strlen(const char *p);
+extern int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*func)(void *arg), void *arg);
+extern int pthread_join(pthread_t thread, void *arg);
+extern juint32_t _dyld_launch_mode(void);

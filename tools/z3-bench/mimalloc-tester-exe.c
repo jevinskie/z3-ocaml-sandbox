@@ -19,7 +19,7 @@ extern int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(
 
 static void *pthread_test(void *arg) {
     (void)arg;
-    puts("pthread_test body");
+    puts_str("pthread_test body");
     return NULL;
 }
 #endif
