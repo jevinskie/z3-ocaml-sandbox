@@ -83,14 +83,16 @@ static __attribute__((always_inline, const)) void **my_os_tsd_get_base(void) {
 #define MI_TLS_SLOT_HEAP_DEFAULT 6 // wine
 #endif
 
-extern void *_mi_heap_empty_ext;
+// extern void *_mi_heap_empty_ext;
+struct my_mi_heap_s;
+extern struct my_mi_heap_smi_heap_s _mi_heap_empty_ext;
 
 static __attribute__((constructor)) void init_mimalloc_tls(void) {
     puts_str("dyld-interposing init_mimalloc_tls()");
     puts_str("dyld-interposing init_mimalloc_tls my_os_tsd_get_base()[MI_TLS_SLOT_HEAP_DEFAULT] =>");
     puts_ptr(my_os_tsd_get_base()[MI_TLS_SLOT_HEAP_DEFAULT]);
     puts_str("dyld-interposing init_mimalloc_tls _mi_heap_empty_ext =>");
-    puts_ptr(_mi_heap_empty_ext);
+    puts_ptr(&_mi_heap_empty_ext);
     my_os_tsd_get_base()[MI_TLS_SLOT_HEAP_DEFAULT] = &_mi_heap_empty_ext;
 }
 
@@ -148,7 +150,7 @@ static void my_pthread_start(pthread_t self, jmach_port_t kport, void *(*fun)(vo
     puts_ptr(my_pthread_start);
     puts_str("dyld-interposing _pthread_start =>");
     puts_ptr(_pthread_start);
-    my_os_tsd_get_base()[MI_TLS_SLOT_HEAP_DEFAULT] = _mi_heap_empty_ext;
+    my_os_tsd_get_base()[MI_TLS_SLOT_HEAP_DEFAULT] = &_mi_heap_empty_ext;
 
     _pthread_start(self, kport, fun, arg, stacksize, pflags);
 }
