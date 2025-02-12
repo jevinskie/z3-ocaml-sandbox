@@ -1,5 +1,17 @@
 // #include <unistd.h>
 
+#ifdef malloc
+#undef malloc
+#endif
+
+#ifdef free
+#undef free
+#endif
+
+#ifdef calloc
+#undef calloc
+#endif
+
 #include "fishhook.h"
 #include "types-bare.h"
 // #include <mimalloc.h>

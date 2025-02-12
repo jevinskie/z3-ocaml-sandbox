@@ -31,10 +31,10 @@
 
 // #include <mimalloc-new-delete.h>
 
-extern void vfree(void *ptr);
-extern void *reallocarray(void *in_ptr, jsize_t nmemb, jsize_t size) __asm("_reallocarray$DARWIN_EXTSN");
-extern void *reallocarrayf(void *in_ptr, jsize_t nmemb, jsize_t size) __asm("_reallocarrayf$DARWIN_EXTSN");
-extern jsize_t malloc_size(const void *ptr);
+// extern void vfree(void *ptr);
+// extern void *reallocarray(void *in_ptr, jsize_t nmemb, jsize_t size) __asm("_reallocarray$DARWIN_EXTSN");
+// extern void *reallocarrayf(void *in_ptr, jsize_t nmemb, jsize_t size) __asm("_reallocarrayf$DARWIN_EXTSN");
+// extern jsize_t malloc_size(const void *ptr);
 
 extern typeof(malloc) mi_malloc_ext;
 extern typeof(free) mi_free_ext;

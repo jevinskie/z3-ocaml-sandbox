@@ -35,6 +35,6 @@ ALIAS_GLOBAL("_mi_heap_empty_ext", "_mi_heap_empty");
 
 #include "mimalloc-types.h"
 
-__attribute__((used)) static malloc_t *dummy_malloc_import = &malloc;
-__attribute__((used)) static free_t *dummy_free_import     = &free;
-__attribute__((used)) static calloc_t *dummy_calloc_import = &calloc;
+__attribute__((used)) malloc_t *dummy_malloc_import = &malloc;
+__attribute__((used)) free_t *dummy_free_import     = &free;
+__attribute__((used)) calloc_t *dummy_calloc_import = &calloc;

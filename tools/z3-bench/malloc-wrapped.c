@@ -1,3 +1,15 @@
+#ifdef malloc
+#undef malloc
+#endif
+
+#ifdef free
+#undef free
+#endif
+
+#ifdef calloc
+#undef calloc
+#endif
+
 #include "malloc-wrapped.h"
 #include "mimalloc-types.h"
 #include "noalloc-stdio.h"
