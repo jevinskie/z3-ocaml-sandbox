@@ -34,7 +34,6 @@ set_target_properties(mimalloc-tester-c-reexported PROPERTIES
 )
 
 add_library(mimalloc-interposing SHARED dyld-interposing.c)
-# target_link_options(mimalloc-interposing PRIVATE "-Wl,-undefined,warn")
 target_link_libraries(mimalloc-interposing PRIVATE  "$<LINK_LIBRARY:UPWARD_LIBRARY,mimalloc-tester-c>")
 set_target_properties(mimalloc-interposing PROPERTIES
     C_STANDARD 17
@@ -86,7 +85,7 @@ set_target_properties(dyld-interposing PROPERTIES
     EXCLUDE_FROM_ALL ON
 )
 
-add_executable(mimalloc-tester-trick mimalloc-tester-exe.c noalloc-stdio.c mimalloc-tester-dylib-c.c noalloc-stdio.c malloc-wrapped.c mimalloc-extern.c link-in-libmalloc.c)
+add_executable(mimalloc-tester-trick mimalloc-tester-exe.c noalloc-stdio.c mimalloc-tester-dylib-c.c noalloc-stdio.c malloc-wrapped.c mimalloc-extern.c link-in-libmalloc.c fishhook.c mimalloc-fishhook.c)
 target_link_libraries(mimalloc-tester-trick PRIVATE mimalloc-obj dyld-interposing)
 # target_link_libraries(mimalloc-tester-trick PRIVATE mimalloc-obj)
 target_compile_definitions(mimalloc-tester-trick PUBLIC malloc=mi_malloc free=mi_free calloc=mi_calloc)

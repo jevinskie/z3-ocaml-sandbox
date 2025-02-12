@@ -90,6 +90,7 @@ static __attribute__((always_inline, const)) void **my_os_tsd_get_base(void) {
 struct my_mi_heap_s;
 extern struct my_mi_heap_smi_heap_s _mi_heap_empty_ext;
 
+#if 0
 static __attribute__((constructor)) void init_mimalloc_tls(void) {
     puts_str("dyld-interposing init_mimalloc_tls()");
     puts_str("dyld-interposing init_mimalloc_tls my_os_tsd_get_base()[MI_TLS_SLOT_HEAP_DEFAULT] =>");
@@ -98,6 +99,7 @@ static __attribute__((constructor)) void init_mimalloc_tls(void) {
     puts_ptr(&_mi_heap_empty_ext);
     my_os_tsd_get_base()[MI_TLS_SLOT_HEAP_DEFAULT] = &_mi_heap_empty_ext;
 }
+#endif
 
 static __attribute__((noreturn)) void my_thread_start(pthread_t thread, jmach_port_t kport, void *(*fun)(void *),
                                                       void *arg, jsize_t stacksize, unsigned int flags) {
