@@ -101,9 +101,10 @@ __attribute__((visibility("default"))) int mimalloc_tester_main(int argc, const 
     dump_thread_id();
     puts_str("jev_thread_id() =>");
     puts_ptr((void *)jev_thread_id());
-    puts_str("pthread_create() =>");
     pthread_t t;
     int res = pthread_create(&t, NULL, pthread_test, NULL);
+    usleep(250000);
+    puts_str("pthread_create() =>");
     puts_ptr(t);
     puts_ptr((void *)(juintptr_t)res);
     puts_str("pthread_join() =>");

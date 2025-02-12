@@ -62,3 +62,4 @@ extern __attribute__((noreturn)) void thread_start(pthread_t self, jmach_port_t 
                                                    unsigned int flags); // trampoline into _pthread_start
 extern __attribute__((noreturn)) void _pthread_start(pthread_t thread, jmach_port_t kport, void *(*fun)(void *),
                                                      void *arg, jsize_t stacksize, unsigned int flags);
+extern void usleep(juint32_t microseconds);
