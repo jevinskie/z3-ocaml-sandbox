@@ -1,11 +1,8 @@
 --- !tapi-tbd
-tbd-version:     4
-targets:         [ arm64-macos ]
-uuids:
-  - target:          arm64-macos
-    value:           154BF850-537D-33A2-8849-DDC179146FF7
-flags:           [ not_app_extension_safe ]
-install-name:    '@rpath/mimalloc-tester-trick'
-current-version: 0
-compatibility-version: 0
+tbd-version: 4
+targets: [i386-macos, x86_64-macos, x86_64-maccatalyst, arm64-macos, arm64-maccatalyst, arm64e-macos, arm64e-maccatalyst]
+install-name: '@rpath/mimalloc-tester-trick'
+exports:
+- targets: [i386-macos, x86_64-macos, x86_64-maccatalyst, arm64-macos, arm64-maccatalyst, arm64e-macos, arm64e-maccatalyst]
+  symbols: [__mi_heap_empty_ext, _mi_calloc_ext, _mi_free_ext, _mi_malloc_ext, _mi_malloc_size_ext]
 ...

@@ -12,6 +12,8 @@ repos:
   - id: check-case-conflict
   - id: check-shebang-scripts-are-executable
   - id: check-yaml
+    # types: [file]  # override 'types: [yaml]'
+    # files: \.(yaml|clang-format|tbd)$
   - id: check-toml
   - id: check-vcs-permalinks
   - id: detect-private-key
@@ -26,6 +28,8 @@ repos:
   hooks:
   - id: pretty-format-yaml
     args: [--autofix, --indent, '2']
+    # types: [file]  # override 'types: [yaml]'
+    # files: \.(yaml|clang-format|tbd)$
   - id: pretty-format-toml
     args: [--autofix]
 - repo: https://github.com/pre-commit/mirrors-clang-format

@@ -86,8 +86,8 @@ set_target_properties(dyld-interposing PROPERTIES
 )
 
 add_executable(mimalloc-tester-trick mimalloc-tester-exe.c noalloc-stdio.c mimalloc-tester-dylib-c.c noalloc-stdio.c malloc-wrapped.c mimalloc-extern.c)
-# target_link_libraries(mimalloc-tester-trick PRIVATE mimalloc-obj dyld-interposing)
-target_link_libraries(mimalloc-tester-trick PRIVATE mimalloc-obj)
+target_link_libraries(mimalloc-tester-trick PRIVATE mimalloc-obj dyld-interposing)
+# target_link_libraries(mimalloc-tester-trick PRIVATE mimalloc-obj)
 set_target_properties(mimalloc-tester-trick PROPERTIES
     C_STANDARD 17
     C_EXTENSIONS ON
