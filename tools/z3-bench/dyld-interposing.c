@@ -147,7 +147,7 @@ static int my_pthread_init(struct _libpthread_functions *pthread_funcs, const ch
     return __pthread_init(pthread_funcs, envp, apple);
 }
 
-// DYLD_INTERPOSE(my_pthread_init, __pthread_init);
+DYLD_INTERPOSE(my_pthread_init, __pthread_init);
 
 static void my_pthread_start(pthread_t self, jmach_port_t kport, void *(*fun)(void *), void *arg, jsize_t stacksize,
                              unsigned int pflags) {

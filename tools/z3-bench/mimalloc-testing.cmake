@@ -77,7 +77,7 @@ set_target_properties(mimalloc-tester PROPERTIES
 add_library(dyld-interposing SHARED dyld-interposing.c noalloc-stdio.c link-in-libmalloc.c)
 target_compile_options(dyld-interposing PRIVATE "-mno-stack-arg-probe" "-fno-stack-check" "-fno-stack-protector")
 target_link_libraries(dyld-interposing PRIVATE "$<LINK_LIBRARY:UPWARD_LIBRARY,symbol-stubs>")
-target_link_options(dyld-interposing PRIVATE "-Wl,-needed_library,/usr/lib/system/libsystem_malloc.dylib")
+# target_link_options(dyld-interposing PRIVATE "-Wl,-needed_library,/usr/lib/system/libsystem_malloc.dylib")
 set_target_properties(dyld-interposing PROPERTIES
     C_STANDARD 17
     C_EXTENSIONS ON
@@ -85,11 +85,35 @@ set_target_properties(dyld-interposing PROPERTIES
     EXCLUDE_FROM_ALL ON
 )
 
-add_executable(mimalloc-tester-trick mimalloc-tester-exe.c noalloc-stdio.c mimalloc-tester-dylib-c.c noalloc-stdio.c malloc-wrapped.c mimalloc-extern.c link-in-libmalloc.c fishhook.c mimalloc-fishhook.c)
-target_link_libraries(mimalloc-tester-trick PRIVATE mimalloc-obj dyld-interposing)
+# add_executable(mimalloc-tester-trick mimalloc-tester-exe.c mimalloc-tester-dylib-c.c noalloc-stdio.c malloc-wrapped.c mimalloc-extern.c link-in-libmalloc.c fishhook.c mimalloc-fishhook.c)
+# target_link_libraries(mimalloc-tester-trick PRIVATE mimalloc-obj dyld-interposing)
+# # target_link_libraries(mimalloc-tester-trick PRIVATE mimalloc-obj)
+# target_compile_definitions(mimalloc-tester-trick PUBLIC malloc=mi_malloc free=mi_free calloc=mi_calloc)
+# # target_link_options(mimalloc-tester-trick PRIVATE "-Wl,-needed_library,/usr/lib/system/libsystem_malloc.dylib")
+# set_target_properties(mimalloc-tester-trick PROPERTIES
+#     C_STANDARD 17
+#     C_EXTENSIONS ON
+#     C_STANDARD_REQUIRED ON
+#     EXCLUDE_FROM_ALL ON
+# )
+
+add_library(mimalloc-tester-trick-lib SHARED mimalloc-tester-dylib-c.c noalloc-stdio.c malloc-wrapped.c mimalloc-extern.c link-in-libmalloc.c fishhook.c mimalloc-fishhook.c)
+target_link_libraries(mimalloc-tester-trick-lib PRIVATE mimalloc-obj dyld-interposing)
+# target_link_libraries(mimalloc-tester-trick-lib PRIVATE mimalloc-obj)
+target_compile_definitions(mimalloc-tester-trick-lib PUBLIC malloc=mi_malloc free=mi_free calloc=mi_calloc)
+# target_link_options(mimalloc-tester-trick-lib PRIVATE "-Wl,-needed_library,/usr/lib/system/libsystem_malloc.dylib")
+set_target_properties(mimalloc-tester-trick-lib PROPERTIES
+    C_STANDARD 17
+    C_EXTENSIONS ON
+    C_STANDARD_REQUIRED ON
+    EXCLUDE_FROM_ALL ON
+)
+
+add_executable(mimalloc-tester-trick mimalloc-tester-exe.c noalloc-stdio.c)
+target_link_libraries(mimalloc-tester-trick PRIVATE mimalloc-tester-trick-lib)
 # target_link_libraries(mimalloc-tester-trick PRIVATE mimalloc-obj)
-target_compile_definitions(mimalloc-tester-trick PUBLIC malloc=mi_malloc free=mi_free calloc=mi_calloc)
-target_link_options(mimalloc-tester-trick PRIVATE "-Wl,-needed_library,/usr/lib/system/libsystem_malloc.dylib")
+# target_compile_definitions(mimalloc-tester-trick PUBLIC malloc=mi_malloc free=mi_free calloc=mi_calloc)
+# target_link_options(mimalloc-tester-trick PRIVATE "-Wl,-needed_library,/usr/lib/system/libsystem_malloc.dylib")
 set_target_properties(mimalloc-tester-trick PROPERTIES
     C_STANDARD 17
     C_EXTENSIONS ON

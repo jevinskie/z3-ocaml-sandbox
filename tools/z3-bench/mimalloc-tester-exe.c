@@ -24,6 +24,9 @@ static void *pthread_test(void *arg) {
 }
 #endif
 
+#include "clear-macros.h"
+#include "mimalloc-types.h"
+
 int main(int argc, const char **argv) {
     int res;
     puts_str("exe malloc:");
