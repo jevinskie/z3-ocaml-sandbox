@@ -1,26 +1,40 @@
+
+#ifdef malloc
+#undef malloc
+#endif
+
+#ifdef free
+#undef free
+#endif
+
+#ifdef calloc
+#undef calloc
+#endif
+
 #include "malloc-wrapped.h"
+#include "mimalloc-types.h"
 #include "misc-decls.h"
 #include "noalloc-stdio.h"
 #include "types-bare.h"
 
-#undef NDEBUG
-#include <assert.h>
+// #undef NDEBUG
+// #include <assert.h>
 
-#include <malloc/_malloc.h>
-#include <malloc/_malloc_type.h>
-#include <malloc/malloc.h>
-#include <stdint.h>
-#include <stdlib.h>
-#include <sys/mman.h>
+// #include <malloc/_malloc.h>
+// #include <malloc/_malloc_type.h>
+// #include <malloc/malloc.h>
+// #include <stdint.h>
+// #include <stdlib.h>
+// #include <sys/mman.h>
 
 // #include <mimalloc.h>
 
 // #include <mimalloc-new-delete.h>
 
 extern void vfree(void *ptr);
-extern void *reallocarray(void *in_ptr, size_t nmemb, size_t size) __asm("_reallocarray$DARWIN_EXTSN");
-extern void *reallocarrayf(void *in_ptr, size_t nmemb, size_t size) __asm("_reallocarrayf$DARWIN_EXTSN");
-extern size_t malloc_size(const void *ptr);
+extern void *reallocarray(void *in_ptr, jsize_t nmemb, jsize_t size) __asm("_reallocarray$DARWIN_EXTSN");
+extern void *reallocarrayf(void *in_ptr, jsize_t nmemb, jsize_t size) __asm("_reallocarrayf$DARWIN_EXTSN");
+extern jsize_t malloc_size(const void *ptr);
 
 extern typeof(malloc) mi_malloc_ext;
 extern typeof(free) mi_free_ext;
@@ -34,12 +48,12 @@ extern typeof(realloc) mi_realloc;
 extern typeof(reallocf) mi_reallocf;
 extern typeof(valloc) mi_valloc;
 extern typeof(reallocarray) mi_reallocarray;
-// extern typeof(reallocarrayf) mi_reallocarrayf;
+extern typeof(reallocarrayf) mi_reallocarrayf;
 extern typeof(aligned_alloc) mi_aligned_alloc;
 extern typeof(posix_memalign) mi_posix_memalign;
 extern typeof(malloc_size) mi_malloc_size;
 extern typeof(malloc_good_size) mi_malloc_good_size;
-extern typeof(malloc_good_size) mi_good_size;
+// extern typeof(malloc_good_size) mi_good_size;
 
 extern typeof(malloc) printing_malloc;
 extern typeof(free) printing_free;

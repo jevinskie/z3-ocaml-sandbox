@@ -76,7 +76,7 @@ set_target_properties(mimalloc-tester PROPERTIES
 )
 
 add_library(dyld-interposing SHARED dyld-interposing.c noalloc-stdio.c)
-target_compile_options(dyld-interposing PRIVATE "-mno-stack-arg-probe" "-fno-stack-check" "-fno-stack-clash-protection" "-fno-stack-protector")
+target_compile_options(dyld-interposing PRIVATE "-mno-stack-arg-probe" "-fno-stack-check" "-fno-stack-protector")
 target_link_libraries(dyld-interposing PRIVATE "$<LINK_LIBRARY:UPWARD_LIBRARY,symbol-stubs>")
 set_target_properties(dyld-interposing PROPERTIES
     C_STANDARD 17
@@ -88,6 +88,7 @@ set_target_properties(dyld-interposing PROPERTIES
 add_executable(mimalloc-tester-trick mimalloc-tester-exe.c noalloc-stdio.c mimalloc-tester-dylib-c.c noalloc-stdio.c malloc-wrapped.c mimalloc-extern.c)
 target_link_libraries(mimalloc-tester-trick PRIVATE mimalloc-obj dyld-interposing)
 # target_link_libraries(mimalloc-tester-trick PRIVATE mimalloc-obj)
+target_compile_definitions(mimalloc-tester-trick PUBLIC malloc=mi_malloc free=mi_free calloc=mi_calloc)
 set_target_properties(mimalloc-tester-trick PROPERTIES
     C_STANDARD 17
     C_EXTENSIONS ON

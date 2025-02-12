@@ -10,6 +10,8 @@ extern void *reallocf(void *p, jsize_t sz);
 extern void *valloc(jsize_t sz);
 extern void *aligned_alloc(jsize_t alignment, jsize_t sz);
 extern int posix_memalign(void **p, jsize_t alignment, jsize_t sz);
+extern jsize_t malloc_good_size(jsize_t size);
+extern jsize_t malloc_size(const void *ptr);
 
 typedef typeof(malloc) malloc_t;
 typedef typeof(calloc) calloc_t;
@@ -19,6 +21,8 @@ typedef typeof(reallocf) reallocf_t;
 typedef typeof(valloc) valloc_t;
 typedef typeof(aligned_alloc) aligned_alloc_t;
 typedef typeof(posix_memalign) posix_memalign_t;
+typedef typeof(malloc_good_size) malloc_good_size_t;
+typedef typeof(malloc_size) malloc_size_t;
 
 typedef malloc_t x_Znwm_t;
 typedef free_t x_ZdlPv_t;

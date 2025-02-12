@@ -1,9 +1,6 @@
 #include "mimalloc-types.h"
 #include "noalloc-stdio.h"
 #include "types-bare.h"
-#include <stdint.h>
-
-// #include <stdio.h>
 
 __attribute__((constructor)) static void init_dylib(void) {
     write(STDOUT_FILENO, "init_dylib\n", 11);
@@ -74,7 +71,7 @@ static void *pthread_test(void *arg) {
 __attribute__((visibility("default"))) int mimalloc_tester_main(int argc, const char **argv) {
     puts_str("mimalloc_tester_main");
     puts_str("_dyld_launch_mode() =>");
-    puts_ptr((void *)(uintptr_t)_dyld_launch_mode());
+    puts_ptr((void *)(juintptr_t)_dyld_launch_mode());
     puts_str("mimalloc_tester_main: _pthread_start =>");
     puts_ptr(_pthread_start);
     puts_str("mimalloc_tester_main: __pthread_init =>");
