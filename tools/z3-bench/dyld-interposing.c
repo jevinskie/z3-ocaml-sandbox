@@ -88,7 +88,7 @@ static __attribute__((always_inline, const)) void **my_os_tsd_get_base(void) {
 
 // extern void *_mi_heap_empty_ext;
 struct my_mi_heap_s;
-extern struct my_mi_heap_smi_heap_s _mi_heap_empty_ext;
+extern struct my_mi_heap_s _mi_heap_empty_ext;
 
 #if 0
 static __attribute__((constructor)) void init_mimalloc_tls(void) {

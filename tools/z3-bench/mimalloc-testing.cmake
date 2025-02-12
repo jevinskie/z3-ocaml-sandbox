@@ -97,8 +97,8 @@ set_target_properties(dyld-interposing PROPERTIES
 #     EXCLUDE_FROM_ALL ON
 # )
 
-add_library(mimalloc-tester-trick-lib SHARED mimalloc-tester-dylib-c.c noalloc-stdio.c malloc-wrapped.c mimalloc-extern.c link-in-libmalloc.c fishhook.c mimalloc-fishhook.c)
-target_link_libraries(mimalloc-tester-trick-lib PRIVATE mimalloc-obj dyld-interposing)
+add_library(mimalloc-tester-trick-lib SHARED mimalloc-tester-dylib-c.c noalloc-stdio.c malloc-wrapped.c mimalloc-extern.c link-in-libmalloc.c fishhook.c mimalloc-fishhook.c dyld-interposing.c  link-in-libmalloc.c)
+target_link_libraries(mimalloc-tester-trick-lib PRIVATE mimalloc-obj)
 # target_link_libraries(mimalloc-tester-trick-lib PRIVATE mimalloc-obj)
 target_compile_definitions(mimalloc-tester-trick-lib PUBLIC malloc=mi_malloc free=mi_free calloc=mi_calloc)
 # target_link_options(mimalloc-tester-trick-lib PRIVATE "-Wl,-needed_library,/usr/lib/system/libsystem_malloc.dylib")
