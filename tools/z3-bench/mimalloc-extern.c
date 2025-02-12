@@ -21,17 +21,7 @@ ALIAS_GLOBAL("_mi_heap_empty_ext", "_mi_heap_empty");
 // ALIAS_GLOBAL("_Znwm", "mi_malloc");
 // ALIAS_GLOBAL("_ZdlPv", "mi_free");
 
-#ifdef malloc
-#undef malloc
-#endif
-
-#ifdef free
-#undef free
-#endif
-
-#ifdef calloc
-#undef calloc
-#endif
+#include "clear-macros.h"
 
 #include "mimalloc-types.h"
 

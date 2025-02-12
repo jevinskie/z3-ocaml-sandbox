@@ -1,26 +1,10 @@
-// #include <unistd.h>
-
-#ifdef malloc
-#undef malloc
-#endif
-
-#ifdef free
-#undef free
-#endif
-
-#ifdef calloc
-#undef calloc
-#endif
+#include "clear-macros.h"
 
 #include "fishhook.h"
-#include "types-bare.h"
-// #include <mimalloc.h>
-
-// #include <mimalloc-new-delete.h>
-
 #include "malloc-wrapped.h"
 #include "mimalloc-types.h"
 #include "misc-decls.h"
+#include "types-bare.h"
 
 #if 1
 SYM_INT malloc_t *orig_malloc;

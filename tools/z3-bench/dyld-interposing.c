@@ -1,15 +1,4 @@
-
-#ifdef malloc
-#undef malloc
-#endif
-
-#ifdef free
-#undef free
-#endif
-
-#ifdef calloc
-#undef calloc
-#endif
+#include "clear-macros.h"
 
 #include "malloc-wrapped.h"
 #include "mimalloc-types.h"
