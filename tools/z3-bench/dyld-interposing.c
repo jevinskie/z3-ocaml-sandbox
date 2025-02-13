@@ -116,61 +116,83 @@ static jint32_t decode_bl_offset(const juint32_t bl_instr) {
 static void set_program_vars(const struct ProgramVars *vars) {
     puts_str("dyld-interposing set_program_vars vars =>");
     puts_ptr(vars);
-    puts_str("dyld-interposing _libc_initializer =>");
+    puts_str("dyld-interposing set_program_vars _libc_initializer =>");
     puts_ptr(_libc_initializer);
     const juintptr_t libc_init_addr = (juintptr_t)&_libc_initializer;
     const juint32_t *pc             = (const juint32_t *)&_libc_initializer;
     int found                       = 0;
     do {
-        puts_str("dyld-interposing _libc_initializer pc =>");
-        puts_ptr(pc);
-        puts_str("dyld-interposing _libc_initializer *pc =>");
+        // puts_str("dyld-interposing set_program_vars pc =>");
+        // puts_ptr(pc);
+        // puts_str("dyld-interposing set_program_vars *pc =>");
         const juint32_t inst = *pc;
-        puts_ptr((void *)(juintptr_t)inst);
+        // puts_ptr((void *)(juintptr_t)inst);
         found = is_bl(inst);
         if (!found) {
             ++pc;
         }
     } while (!found);
-    puts_str("dyld-interposing _libc_initializer BL _program_vars_init PC =>");
-    puts_ptr(pc);
-    puts_str("dyld-interposing _libc_initializer BL _program_vars_init instr =>");
+    // puts_str("dyld-interposing set_program_vars BL _program_vars_init PC =>");
+    // puts_ptr(pc);
+    // puts_str("dyld-interposing set_program_vars BL _program_vars_init instr =>");
     const juint32_t inst = *pc;
-    puts_ptr((void *)(juintptr_t)inst);
-    puts_str("dyld-interposing _libc_initializer BL _program_vars_init offset =>");
+    // puts_ptr((void *)(juintptr_t)inst);
+    // puts_str("dyld-interposing set_program_vars BL _program_vars_init offset =>");
     const jint32_t off = decode_bl_offset(inst);
-    puts_ptr((void *)(juintptr_t)off);
-    puts_str("dyld-interposing _program_vars_init =>");
+    // puts_ptr((void *)(juintptr_t)off);
+    puts_str("dyld-interposing set_program_vars _program_vars_init =>");
     const juintptr_t pvar_init_addr = (juintptr_t)pc + off;
     puts_ptr((void *)pvar_init_addr);
     const _program_vars_init_fptr_t pvar_init_fptr = (_program_vars_init_fptr_t)pvar_init_addr;
-    puts_str("dyld-interposing _program_vars_init running...");
+    puts_str("dyld-interposing set_program_vars _program_vars_init running...");
     pvar_init_fptr(vars);
-    puts_str("dyld-interposing _program_vars_init done!");
+    puts_str("dyld-interposing set_program_vars _program_vars_init done!");
 }
 
 static __attribute__((noreturn)) void my_thread_start(pthread_t thread, jmach_port_t kport, void *(*fun)(void *),
                                                       void *arg, jsize_t stacksize, unsigned int flags) {
-    puts_str("dyld-interposing my_thread_start =>");
+    puts_str("dyld-interposing my_thread_start my_thread_start =>");
     puts_ptr(my_thread_start);
-    puts_str("dyld-interposing thread_start =>");
+    puts_str("dyld-interposing my_thread_start thread_start =>");
     puts_ptr(thread_start);
+
+    puts_str("dyld-interposing my_thread_start get_tsb()[HEAP_DEFAULT] =>");
+    puts_ptr(my_os_tsd_get_base()[MI_TLS_SLOT_HEAP_DEFAULT]);
+
+    puts_str("dyld-interposing my_thread_start get_tsb()[HEAP_DEFAULT] = &_mi_heap_empty_ext");
     my_os_tsd_get_base()[MI_TLS_SLOT_HEAP_DEFAULT] = &_mi_heap_empty_ext;
-    // my_os_tsd_get_base()[MI_TLS_SLOT_HEAP_DEFAULT] = NULL;
+
+    puts_str("dyld-interposing my_thread_start tail calling thread_start...");
     thread_start(thread, kport, fun, arg, stacksize, flags);
 }
 
 static int my_bsdthread_register(void *threadstart, void *wqthread, int pthsize, void *pthread_init_data,
                                  jint32_t *pthread_init_data_size, juint64_t dispatchqueue_offset) {
     (void)threadstart;
-    puts_str("dyld-interposing my_bsdthread_register =>");
+    puts_str("dyld-interposing my_bsdthread_register my_bsdthread_register =>");
     puts_ptr(my_bsdthread_register);
-    puts_str("dyld-interposing __bsdthread_register =>");
+    puts_str("dyld-interposing my_bsdthread_register __bsdthread_register =>");
     puts_ptr(__bsdthread_register);
-    puts_str("dyld-interposing my_bsdthread_register() threadstart =>");
+    puts_str("dyld-interposing my_bsdthread_register threadstart =>");
     puts_ptr(threadstart);
+    puts_str("dyld-interposing my_bsdthread_register pthsize =>");
+    puts_ptr((void *)(juintptr_t)pthsize);
+    puts_str("dyld-interposing my_bsdthread_register pthread_init_data =>");
+    puts_ptr(threadstart);
+    puts_str("dyld-interposing my_bsdthread_register pthread_init_data_size =>");
+    puts_ptr(pthread_init_data_size);
+
+    puts_str("dyld-interposing my_bsdthread_register get_tsb()[HEAP_DEFAULT] =>");
+    puts_ptr(my_os_tsd_get_base()[MI_TLS_SLOT_HEAP_DEFAULT]);
+
+    puts_str("dyld-interposing my_bsdthread_register get_tsb()[HEAP_DEFAULT] = &_mi_heap_empty_ext");
     my_os_tsd_get_base()[MI_TLS_SLOT_HEAP_DEFAULT] = &_mi_heap_empty_ext;
+
+    puts_str("dyld-interposing my_bsdthread_register _mi_process_load running...");
     _mi_process_load();
+    puts_str("dyld-interposing my_bsdthread_register _mi_process_load done!");
+
+    puts_str("dyld-interposing my_bsdthread_register tail calling __bsdthread_register...");
     return __bsdthread_register(my_thread_start, wqthread, pthsize, pthread_init_data, pthread_init_data_size,
                                 dispatchqueue_offset);
 }
@@ -179,33 +201,38 @@ DYLD_INTERPOSE(my_bsdthread_register, __bsdthread_register);
 
 static int my_pthread_init(struct _libpthread_functions *pthread_funcs, const char *envp[], const char *apple[],
                            const struct ProgramVars *vars) {
-    puts_str("dyld-interposing my_pthread_init =>");
-    puts_ptr(my_pthread_init);
-    puts_str("dyld-interposing __pthread_init =>");
-    puts_ptr(__pthread_init);
-
+    puts_str("dyld-interposing my_pthread_init set_program_vars running...");
     set_program_vars(vars);
+    puts_str("dyld-interposing my_pthread_init set_program_vars done!");
 
-    // // assert(pthread_funcs->version >= 2);
-    // const juintptr_t pi            = (juintptr_t)pthread_funcs;
-    // const juintptr_t pf_page_start = pi & ~((1ull << 14) - 1ull);
-    // // assert(!mprotect((void *)pf_page_start, 16 * 1024, PROT_READ | PROT_WRITE));
-    // mprotect((void *)pf_page_start, 16 * 1024, PROT_READ | PROT_WRITE);
-    // pthread_funcs->malloc = mi_malloc_ext;
-    // pthread_funcs->free   = mi_free_ext;
-    // // assert(!mprotect((void *)pf_page_start, 16 * 1024, PROT_READ));
-    // mprotect((void *)pf_page_start, 16 * 1024, PROT_READ);
+    if (!(pthread_funcs->version >= 2)) {
+        puts_str("dyld-interposing my_pthread_init pthread_funcs->version < 2");
+        abort();
+    }
+    const juintptr_t pi            = (juintptr_t)pthread_funcs;
+    const juintptr_t pf_page_start = pi & ~((1ull << 14) - 1ull);
+    if (mprotect((void *)pf_page_start, 16 * 1024, PROT_READ | PROT_WRITE)) {
+        puts_str("dyld-interposing my_pthread_init mprotect(READ | WRITE)");
+        abort();
+    }
+    pthread_funcs->malloc = mi_malloc_ext;
+    pthread_funcs->free   = mi_free_ext;
+    if (mprotect((void *)pf_page_start, 16 * 1024, PROT_READ)) {
+        puts_str("dyld-interposing my_pthread_init mprotect(READ)");
+        abort();
+    }
 
-    puts_str("dyld-interposing _mi_process_load =>");
-    puts_ptr(_mi_process_load);
-    puts_str("dyld-interposing _mi_process_load running...");
+    puts_str("dyld-interposing my_pthread_init _mi_process_load running...");
     _mi_process_load();
-    puts_str("dyld-interposing _mi_process_load done!");
+    puts_str("dyld-interposing my_pthread_init _mi_process_load done!");
 
-    // _mi_heap_main_get();
-    // volatile void *p = _mi_heap_default;
+    puts_str("dyld-interposing my_pthread_init get_tsb()[HEAP_DEFAULT] =>");
+    puts_ptr(my_os_tsd_get_base()[MI_TLS_SLOT_HEAP_DEFAULT]);
+
+    puts_str("dyld-interposing my_pthread_init get_tsb()[HEAP_DEFAULT] = &_mi_heap_empty_ext");
     my_os_tsd_get_base()[MI_TLS_SLOT_HEAP_DEFAULT] = &_mi_heap_empty_ext;
 
+    puts_str("dyld-interposing my_pthread_init tail calling __pthread_init...");
     return __pthread_init(pthread_funcs, envp, apple, vars);
 }
 
@@ -213,23 +240,23 @@ DYLD_INTERPOSE(my_pthread_init, __pthread_init);
 
 static void my_pthread_start(pthread_t self, jmach_port_t kport, void *(*fun)(void *), void *arg, jsize_t stacksize,
                              unsigned int pflags) {
-    puts_str("dyld-interposing my_pthread_start =>");
-    puts_ptr(my_pthread_start);
-    puts_str("dyld-interposing _pthread_start =>");
-    puts_ptr(_pthread_start);
+    puts_str("dyld-interposing my_pthread_start self =>");
+    puts_ptr(self);
+    puts_str("dyld-interposing my_pthread_start get_tsb() =>");
+    puts_ptr(my_os_tsd_get_base());
+    puts_str("dyld-interposing my_pthread_start get_tsb()[0] =>");
+    puts_ptr(my_os_tsd_get_base()[0]);
 
-    puts_str("dyld-interposing1 init_mimalloc_tls my_os_tsd_get_base()[MI_TLS_SLOT_HEAP_DEFAULT] =>");
-    puts_ptr(my_os_tsd_get_base()[MI_TLS_SLOT_HEAP_DEFAULT]);
-    puts_str("dyld-interposing1 init_mimalloc_tls _mi_heap_empty_ext =>");
+    puts_str("dyld-interposing my_pthread_start &_mi_heap_empty_ext =>");
     puts_ptr(&_mi_heap_empty_ext);
 
+    puts_str("dyld-interposing my_pthread_start get_tsb()[HEAP_DEFAULT] =>");
+    puts_ptr(my_os_tsd_get_base()[MI_TLS_SLOT_HEAP_DEFAULT]);
+
+    puts_str("dyld-interposing my_pthread_start get_tsb()[HEAP_DEFAULT] = &_mi_heap_empty_ext");
     my_os_tsd_get_base()[MI_TLS_SLOT_HEAP_DEFAULT] = &_mi_heap_empty_ext;
 
-    puts_str("dyld-interposing2 init_mimalloc_tls my_os_tsd_get_base()[MI_TLS_SLOT_HEAP_DEFAULT] =>");
-    puts_ptr(my_os_tsd_get_base()[MI_TLS_SLOT_HEAP_DEFAULT]);
-    puts_str("dyld-interposing2 init_mimalloc_tls _mi_heap_empty_ext =>");
-    puts_ptr(&_mi_heap_empty_ext);
-
+    puts_str("dyld-interposing my_pthread_start tail calling _pthread_start...");
     _pthread_start(self, kport, fun, arg, stacksize, pflags);
 }
 

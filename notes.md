@@ -8,6 +8,27 @@ breakpoint set --name mi_malloc --command 'finish' --command 'e `$x0 == 0x200000
 # Interposing
 Symbols are C form and do not have leading underscore prefix.
 
+## Remaining work
+
+## @exit handling
+`pthread_exit` not currently hooked.
+
+### @fork handling
+```c
+#pragma mark - atfork libSystem integration
+
+void _pthread_atfork_prepare_handlers(void);
+void _pthread_atfork_prepare(void);
+void _pthread_atfork_parent(void);
+void _pthread_atfork_parent_handlers(void);
+void _pthread_atfork_child(void);
+void _pthread_atfork_child_handlers(void);
+void _pthread_fork_prepare(void);
+void _pthread_fork_parent(void);
+void _pthread_fork_child(void);
+void _pthread_fork_child_postinit(void);
+```
+
 ## C
 
 ### Interposed
