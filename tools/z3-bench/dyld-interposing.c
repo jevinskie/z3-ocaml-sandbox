@@ -186,15 +186,15 @@ static int my_pthread_init(struct _libpthread_functions *pthread_funcs, const ch
 
     set_program_vars(vars);
 
-    // assert(pthread_funcs->version >= 2);
-    const juintptr_t pi            = (juintptr_t)pthread_funcs;
-    const juintptr_t pf_page_start = pi & ~((1ull << 14) - 1ull);
-    // assert(!mprotect((void *)pf_page_start, 16 * 1024, PROT_READ | PROT_WRITE));
-    mprotect((void *)pf_page_start, 16 * 1024, PROT_READ | PROT_WRITE);
-    pthread_funcs->malloc = mi_malloc_ext;
-    pthread_funcs->free   = mi_free_ext;
-    // assert(!mprotect((void *)pf_page_start, 16 * 1024, PROT_READ));
-    mprotect((void *)pf_page_start, 16 * 1024, PROT_READ);
+    // // assert(pthread_funcs->version >= 2);
+    // const juintptr_t pi            = (juintptr_t)pthread_funcs;
+    // const juintptr_t pf_page_start = pi & ~((1ull << 14) - 1ull);
+    // // assert(!mprotect((void *)pf_page_start, 16 * 1024, PROT_READ | PROT_WRITE));
+    // mprotect((void *)pf_page_start, 16 * 1024, PROT_READ | PROT_WRITE);
+    // pthread_funcs->malloc = mi_malloc_ext;
+    // pthread_funcs->free   = mi_free_ext;
+    // // assert(!mprotect((void *)pf_page_start, 16 * 1024, PROT_READ));
+    // mprotect((void *)pf_page_start, 16 * 1024, PROT_READ);
 
     puts_str("dyld-interposing _mi_process_load =>");
     puts_ptr(_mi_process_load);
