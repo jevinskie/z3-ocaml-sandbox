@@ -8,20 +8,22 @@
 #endif
 
 static jsize_t my_strlen(const char *s) {
-    jsize_t sz = 0;
-    while (*s++) {
-        ++sz;
-    }
-    return sz;
+    // jsize_t sz = 0;
+    // while (*s++) {
+    //     ++sz;
+    // }
+    // return sz;
+    return __builtin_strlen(s);
 }
 
 static void *my_memcpy(void *dst, const void *src, jsize_t sz) {
-    const char *ip = (const char *)src;
-    char *op       = (char *)dst;
-    for (jsize_t i = 0; i < sz; ++i) {
-        *op++ = *ip++;
-    }
-    return op;
+    // const char *ip = (const char *)src;
+    // char *op       = (char *)dst;
+    // for (jsize_t i = 0; i < sz; ++i) {
+    //     *op++ = *ip++;
+    // }
+    // return op;
+    return __builtin_memcpy(dst, src, sz);
 }
 
 static void write_raw(int fd, const void *buf, jsize_t sz) {
@@ -36,10 +38,14 @@ static void write_raw(int fd, const void *buf, jsize_t sz) {
                        : "cc");
 }
 
-SYM_INT jsize_t puts_str(const char *s) {
-    const jsize_t sz = my_strlen(s);
+SYM_INT void puts_str_sz(const char *s, jsize_t sz) {
     write_raw(STDOUT_FILENO, s, sz);
     write_raw(STDOUT_FILENO, "\n", 1);
+}
+
+SYM_INT jsize_t puts_str(const char *s) {
+    const jsize_t sz = my_strlen(s);
+    puts_str_sz(s, sz);
     return sz;
 }
 
@@ -53,7 +59,7 @@ SYM_INT char nibble_to_ascii_hex(const juint8_t nib) {
     }
 }
 
-SYM_INT void write_size_to_strbuf(juintptr_t v, char *buf, const jsize_t sz) {
+SYM_INT FUN_NOINL void write_size_to_strbuf(juintptr_t v, char *buf, const jsize_t sz) {
     jsize_t idx = sz - 1;
     char *os    = buf + sz - 1;
     _Bool done  = 0;
@@ -86,9 +92,10 @@ SYM_INT void write_ptr_to_strbuf(const void *p, char *buf) {
     }
 }
 
-SYM_INT int puts_ptr(const void *p) {
-    char buf[2 + sizeof(p) * 2 + 1];
+SYM_INT FUN_NOINL int puts_ptr(const void *p) {
+    const jsize_t buf_sz = 2 + sizeof(p) * 2;
+    char buf[buf_sz];
     write_ptr_to_strbuf(p, buf);
-    buf[sizeof(buf) - 1] = '\0';
-    return puts_str(buf);
+    puts_str_sz(buf, buf_sz);
+    return buf_sz;
 }

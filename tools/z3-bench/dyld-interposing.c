@@ -103,32 +103,18 @@ static jint32_t decode_bl_offset(const juint32_t bl_instr) {
 }
 
 static void set_program_vars(const struct ProgramVars *vars) {
-    puts_str("dyld-interposing set_program_vars vars =>");
-    puts_ptr(vars);
-    puts_str("dyld-interposing set_program_vars _libc_initializer =>");
-    puts_ptr(_libc_initializer);
     const juintptr_t libc_init_addr = (juintptr_t)&_libc_initializer;
     const juint32_t *pc             = (const juint32_t *)&_libc_initializer;
     int found                       = 0;
     do {
-        // puts_str("dyld-interposing set_program_vars pc =>");
-        // puts_ptr(pc);
-        // puts_str("dyld-interposing set_program_vars *pc =>");
         const juint32_t inst = *pc;
-        // puts_ptr((void *)(juintptr_t)inst);
-        found = is_bl(inst);
+        found                = is_bl(inst);
         if (!found) {
             ++pc;
         }
     } while (!found);
-    // puts_str("dyld-interposing set_program_vars BL _program_vars_init PC =>");
-    // puts_ptr(pc);
-    // puts_str("dyld-interposing set_program_vars BL _program_vars_init instr =>");
     const juint32_t inst = *pc;
-    // puts_ptr((void *)(juintptr_t)inst);
-    // puts_str("dyld-interposing set_program_vars BL _program_vars_init offset =>");
-    const jint32_t off = decode_bl_offset(inst);
-    // puts_ptr((void *)(juintptr_t)off);
+    const jint32_t off   = decode_bl_offset(inst);
     puts_str("dyld-interposing set_program_vars _program_vars_init =>");
     const juintptr_t pvar_init_addr = (juintptr_t)pc + off;
     puts_ptr((void *)pvar_init_addr);
@@ -138,21 +124,9 @@ static void set_program_vars(const struct ProgramVars *vars) {
     puts_str("dyld-interposing set_program_vars _program_vars_init done!");
 }
 
-static void my_pthread_start(pthread_t self, jmach_port_t kport, void *(*fun)(void *), void *arg, jsize_t stacksize,
-                             unsigned int pflags);
-static int my_pthread_init(struct _libpthread_functions *pthread_funcs, const char *envp[], const char *apple[],
-                           const struct ProgramVars *vars);
-
-static __attribute__((noreturn)) void my_thread_start(pthread_t thread, jmach_port_t kport, void *(*fun)(void *),
+__attribute__((noreturn)) static void my_thread_start(pthread_t thread, jmach_port_t kport, void *(*fun)(void *),
                                                       void *arg, jsize_t stacksize, unsigned int flags) {
-    puts_str("dyld-interposing my_thread_start thread_start =>");
-    puts_ptr(thread_start);
-    puts_str("dyld-interposing my_thread_start my_thread_start =>");
-    puts_ptr(my_thread_start);
-    puts_str("dyld-interposing my_thread_start my_pthread_init =>");
-    puts_ptr(my_pthread_init);
-    puts_str("dyld-interposing my_thread_start __pthread_init =>");
-    puts_ptr(__pthread_init);
+    puts_str("dyld-interposing my_thread_start entry");
 
     puts_str("dyld-interposing my_thread_start get_tsb()[HEAP_DEFAULT] =>");
     puts_ptr(my_os_tsd_get_base()[MI_TLS_SLOT_HEAP_DEFAULT]);
@@ -167,27 +141,7 @@ static __attribute__((noreturn)) void my_thread_start(pthread_t thread, jmach_po
 static int my_bsdthread_register(void *threadstart, void *wqthread, int pthsize, void *pthread_init_data,
                                  jint32_t *pthread_init_data_size, juint64_t dispatchqueue_offset) {
     (void)threadstart;
-    puts_str("dyld-interposing my_bsdthread_register my_bsdthread_register =>");
-    puts_ptr(my_bsdthread_register);
-    puts_str("dyld-interposing my_bsdthread_register __bsdthread_register =>");
-    puts_ptr(__bsdthread_register);
-    puts_str("dyld-interposing my_bsdthread_register my_thread_start =>");
-    puts_ptr(my_thread_start);
-    puts_str("dyld-interposing my_bsdthread_register thread_start =>");
-    puts_ptr(thread_start);
-    // puts_str("dyld-interposing my_bsdthread_register my_pthread_init =>");
-    // puts_ptr(my_pthread_init);
-    // puts_str("dyld-interposing my_bsdthread_register _pthread_start =>");
-    // puts_ptr(_pthread_start);
-    puts_str("dyld-interposing my_bsdthread_register threadstart =>");
-    puts_ptr(threadstart);
-    puts_str("dyld-interposing my_bsdthread_register pthsize =>");
-    puts_ptr((void *)(juintptr_t)pthsize);
-    puts_str("dyld-interposing my_bsdthread_register pthread_init_data =>");
-    puts_ptr(threadstart);
-    puts_str("dyld-interposing my_bsdthread_register pthread_init_data_size =>");
-    puts_ptr(pthread_init_data_size);
-
+    puts_str("dyld-interposing my_bsdthread_register entry");
     puts_str("dyld-interposing my_bsdthread_register tail calling __bsdthread_register...");
     return __bsdthread_register(my_thread_start, wqthread, pthsize, pthread_init_data, pthread_init_data_size,
                                 dispatchqueue_offset);
@@ -197,6 +151,7 @@ DYLD_INTERPOSE(my_bsdthread_register, __bsdthread_register);
 
 static int my_pthread_init(struct _libpthread_functions *pthread_funcs, const char *envp[], const char *apple[],
                            const struct ProgramVars *vars) {
+    puts_str("dyld-interposing my_pthread_init entry");
     puts_str("dyld-interposing my_pthread_init set_program_vars running...");
     // needed for mimalloc getenv from _NSGetEnviron()
     set_program_vars(vars);

@@ -4,6 +4,7 @@
 #include "malloc-wrapped.h"
 #include "mimalloc-types.h"
 #include "misc-decls.h"
+#include "noalloc-stdio.h"
 #include "types-bare.h"
 
 #if 1
@@ -20,7 +21,7 @@ static x_Znwm_t *orig__Znwm;
 static x_ZdlPv_t *orig__ZdlPv;
 
 __attribute__((constructor)) static void init_mimalloc_helper(void) {
-    write(STDOUT_FILENO, "lol\n", 4);
+    puts_str("lol");
 #if 0
     rebind_symbols((struct rebinding[8]){{"malloc", (void *)&mi_malloc, (void **)&orig_malloc},
                                          {"calloc", (void *)&mi_calloc, (void **)&orig_calloc},
@@ -50,11 +51,11 @@ __attribute__((constructor)) static void init_mimalloc_helper(void) {
         },
         2);
 #endif
-    write(STDOUT_FILENO, "rbd\n", 4);
+    puts_str("rbd");
 }
 
 __attribute__((destructor)) static void deinit_mimalloc_helper(void) {
-    write(STDOUT_FILENO, "bai\n", 4);
+    puts_str("bai");
 #if 0
     rebind_symbols(
         (struct rebinding[8]){{"malloc", (void *)orig_malloc, (void **)&orig_malloc},
@@ -85,6 +86,6 @@ __attribute__((destructor)) static void deinit_mimalloc_helper(void) {
         },
         2);
 #endif
-    write(STDOUT_FILENO, "ubd\n", 4);
+    puts_str("ubd");
 }
 #endif

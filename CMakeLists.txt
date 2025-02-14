@@ -70,5 +70,8 @@ set(FAST_LDFLAGS ${FAST_CXXFLAGS})
 # add_compile_options(-O0 -glldb)
 # add_link_options(-O0 -glldb)
 
+add_compile_options(-Os -g -flto=full)
+add_link_options(-Os -g -flto=full)
+
 add_subdirectory(3rdparty)
 add_subdirectory(tools)

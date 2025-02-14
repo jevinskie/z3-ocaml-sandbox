@@ -3,7 +3,7 @@
 #include "types-bare.h"
 
 __attribute__((constructor)) static void init_dylib(void) {
-    write(STDOUT_FILENO, "init_dylib\n", 11);
+    puts_str("init_dylib");
 }
 
 #define TSD_SZ 256

@@ -61,7 +61,7 @@ struct ProgramVars {
 
 struct _libc_functions;
 
-__attribute__((noreturn)) extern void abort(void);
+extern void __attribute__((noreturn)) abort(void);
 extern int printf(const char *fmt, ...);
 #ifndef memcpy
 extern void *memcpy(void *dst, const void *src, jsize_t sz);
@@ -75,16 +75,14 @@ extern jsize_t strlen(const char *p);
 extern int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*func)(void *arg), void *arg);
 extern int pthread_join(pthread_t thread, void *arg);
 extern juint32_t _dyld_launch_mode(void);
-extern void _pthread_start(pthread_t self, jmach_port_t kport, void *(*fun)(void *), void *arg, jsize_t stacksize,
-                           unsigned int pflags);
 extern int __pthread_init(struct _libpthread_functions *pthread_funcs, const char *envp[], const char *apple[],
                           const struct ProgramVars *vars);
 extern int __bsdthread_register(void *threadstart, void *wqthread, int pthsize, void *pthread_init_data,
                                 jint32_t *pthread_init_data_size, juint64_t dispatchqueue_offset);
-extern __attribute__((noreturn)) void thread_start(pthread_t self, jmach_port_t kport, void *(*fun)(void *), void *arg,
+extern void __attribute__((noreturn)) thread_start(pthread_t self, jmach_port_t kport, void *(*fun)(void *), void *arg,
                                                    jsize_t stacksize,
                                                    unsigned int flags); // trampoline into _pthread_start
-extern __attribute__((noreturn)) void _pthread_start(pthread_t thread, jmach_port_t kport, void *(*fun)(void *),
+extern void __attribute__((noreturn)) _pthread_start(pthread_t thread, jmach_port_t kport, void *(*fun)(void *),
                                                      void *arg, jsize_t stacksize, unsigned int flags);
 extern void usleep(juint32_t microseconds);
 extern int mprotect(void *addr, jsize_t sz, int prot);
