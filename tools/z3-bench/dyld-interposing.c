@@ -91,17 +91,6 @@ static __attribute__((always_inline, const)) void **my_os_tsd_get_base(void) {
 struct my_mi_heap_s;
 extern struct my_mi_heap_s _mi_heap_empty_ext;
 
-#if 0
-static __attribute__((constructor)) void init_mimalloc_tls(void) {
-    puts_str("dyld-interposing init_mimalloc_tls()");
-    puts_str("dyld-interposing init_mimalloc_tls my_os_tsd_get_base()[MI_TLS_SLOT_HEAP_DEFAULT] =>");
-    puts_ptr(my_os_tsd_get_base()[MI_TLS_SLOT_HEAP_DEFAULT]);
-    puts_str("dyld-interposing init_mimalloc_tls _mi_heap_empty_ext =>");
-    puts_ptr(&_mi_heap_empty_ext);
-    my_os_tsd_get_base()[MI_TLS_SLOT_HEAP_DEFAULT] = &_mi_heap_empty_ext;
-}
-#endif
-
 #define BL_OPC_MASK  0xFC000000u
 #define BL_OPC_MATCH 0x94000000u
 
@@ -149,12 +138,21 @@ static void set_program_vars(const struct ProgramVars *vars) {
     puts_str("dyld-interposing set_program_vars _program_vars_init done!");
 }
 
+static void my_pthread_start(pthread_t self, jmach_port_t kport, void *(*fun)(void *), void *arg, jsize_t stacksize,
+                             unsigned int pflags);
+static int my_pthread_init(struct _libpthread_functions *pthread_funcs, const char *envp[], const char *apple[],
+                           const struct ProgramVars *vars);
+
 static __attribute__((noreturn)) void my_thread_start(pthread_t thread, jmach_port_t kport, void *(*fun)(void *),
                                                       void *arg, jsize_t stacksize, unsigned int flags) {
-    puts_str("dyld-interposing my_thread_start my_thread_start =>");
-    puts_ptr(my_thread_start);
     puts_str("dyld-interposing my_thread_start thread_start =>");
     puts_ptr(thread_start);
+    puts_str("dyld-interposing my_thread_start my_thread_start =>");
+    puts_ptr(my_thread_start);
+    puts_str("dyld-interposing my_thread_start my_pthread_init =>");
+    puts_ptr(my_pthread_init);
+    puts_str("dyld-interposing my_thread_start __pthread_init =>");
+    puts_ptr(__pthread_init);
 
     puts_str("dyld-interposing my_thread_start get_tsb()[HEAP_DEFAULT] =>");
     puts_ptr(my_os_tsd_get_base()[MI_TLS_SLOT_HEAP_DEFAULT]);
@@ -173,6 +171,14 @@ static int my_bsdthread_register(void *threadstart, void *wqthread, int pthsize,
     puts_ptr(my_bsdthread_register);
     puts_str("dyld-interposing my_bsdthread_register __bsdthread_register =>");
     puts_ptr(__bsdthread_register);
+    puts_str("dyld-interposing my_bsdthread_register my_thread_start =>");
+    puts_ptr(my_thread_start);
+    puts_str("dyld-interposing my_bsdthread_register thread_start =>");
+    puts_ptr(thread_start);
+    // puts_str("dyld-interposing my_bsdthread_register my_pthread_init =>");
+    // puts_ptr(my_pthread_init);
+    // puts_str("dyld-interposing my_bsdthread_register _pthread_start =>");
+    // puts_ptr(_pthread_start);
     puts_str("dyld-interposing my_bsdthread_register threadstart =>");
     puts_ptr(threadstart);
     puts_str("dyld-interposing my_bsdthread_register pthsize =>");
@@ -181,16 +187,6 @@ static int my_bsdthread_register(void *threadstart, void *wqthread, int pthsize,
     puts_ptr(threadstart);
     puts_str("dyld-interposing my_bsdthread_register pthread_init_data_size =>");
     puts_ptr(pthread_init_data_size);
-
-    puts_str("dyld-interposing my_bsdthread_register get_tsb()[HEAP_DEFAULT] =>");
-    puts_ptr(my_os_tsd_get_base()[MI_TLS_SLOT_HEAP_DEFAULT]);
-
-    puts_str("dyld-interposing my_bsdthread_register get_tsb()[HEAP_DEFAULT] = &_mi_heap_empty_ext");
-    my_os_tsd_get_base()[MI_TLS_SLOT_HEAP_DEFAULT] = &_mi_heap_empty_ext;
-
-    puts_str("dyld-interposing my_bsdthread_register _mi_process_load running...");
-    _mi_process_load();
-    puts_str("dyld-interposing my_bsdthread_register _mi_process_load done!");
 
     puts_str("dyld-interposing my_bsdthread_register tail calling __bsdthread_register...");
     return __bsdthread_register(my_thread_start, wqthread, pthsize, pthread_init_data, pthread_init_data_size,
@@ -202,25 +198,13 @@ DYLD_INTERPOSE(my_bsdthread_register, __bsdthread_register);
 static int my_pthread_init(struct _libpthread_functions *pthread_funcs, const char *envp[], const char *apple[],
                            const struct ProgramVars *vars) {
     puts_str("dyld-interposing my_pthread_init set_program_vars running...");
+    // needed for mimalloc getenv from _NSGetEnviron()
     set_program_vars(vars);
     puts_str("dyld-interposing my_pthread_init set_program_vars done!");
 
-    if (!(pthread_funcs->version >= 2)) {
-        puts_str("dyld-interposing my_pthread_init pthread_funcs->version < 2");
-        abort();
-    }
-    const juintptr_t pi            = (juintptr_t)pthread_funcs;
-    const juintptr_t pf_page_start = pi & ~((1ull << 14) - 1ull);
-    if (mprotect((void *)pf_page_start, 16 * 1024, PROT_READ | PROT_WRITE)) {
-        puts_str("dyld-interposing my_pthread_init mprotect(READ | WRITE)");
-        abort();
-    }
-    pthread_funcs->malloc = mi_malloc_ext;
-    pthread_funcs->free   = mi_free_ext;
-    if (mprotect((void *)pf_page_start, 16 * 1024, PROT_READ)) {
-        puts_str("dyld-interposing my_pthread_init mprotect(READ)");
-        abort();
-    }
+    // this is not needed since malloc/free are already interposed when libSystem constructs _libpthread_functions
+    // pthread_funcs->malloc = mi_malloc_ext;
+    // pthread_funcs->free   = mi_free_ext;
 
     puts_str("dyld-interposing my_pthread_init _mi_process_load running...");
     _mi_process_load();
@@ -238,26 +222,5 @@ static int my_pthread_init(struct _libpthread_functions *pthread_funcs, const ch
 
 DYLD_INTERPOSE(my_pthread_init, __pthread_init);
 
-static void my_pthread_start(pthread_t self, jmach_port_t kport, void *(*fun)(void *), void *arg, jsize_t stacksize,
-                             unsigned int pflags) {
-    puts_str("dyld-interposing my_pthread_start self =>");
-    puts_ptr(self);
-    puts_str("dyld-interposing my_pthread_start get_tsb() =>");
-    puts_ptr(my_os_tsd_get_base());
-    puts_str("dyld-interposing my_pthread_start get_tsb()[0] =>");
-    puts_ptr(my_os_tsd_get_base()[0]);
-
-    puts_str("dyld-interposing my_pthread_start &_mi_heap_empty_ext =>");
-    puts_ptr(&_mi_heap_empty_ext);
-
-    puts_str("dyld-interposing my_pthread_start get_tsb()[HEAP_DEFAULT] =>");
-    puts_ptr(my_os_tsd_get_base()[MI_TLS_SLOT_HEAP_DEFAULT]);
-
-    puts_str("dyld-interposing my_pthread_start get_tsb()[HEAP_DEFAULT] = &_mi_heap_empty_ext");
-    my_os_tsd_get_base()[MI_TLS_SLOT_HEAP_DEFAULT] = &_mi_heap_empty_ext;
-
-    puts_str("dyld-interposing my_pthread_start tail calling _pthread_start...");
-    _pthread_start(self, kport, fun, arg, stacksize, pflags);
-}
-
-DYLD_INTERPOSE(my_pthread_start, _pthread_start);
+// thread_start just sets up a stack frame and bl's into _pthread_start so interposition doesn't work?
+// DYLD_INTERPOSE(my_pthread_start, _pthread_start);
