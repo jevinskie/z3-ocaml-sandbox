@@ -44,7 +44,8 @@ TYPE2GETTER = {
     SYMBOL: "get_sym",
 }
 
-Param = tuple[str, typing.Any, typing.Any, str]
+ParamDefault = int | str | bool | float
+Param = tuple[str, int, ParamDefault, str]
 
 
 @typechecked
@@ -131,11 +132,12 @@ def pyg2json(pyg_path: Path, pyg: str) -> str:
         rich.print(f"module_name: {module_name}")
         rich.print(f"export: {export}")
         rich.print(f"class_name: {class_name}")
-        rich.print(f"description: '{description}'")
+        sdesc = f"'{description}'" if description is not None else None
+        rich.print(f"description: {sdesc}")
         rich.print("params:")
         # rich.inspect(params)
         rich.print(params)
-        res = ""
+        res = f"{len(params)}\n"
         OUTPUT_HPP_FILE.append(res)
 
     # Globals to use when executing the ``.pyg`` file.
@@ -159,7 +161,6 @@ def pyg2json(pyg_path: Path, pyg: str) -> str:
 
 @typechecked
 def is_pyg_file(p: Path) -> bool:
-    # p = typing.cast(Path, ps)
     if not p.is_file():
         return False
     return p.suffix == ".pyg"
