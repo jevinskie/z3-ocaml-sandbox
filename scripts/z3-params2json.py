@@ -55,6 +55,8 @@ def pyg_default(p: Param) -> str:
             return "true"
         else:
             return "false"
+    if p[1] != STRING and isinstance(p[2], str):
+        raise TypeError(f"got {type(p[2])} not str #1")
     if not isinstance(p[2], str):
         raise TypeError(f"got {type(p[2])} not str")
     return p[2]
