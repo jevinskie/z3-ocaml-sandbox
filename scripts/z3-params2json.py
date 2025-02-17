@@ -111,23 +111,6 @@ def pyg2json(pyg_path: Path, pyg: str) -> str:
         class_name: str | None = None,
         description: str | None = None,
     ) -> None:
-        # res = ""
-        # if class_name is None:
-        #     class_name = f"{module_name}_params"
-        # res += f"class_name: {class_name}\n"
-        # if export:
-        #     res += "export=True\n"
-        # param_i = 0
-        # for param in params:
-        #     res += f"param_{param_i}: 0: {param[0]} 1 raw: {param[1]} 1: {TYPE2CPK[param[1]]} 2: {param[2]} 3: {param[3]} def: {pyg_default(param)} mod: {module_name}\n"
-        #     param_i += 1
-        # if export:
-        #     res += f"desc: {description}\n"
-        # # Generated accessors
-        # param_i = 0
-        # for param in params:
-        #     res += f"param_{param_i}: TYPE2CTYPE[param[1]]: {TYPE2CTYPE[param[1]]} to_c_method(param[0]): {to_c_method(param[0])} TYPE2GETTER[param[1]]: {TYPE2GETTER[param[1]]} pyg_default_as_c_literal(param): {pyg_default_as_c_literal(param)}\n"
-        #     param_i += 1
         rich.print(f"pyg_path: {pyg_path}")
         rich.print(f"module_name: {module_name}")
         rich.print(f"export: {export}")
