@@ -63,30 +63,6 @@ def pyg_default(p: Param) -> str:
 
 
 @typechecked
-def pyg_default_as_c_literal(p: Param) -> str:
-    if p[1] == BOOL:
-        if p[2]:
-            return "true"
-        else:
-            return "false"
-    elif p[1] == STRING:
-        return '"%s"' % p[2]
-    elif p[1] == SYMBOL:
-        return 'symbol("%s")' % p[2]
-    elif p[1] == UINT:
-        return "%su" % p[2]
-    else:
-        if not isinstance(p[2], str):
-            raise TypeError(f"got {type(p[2])} not str")
-        return p[2]
-
-
-@typechecked
-def to_c_method(s: str) -> str:
-    return s.replace(".", "_")
-
-
-@typechecked
 def max_memory_param() -> Param:
     return ("max_memory", UINT, UINT_MAX, "maximum amount of memory in megabytes")
 
