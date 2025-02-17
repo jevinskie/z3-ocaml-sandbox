@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
+import enum
 import typing
 
 import rich
@@ -15,47 +16,50 @@ from typeguard import typechecked
 # ``*.pyg`` files
 ###############################################################################
 
-UINT = 0
-BOOL = 1
-DOUBLE = 2
-STRING = 3
-SYMBOL = 4
-UINT_MAX = 4294967295
+
+class ParamType(enum.IntEnum):
+    UINT = 0
+    BOOL = 1
+    DOUBLE = 2
+    STRING = 3
+    SYMBOL = 4
+    UINT_MAX = 4294967295
+
 
 TYPE2CPK = {
-    UINT: "CPK_UINT",
-    BOOL: "CPK_BOOL",
-    DOUBLE: "CPK_DOUBLE",
-    STRING: "CPK_STRING",
-    SYMBOL: "CPK_SYMBOL",
+    ParamType.UINT: "CPK_UINT",
+    ParamType.BOOL: "CPK_BOOL",
+    ParamType.DOUBLE: "CPK_DOUBLE",
+    ParamType.STRING: "CPK_STRING",
+    ParamType.SYMBOL: "CPK_SYMBOL",
 }
 TYPE2CTYPE = {
-    UINT: "unsigned",
-    BOOL: "bool",
-    DOUBLE: "double",
-    STRING: "char const *",
-    SYMBOL: "symbol",
+    ParamType.UINT: "unsigned",
+    ParamType.BOOL: "bool",
+    ParamType.DOUBLE: "double",
+    ParamType.STRING: "char const *",
+    ParamType.SYMBOL: "symbol",
 }
 TYPE2GETTER = {
-    UINT: "get_uint",
-    BOOL: "get_bool",
-    DOUBLE: "get_double",
-    STRING: "get_str",
-    SYMBOL: "get_sym",
+    ParamType.UINT: "get_uint",
+    ParamType.BOOL: "get_bool",
+    ParamType.DOUBLE: "get_double",
+    ParamType.STRING: "get_str",
+    ParamType.SYMBOL: "get_sym",
 }
 
 ParamDefault = int | str | bool | float
-Param = tuple[str, int, ParamDefault, str]
+Param = tuple[str, ParamType, ParamDefault, str]
 
 
 @typechecked
 def pyg_default(p: Param) -> str:
-    if p[1] == BOOL:
+    if p[1] == ParamType.BOOL:
         if p[2]:
             return "true"
         else:
             return "false"
-    if p[1] != STRING and isinstance(p[2], str):
+    if p[1] != ParamType.STRING and isinstance(p[2], str):
         raise TypeError(f"got {type(p[2])} not str #1")
     if not isinstance(p[2], str):
         raise TypeError(f"got {type(p[2])} not str")
@@ -64,12 +68,17 @@ def pyg_default(p: Param) -> str:
 
 @typechecked
 def max_memory_param() -> Param:
-    return ("max_memory", UINT, UINT_MAX, "maximum amount of memory in megabytes")
+    return (
+        "max_memory",
+        ParamType.UINT,
+        int(ParamType.UINT_MAX),
+        "maximum amount of memory in megabytes",
+    )
 
 
 @typechecked
 def max_steps_param() -> Param:
-    return ("max_steps", UINT, UINT_MAX, "maximum number of steps")
+    return ("max_steps", ParamType.UINT, int(ParamType.UINT_MAX), "maximum number of steps")
 
 
 @typechecked
@@ -103,12 +112,12 @@ def pyg2json(pyg_path: Path, pyg: str) -> str:
 
     # Globals to use when executing the ``.pyg`` file.
     pyg_globals = {
-        "UINT": UINT,
-        "BOOL": BOOL,
-        "DOUBLE": DOUBLE,
-        "STRING": STRING,
-        "SYMBOL": SYMBOL,
-        "UINT_MAX": UINT_MAX,
+        "UINT": ParamType.UINT,
+        "BOOL": ParamType.BOOL,
+        "DOUBLE": ParamType.DOUBLE,
+        "STRING": ParamType.STRING,
+        "SYMBOL": ParamType.SYMBOL,
+        "UINT_MAX": ParamType.UINT_MAX,
         "max_memory_param": max_memory_param,
         "max_steps_param": max_steps_param,
         # Note that once this function is entered that function
