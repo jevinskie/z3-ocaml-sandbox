@@ -4,6 +4,7 @@ import argparse
 import enum
 import typing
 
+import attrs
 import rich
 from path import Path
 from typeguard import typechecked
@@ -23,15 +24,22 @@ class ParamType(enum.IntEnum):
     DOUBLE = 2
     STRING = 3
     SYMBOL = 4
-    UINT_MAX = 4294967295
+
+
+UINT_MAX: typing.Final[int] = 4294967295
 
 
 ParamDefault = int | str | bool | float
-Param = tuple[str, ParamType, ParamDefault, str]
+ParamTy = tuple[str, ParamType, ParamDefault, str]
+
+
+@attrs.define(auto_attribs=True)
+class Param:
+    name: str
 
 
 @typechecked
-def pyg_default(p: Param) -> str:
+def pyg_default(p: ParamTy) -> str:
     if p[1] == ParamType.BOOL:
         if p[2]:
             return "true"
@@ -45,18 +53,13 @@ def pyg_default(p: Param) -> str:
 
 
 @typechecked
-def max_memory_param() -> Param:
-    return (
-        "max_memory",
-        ParamType.UINT,
-        int(ParamType.UINT_MAX),
-        "maximum amount of memory in megabytes",
-    )
+def max_memory_param() -> ParamTy:
+    return ("max_memory", ParamType.UINT, UINT_MAX, "maximum amount of memory in megabytes")
 
 
 @typechecked
-def max_steps_param() -> Param:
-    return ("max_steps", ParamType.UINT, int(ParamType.UINT_MAX), "maximum number of steps")
+def max_steps_param() -> ParamTy:
+    return ("max_steps", ParamType.UINT, UINT_MAX, "maximum number of steps")
 
 
 @typechecked
@@ -72,7 +75,7 @@ def pyg2json(pyg_path: Path, pyg: str) -> str:
     def def_module_params(
         module_name: str,
         export: bool,
-        params: tuple[Param, ...],
+        params: tuple[ParamTy, ...],
         class_name: str | None = None,
         description: str | None = None,
     ) -> None:
@@ -95,7 +98,7 @@ def pyg2json(pyg_path: Path, pyg: str) -> str:
         "DOUBLE": ParamType.DOUBLE,
         "STRING": ParamType.STRING,
         "SYMBOL": ParamType.SYMBOL,
-        "UINT_MAX": ParamType.UINT_MAX,
+        "UINT_MAX": UINT_MAX,
         "max_memory_param": max_memory_param,
         "max_steps_param": max_steps_param,
         # Note that once this function is entered that function
