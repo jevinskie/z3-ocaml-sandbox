@@ -2,11 +2,13 @@
 
 import argparse
 import enum
+import json
 import typing
 
 import attrs
 import rich
 import rich.pretty
+from cattrs.preconf import json as cjson
 from path import Path
 from typeguard import typechecked
 
@@ -35,6 +37,7 @@ class ParamTypeStr(enum.StrEnum):
     SYMBOL = "SYMBOL"
 
     @classmethod
+    @typechecked
     def from_paramtype(cls: type, pt: ParamType) -> typing.Self:
         if pt is ParamType.UINT:
             return cls(ParamTypeStr.UINT)
@@ -60,13 +63,14 @@ ParamTy = tuple[str, ParamType, ParamDefault, str]
 @attrs.define
 class Param:
     name: str
-    ty: ParamType
+    ty: ParamTypeStr
     default: ParamDefault
     description: str | None
 
     @classmethod
+    @typechecked
     def from_tuple(cls: type, p: ParamTy) -> typing.Self:
-        return cls(name=p[0], ty=p[1], default=p[2], description=p[3])
+        return cls(name=p[0], ty=ParamTypeStr.from_paramtype(p[1]), default=p[2], description=p[3])
 
 
 @attrs.define
@@ -168,11 +172,17 @@ def is_pyg_file(p: Path) -> bool:
 def main(in_dir_path: Path, out_json_path: Path) -> None:
     res: list[ModuleParams] = []
     cast_is_pyg_file = typing.cast(typing.Callable[[str], bool], is_pyg_file)
+    conv = cjson.make_converter()
     for f in Path(in_dir_path).walkfiles(cast_is_pyg_file):
         relpath = f.relpath(in_dir_path)
-        res.append(pyg2json(f, relpath))
+        mp = pyg2json(f, relpath)
+        print("mp:")
+        rich.print(mp)
+        rich.print(conv.unstructure(mp))
+        rich.print(json.dumps(conv.unstructure(mp)))
+        res.append(mp)
     with open(out_json_path, "w") as of:
-        of.write(rich.pretty.pretty_repr(res))
+        of.write(json.dumps(conv.unstructure(res), allow_nan=False, indent=2))
 
 
 @typechecked
