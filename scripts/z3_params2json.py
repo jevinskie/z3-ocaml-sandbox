@@ -26,6 +26,29 @@ class ParamType(enum.IntEnum):
     SYMBOL = 4
 
 
+class ParamTypeStr(enum.StrEnum):
+    UINT = "UINT"
+    BOOL = "BOOL"
+    DOUBLE = "DOUBLE"
+    STRING = "STRING"
+    SYMBOL = "SYMBOL"
+
+    @classmethod
+    def from_paramtype(cls: type, pt: ParamType) -> typing.Self:
+        if pt is ParamType.UINT:
+            return cls(ParamTypeStr.UINT)
+        elif pt is ParamType.BOOL:
+            return cls(ParamTypeStr.BOOL)
+        elif pt is ParamType.DOUBLE:
+            return cls(ParamTypeStr.DOUBLE)
+        elif pt is ParamType.STRING:
+            return cls(ParamTypeStr.STRING)
+        elif pt is ParamType.SYMBOL:
+            return cls(ParamTypeStr.SYMBOL)
+        else:
+            raise ValueError(f"ParamTypeStr.from_paramtype({pt})")
+
+
 UINT_MAX: typing.Final[int] = 4294967295
 
 
@@ -33,9 +56,25 @@ ParamDefault = int | str | bool | float
 ParamTy = tuple[str, ParamType, ParamDefault, str]
 
 
-@attrs.define(auto_attribs=True)
+@attrs.define
 class Param:
     name: str
+    ty: ParamType
+    default: ParamDefault
+    description: str | None
+
+    @classmethod
+    def from_tuple(cls: type, p: ParamTy) -> typing.Self:
+        return cls(name=p[0], ty=p[1], default=p[2], description=p[3])
+
+
+@attrs.define
+class ModuleParams:
+    pyg_path: Path
+    export: bool
+    params: list[Param]
+    class_name: str | None
+    description: str | None
 
 
 @typechecked
@@ -63,10 +102,10 @@ def max_steps_param() -> ParamTy:
 
 
 @typechecked
-def pyg2json(pyg_path: Path, pyg: str) -> str:
+def pyg2json(pyg_path: Path, pyg_rel_path: Path) -> ModuleParams:
     # Note OUTPUT_HPP_FILE cannot be a string as we need a mutable variable
     # for the nested function to modify
-    OUTPUT_HPP_FILE = []
+    MOD_PARAMS: list[ModuleParams] = []
 
     # The function below has been nested so that it can use closure to capture
     # the above variables that aren't global but instead local to this
@@ -88,8 +127,15 @@ def pyg2json(pyg_path: Path, pyg: str) -> str:
         rich.print("params:")
         # rich.inspect(params)
         rich.print(params)
-        res = f"{len(params)}\n"
-        OUTPUT_HPP_FILE.append(res)
+        MOD_PARAMS.append(
+            ModuleParams(
+                pyg_path=pyg_path,
+                export=export,
+                params=[Param.from_tuple(t) for t in params],
+                class_name=class_name,
+                description=description,
+            )
+        )
 
     # Globals to use when executing the ``.pyg`` file.
     pyg_globals = {
@@ -106,8 +152,8 @@ def pyg2json(pyg_path: Path, pyg: str) -> str:
         # not the globals defined here
         "def_module_params": def_module_params,
     }
-    eval(pyg + "\n", pyg_globals, None)
-    return "\n".join(OUTPUT_HPP_FILE)
+    eval(open(pyg_path).read() + "\n", pyg_globals, None)
+    return MOD_PARAMS[0]
 
 
 @typechecked
@@ -119,16 +165,13 @@ def is_pyg_file(p: Path) -> bool:
 
 @typechecked
 def main(in_dir_path: Path, out_json_path: Path) -> None:
-    res = ""
+    res: list[ModuleParams] = []
     cast_is_pyg_file = typing.cast(typing.Callable[[str], bool], is_pyg_file)
     for f in Path(in_dir_path).walkfiles(cast_is_pyg_file):
-        with open(f) as inf:
-            pyg = inf.read()
-            inf.close()
-            relpath = f.relpath(in_dir_path)
-            res += pyg2json(relpath, pyg)
+        relpath = f.relpath(in_dir_path)
+        res.append(pyg2json(f, relpath))
     with open(out_json_path, "w") as of:
-        of.write(res)
+        of.write(str(res))
 
 
 @typechecked
