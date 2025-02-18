@@ -6,6 +6,7 @@ import typing
 
 import attrs
 import rich
+import rich.pretty
 from path import Path
 from typeguard import typechecked
 
@@ -171,7 +172,7 @@ def main(in_dir_path: Path, out_json_path: Path) -> None:
         relpath = f.relpath(in_dir_path)
         res.append(pyg2json(f, relpath))
     with open(out_json_path, "w") as of:
-        of.write(str(res))
+        of.write(rich.pretty.pretty_repr(res))
 
 
 @typechecked
