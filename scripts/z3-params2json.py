@@ -26,28 +26,6 @@ class ParamType(enum.IntEnum):
     UINT_MAX = 4294967295
 
 
-TYPE2CPK = {
-    ParamType.UINT: "CPK_UINT",
-    ParamType.BOOL: "CPK_BOOL",
-    ParamType.DOUBLE: "CPK_DOUBLE",
-    ParamType.STRING: "CPK_STRING",
-    ParamType.SYMBOL: "CPK_SYMBOL",
-}
-TYPE2CTYPE = {
-    ParamType.UINT: "unsigned",
-    ParamType.BOOL: "bool",
-    ParamType.DOUBLE: "double",
-    ParamType.STRING: "char const *",
-    ParamType.SYMBOL: "symbol",
-}
-TYPE2GETTER = {
-    ParamType.UINT: "get_uint",
-    ParamType.BOOL: "get_bool",
-    ParamType.DOUBLE: "get_double",
-    ParamType.STRING: "get_str",
-    ParamType.SYMBOL: "get_sym",
-}
-
 ParamDefault = int | str | bool | float
 Param = tuple[str, ParamType, ParamDefault, str]
 
