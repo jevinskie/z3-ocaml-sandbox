@@ -76,3 +76,6 @@
 [submodule "3rdparty/indicators"]
 	path = 3rdparty/indicators
 	url = https://github.com/p-ranav/indicators
+[submodule "3rdparty/json"]
+	path = 3rdparty/json
+	url = https://github.com/nlohmann/json
