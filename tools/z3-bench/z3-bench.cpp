@@ -290,7 +290,8 @@ void search_directory(const fs::path &root, std::atomic<size_t> &num_files, vect
 
 // folly::fbstring ss;
 // folly::small_vector<int, 8, policy_size_type<uint16_t>> sv;
-extern "C" [[gnu::visibility("default")]] int z3_bench_main(int argc, const char **argv) {
+extern "C" [[gnu::visibility("default")]] int z3_bench_main(int argc, const char **argv,
+                                                            [[maybe_unused]] const char **envp) {
     if (argc != 2) {
         fmt::print(stderr, "usage: z3-bench <path to directory with .stm2 files>\n");
         return -1;

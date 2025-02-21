@@ -1,3 +1,4 @@
+include(argparse.cmake)
 include(gmp.cmake)
 include(json.cmake)
 include(fmt.cmake)
