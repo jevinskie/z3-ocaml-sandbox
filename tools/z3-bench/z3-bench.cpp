@@ -25,6 +25,7 @@
 #include <BS_thread_pool.hpp>
 #include <argparse/argparse.hpp>
 #include <fmt/format.h>
+#include <fmt/std.h>
 #include <nlohmann/json.hpp>
 #include <sha2/sha2.hpp>
 #include <structopt/app.hpp>
@@ -39,6 +40,13 @@ using string_t = std::string;
 #define INLINE [[gnu::always_inline]]
 
 namespace fs = std::filesystem;
+
+struct Arguments {
+    fs::path smt2_dir;
+    std::optional<fs::path> config_json;
+    std::optional<bool> verbose = false;
+};
+STRUCTOPT(Arguments, smt2_dir, config_json, verbose);
 
 typedef enum Z3_mini_lbool {
     Z3_MINI_L_FALSE = -1,
@@ -265,18 +273,9 @@ void search_directory(const fs::path &root, vector_t<vector_t<char>> &blobs, std
     pool.wait();
 }
 
-// using folly::small_vector_policy::policy_size_type;
-
-// folly::fbstring ss;
-// folly::small_vector<int, 8, policy_size_type<uint16_t>> sv;
-extern "C" [[gnu::visibility("default")]] int z3_bench_main(int argc, const char **argv,
-                                                            [[maybe_unused]] const char **envp) {
-    if (argc != 2) {
-        fmt::print(stderr, "usage: z3-bench <path to directory with .stm2 files>\n");
-        return -1;
-    }
+static int main_task(Arguments args) {
     set_thread_priority_11();
-    const auto dir_path = fs::path{argv[1]};
+    const auto dir_path = args.smt2_dir;
     std::mutex blobs_mutex;
     vector_t<vector_t<char>> blobs;
     {
@@ -285,4 +284,19 @@ extern "C" [[gnu::visibility("default")]] int z3_bench_main(int argc, const char
     }
     fmt::print("num .smt2 files: {:d}\n", blobs.size());
     return 0;
+}
+
+// using folly::small_vector_policy::policy_size_type;
+
+// folly::fbstring ss;
+// folly::small_vector<int, 8, policy_size_type<uint16_t>> sv;
+extern "C" [[gnu::visibility("default")]] int z3_bench_main(int argc, char **argv) {
+    try {
+        auto options = structopt::app("my_app").parse<Arguments>(argc, argv);
+        return main_task(options);
+    } catch (structopt::exception &e) {
+        fmt::print("{}\n", e);
+        fmt::print("{}\n", e.help());
+        return 1;
+    }
 }
