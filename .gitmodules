@@ -77,7 +77,7 @@
 	path = 3rdparty/indicators
 	url = https://github.com/p-ranav/indicators
 [submodule "3rdparty/json"]
-	path = 3rdparty/json
+	path = 3rdparty/nlohmann_json
 	url = https://github.com/nlohmann/json
 [submodule "3rdparty/argparse"]
 	path = 3rdparty/argparse

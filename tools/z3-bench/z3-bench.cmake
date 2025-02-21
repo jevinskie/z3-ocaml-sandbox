@@ -1,7 +1,7 @@
 add_library(z3-bench-main SHARED z3-bench.cpp sexpr.cpp)
 # target_compile_options(z3-bench-main PRIVATE ${FAST_CXXFLAGS})
 # target_link_options(z3-bench-main PRIVATE ${FAST_LDFLAGS})
-target_link_libraries(z3-bench-main PRIVATE fmt::fmt thread-pool GMP argparse::argparse indicators::indicators sha2 libz3)
+target_link_libraries(z3-bench-main PRIVATE fmt::fmt thread-pool GMP argparse::argparse nlohmann_json::nlohmann_json indicators::indicators sha2 libz3)
 
 set_target_properties(z3-bench-main PROPERTIES
     CXX_STANDARD 23

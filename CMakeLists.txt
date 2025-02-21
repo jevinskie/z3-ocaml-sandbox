@@ -58,20 +58,16 @@ macro(find_package)
     endif()
 endmacro()
 
-# NOP out subproject use of cmake_minimum_required
-macro(cmake_minimum_required)
-endmacro()
-
 set(FAST_CISH_FLAGS -O3)
 set(FAST_CFLAGS ${FAST_CISH_FLAGS} ${COLOR_DIAGS} -fvectorize -flto=full -fvisibility=hidden -fvisibility-inlines-hidden -fvisibility-inlines-hidden-static-local-var -fdata-sections -ffunction-sections -march=native)
 set(FAST_CXXFLAGS ${FAST_CFLAGS} -stdlib=libc++ -fno-rtti)
 set(FAST_LDFLAGS ${FAST_CXXFLAGS})
 
-# add_compile_options(-O0 -glldb)
-# add_link_options(-O0 -glldb)
+add_compile_options(-O0 -glldb)
+add_link_options(-O0 -glldb)
 
-add_compile_options(-Os -g -flto=full)
-add_link_options(-Os -g -flto=full)
+# add_compile_options(-Os -g -flto=full)
+# add_link_options(-Os -g -flto=full)
 
 add_subdirectory(3rdparty)
 add_subdirectory(tools)

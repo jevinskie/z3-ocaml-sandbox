@@ -3,6 +3,8 @@ set(Z3_SINGLE_THREADED ON)
 set(Z3_POLLING_TIMER OFF) # TODO: test
 set(Z3_BUILD_LIBZ3_SHARED ${BUILD_SHARED_LIBS})
 set(Z3_BUILD_EXECUTABLE OFF)
+set(Z3_INCLUDE_GIT_HASH OFF)
+set(Z3_INCLUDE_GIT_DESCRIBE OFF)
 add_subdirectory(z3)
 # target_include_directories(libz3 PUBLIC "${CMAKE_CURRENT_BINARY_DIR}/z3/src/api")
 set_target_properties(libz3 PROPERTIES EXCLUDE_FROM_ALL ON)

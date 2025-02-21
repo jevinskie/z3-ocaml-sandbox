@@ -24,10 +24,12 @@
 // #include <folly/FBString.h>
 // #include <folly/FBVector.h>
 // #include <folly/small_vector.h>
+#include <argparse/argparse.hpp>
 #include <indicators/cursor_control.hpp>
 #include <indicators/indeterminate_progress_bar.hpp>
 #include <indicators/progress_bar.hpp>
 #include <indicators/termcolor.hpp>
+#include <nlohmann/json.hpp>
 #include <sha2/sha2.hpp>
 #include <z3.h>
 
