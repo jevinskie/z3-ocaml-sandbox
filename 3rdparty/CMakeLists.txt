@@ -1,3 +1,4 @@
+include(structopt.cmake)
 include(argparse.cmake)
 include(gmp.cmake)
 include(json.cmake)

@@ -27,6 +27,7 @@
 #include <fmt/format.h>
 #include <nlohmann/json.hpp>
 #include <sha2/sha2.hpp>
+#include <structopt/app.hpp>
 #include <z3.h>
 
 // template <class T, class Allocator = std::allocator<T>> using vector_t = folly::fbvector<T, Allocator>;
