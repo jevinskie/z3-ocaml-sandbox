@@ -19,16 +19,12 @@
 #include <type_traits>
 #include <unistd.h>
 
-#include <BS_thread_pool.hpp>
-#include <fmt/format.h>
 // #include <folly/FBString.h>
 // #include <folly/FBVector.h>
 // #include <folly/small_vector.h>
+#include <BS_thread_pool.hpp>
 #include <argparse/argparse.hpp>
-#include <indicators/cursor_control.hpp>
-#include <indicators/indeterminate_progress_bar.hpp>
-#include <indicators/progress_bar.hpp>
-#include <indicators/termcolor.hpp>
+#include <fmt/format.h>
 #include <nlohmann/json.hpp>
 #include <sha2/sha2.hpp>
 #include <z3.h>
@@ -242,50 +238,30 @@ static void set_thread_priority_10(void) {
     assert(!pthread_set_qos_class_self_np(QOS_CLASS_USER_INITIATED, 0));
 }
 
-// Thread-safe function to search a file and print matches
-// FIXME: why was this noinline from the other junk code I copied it from?
-// maybe for stack traces for profiling
-[[gnu::noinline]] void read_smt2(const fs::path &smt2_path, std::atomic<size_t> &num_files,
-                                 vector_t<vector_t<char>> &blobs, std::mutex &blobs_mutex) {
+// no-inline for profiling stackshot
+[[gnu::noinline]] void read_smt2(const fs::path &smt2_path, vector_t<vector_t<char>> &blobs, std::mutex &blobs_mutex) {
     auto content = slurp_file(smt2_path);
     {
         std::lock_guard lock{blobs_mutex};
         blobs.push_back(content);
     }
-    ++num_files;
 }
 
-// Function to recursively search files using thread pool
 template <BS::opt_t OptFlags>
-void search_directory(const fs::path &root, std::atomic<size_t> &num_files, vector_t<vector_t<char>> &blobs,
-                      std::mutex &blobs_mutex, BS::thread_pool<OptFlags> &pool) {
-    // indicators::IndeterminateProgressBar bar{
-    //     // indicators::option::BarWidth{40},
-    //     indicators::option::Start{"["},
-    //     indicators::option::Fill{"."},
-    //     indicators::option::Lead{"<==>"},
-    //     indicators::option::End{"]"},
-    //     indicators::option::PrefixText{"Reading in SMT2"},
-    //     indicators::option::ForegroundColor{indicators::Color::yellow},
-    //     indicators::option::FontStyles{std::vector<indicators::FontStyle>{indicators::FontStyle::bold}}};
-    int bar;
-
-    // indicators::show_console_cursor(false);
+void search_directory(const fs::path &root, vector_t<vector_t<char>> &blobs, std::mutex &blobs_mutex,
+                      BS::thread_pool<OptFlags> &pool) {
     for (const auto &entry : std::filesystem::recursive_directory_iterator(root)) {
         if (entry.is_regular_file()) {
             const auto smt2_path = entry.path();
             if (!smt2_path.string().ends_with(".smt2")) {
                 continue;
             }
-            pool.detach_task([smt2_path, &num_files, &blobs, &blobs_mutex, &bar] {
-                read_smt2(smt2_path, num_files, blobs, blobs_mutex);
-                // bar.tick();
+            pool.detach_task([smt2_path, &blobs, &blobs_mutex] {
+                read_smt2(smt2_path, blobs, blobs_mutex);
             });
         }
     }
     pool.wait();
-    // bar.mark_as_completed();
-    // indicators::show_console_cursor(true);
 }
 
 // using folly::small_vector_policy::policy_size_type;
@@ -299,18 +275,13 @@ extern "C" [[gnu::visibility("default")]] int z3_bench_main(int argc, const char
         return -1;
     }
     set_thread_priority_11();
-    printf("dylib malloc: %p\n", malloc);
-    void *p = malloc(4);
-    printf("dylib malloc(4) = %p\n", p);
-    free(p);
     const auto dir_path = fs::path{argv[1]};
-    std::atomic<size_t> num_files{0};
     std::mutex blobs_mutex;
     vector_t<vector_t<char>> blobs;
     {
         BS::thread_pool tp;
-        search_directory(dir_path, num_files, blobs, blobs_mutex, tp);
+        search_directory(dir_path, blobs, blobs_mutex, tp);
     }
-    fmt::print("num .smt2 files: {:d}\n", num_files.load());
+    fmt::print("num .smt2 files: {:d}\n", blobs.size());
     return 0;
 }

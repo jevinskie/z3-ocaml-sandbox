@@ -7,6 +7,7 @@
 [submodule "3rdparty/z3"]
 	path = 3rdparty/z3
 	url = https://github.com/Z3Prover/z3
+	ignore = dirty
 [submodule "3rdparty/kissat"]
 	path = 3rdparty/kissat
 	url = https://github.com/arminbiere/kissat
