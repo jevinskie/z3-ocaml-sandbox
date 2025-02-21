@@ -50,3 +50,4 @@ _opam/
 .z3-trace
 
 *.log
+/_work/

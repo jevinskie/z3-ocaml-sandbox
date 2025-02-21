@@ -213,7 +213,7 @@ static char nibble_to_ascii_hex(const uint8_t chr) {
     }
 }
 
-static string_t to_fbstring(const sha2::sha256_hash &h) {
+static string_t to_string(const sha2::sha256_hash &h) {
     string_t ds;
     ds.resize(2 * 256 / 8);
     for (size_t i = 0; i < sizeof(h); ++i) {
@@ -223,7 +223,7 @@ static string_t to_fbstring(const sha2::sha256_hash &h) {
     return ds;
 }
 
-static vector_t<char> slurp_file(const fs::path &path) {
+static string_t slurp_file(const fs::path &path) {
     const auto fd = ::open(path.c_str(), O_RDONLY);
     assert(fd >= 0);
     struct stat st;
@@ -233,7 +233,7 @@ static vector_t<char> slurp_file(const fs::path &path) {
         assert(!::close(fd));
         return {};
     }
-    auto res = vector_t<char>(sz);
+    auto res = std::string(sz, '\0');
     assert(sz == ::read(fd, res.data(), res.size()));
     assert(!::close(fd));
     return res;
@@ -248,16 +248,17 @@ static void set_thread_priority_10(void) {
 }
 
 // no-inline for profiling stackshot
-[[gnu::noinline]] void read_smt2(const fs::path &smt2_path, vector_t<vector_t<char>> &blobs, std::mutex &blobs_mutex) {
+[[gnu::noinline]] void read_smt2(const fs::path &smt2_path, vector_t<string_t> &smt2_progs,
+                                 std::mutex &smt2_progs_mutex) {
     auto content = slurp_file(smt2_path);
     {
-        std::lock_guard lock{blobs_mutex};
-        blobs.push_back(content);
+        std::lock_guard lock{smt2_progs_mutex};
+        smt2_progs.push_back(content);
     }
 }
 
 template <BS::opt_t OptFlags>
-void search_directory(const fs::path &root, vector_t<vector_t<char>> &blobs, std::mutex &blobs_mutex,
+void search_directory(const fs::path &root, vector_t<string_t> &smt2_progs, std::mutex &smt2_progs_mutex,
                       BS::thread_pool<OptFlags> &pool) {
     for (const auto &entry : std::filesystem::recursive_directory_iterator(root)) {
         if (entry.is_regular_file()) {
@@ -265,8 +266,8 @@ void search_directory(const fs::path &root, vector_t<vector_t<char>> &blobs, std
             if (!smt2_path.string().ends_with(".smt2")) {
                 continue;
             }
-            pool.detach_task([smt2_path, &blobs, &blobs_mutex] {
-                read_smt2(smt2_path, blobs, blobs_mutex);
+            pool.detach_task([smt2_path, &smt2_progs, &smt2_progs_mutex] {
+                read_smt2(smt2_path, smt2_progs, smt2_progs_mutex);
             });
         }
     }
@@ -276,13 +277,13 @@ void search_directory(const fs::path &root, vector_t<vector_t<char>> &blobs, std
 static int main_task(Arguments args) {
     set_thread_priority_11();
     const auto dir_path = args.smt2_dir;
-    std::mutex blobs_mutex;
-    vector_t<vector_t<char>> blobs;
+    std::mutex smt2_progs_mutex;
+    vector_t<string_t> smt2_progs;
     {
         BS::thread_pool tp;
-        search_directory(dir_path, blobs, blobs_mutex, tp);
+        search_directory(dir_path, smt2_progs, smt2_progs_mutex, tp);
     }
-    fmt::print("num .smt2 files: {:d}\n", blobs.size());
+    fmt::print("num .smt2 files: {:d}\n", smt2_progs.size());
     return 0;
 }
 
