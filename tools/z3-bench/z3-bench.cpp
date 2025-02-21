@@ -286,10 +286,6 @@ static int main_task(Arguments args) {
     return 0;
 }
 
-// using folly::small_vector_policy::policy_size_type;
-
-// folly::fbstring ss;
-// folly::small_vector<int, 8, policy_size_type<uint16_t>> sv;
 extern "C" [[gnu::visibility("default")]] int z3_bench_main(int argc, char **argv) {
     try {
         auto options = structopt::app("my_app").parse<Arguments>(argc, argv);
