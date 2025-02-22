@@ -86,3 +86,6 @@
 [submodule "3rdparty/structopt"]
 	path = 3rdparty/structopt
 	url = https://github.com/p-ranav/structopt
+[submodule "3rdparty/applespi"]
+	path = 3rdparty/applespi
+	url = https://github.com/jevinskie/applespi
