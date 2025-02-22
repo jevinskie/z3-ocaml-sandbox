@@ -31,6 +31,8 @@
 #include <structopt/app.hpp>
 #include <z3.h>
 
+#include "sexpr.h"
+
 // template <class T, class Allocator = std::allocator<T>> using vector_t = folly::fbvector<T, Allocator>;
 template <class T, class Allocator = std::allocator<T>> using vector_t = std::vector<T, Allocator>;
 
@@ -284,6 +286,19 @@ static int main_task(Arguments args) {
         search_directory(dir_path, smt2_progs, smt2_progs_mutex, tp);
     }
     fmt::print("num .smt2 files: {:d}\n", smt2_progs.size());
+    for (const auto &smt2_prog : smt2_progs) {
+        SExprParser parser{smt2_prog};
+
+        // Parse multiple top-level SExprs
+        while (true) {
+            SExpr expr = parser.parse();
+            // If we got an empty atom, we're done
+            if (is_atom(expr) && std::get<std::string>(expr.value).empty()) {
+                break;
+            }
+            fmt::print("sexpr: {}\n", expr);
+        }
+    }
     return 0;
 }
 
