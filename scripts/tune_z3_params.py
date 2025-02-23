@@ -28,13 +28,9 @@ def main(smt2_dir: Path, z3_dir: Path, work_dir: Path) -> None:
 @typechecked
 def get_arg_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "-s", "--smt", required=True, dest="smt2_dir", type=Path, help="smt2 directory"
-    )
+    parser.add_argument("-s", "--smt", required=True, dest="smt2_dir", type=Path, help="smt2 directory")
     parser.add_argument("-z", "--z3", required=True, dest="z3_dir", type=Path, help="z3 directory")
-    parser.add_argument(
-        "-w", "--work", required=True, dest="work_dir", type=Path, help="work directory"
-    )
+    parser.add_argument("-w", "--work", required=True, dest="work_dir", type=Path, help="work directory")
     return parser
 
 
