@@ -40,9 +40,6 @@
 [submodule "3rdparty/sha-2"]
 	path = 3rdparty/sha-2
 	url = https://github.com/martynafford/sha-2
-[submodule "3rdparty/pgbar"]
-	path = 3rdparty/pgbar
-	url = https://github.com/Konvt/pgbar
 [submodule "3rdparty/mimalloc"]
 	path = 3rdparty/mimalloc
 	url = https://github.com/jevinskie/mimalloc
